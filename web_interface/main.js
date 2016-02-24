@@ -37,8 +37,11 @@ var writeSerial = (val) => {
 	chrome.serial.send(connId, buf, ()=>{});
 }
 
-var setSpeed = (val) => {
+var preSpeed;
+var setSpeed = (val) => {	
 	var dec = Math.min(Math.floor(val*256), 255);
+	if (dec === preSpeed) return;
+	preSpeed = dec;
 	writeSerial(dec);
 	document.getElementById("sender").style.height = (dec / 255 * 100) + "%";
 }
