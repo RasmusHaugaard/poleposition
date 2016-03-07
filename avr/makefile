@@ -12,7 +12,7 @@ upload:
 	sudo avrdude -p m32 $(PROGRAMMER) -U flash:w:build/$(PROJECT).hex
 
 fuse:	#(s. 294)
-	sudo avrdude -p m32 $(PROGRAMMER) -U hfuse:w:0xd9:m -U lfuse:w:0xe0:m
+	sudo avrdude -p m32 $(PROGRAMMER) -U hfuse:w:0xd9:m -U lfuse:w:0xff:m
 
 clean:
 	rm -rf build
