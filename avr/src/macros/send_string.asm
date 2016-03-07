@@ -17,6 +17,7 @@ loadchar:
 	cpi R16, 0x00
 	brne sendcharfromstring
 	ret
+	
 sendcharfromstring:
 	call sendchar
 	inc ZL

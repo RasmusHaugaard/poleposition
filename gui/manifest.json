@@ -5,13 +5,10 @@
   "manifest_version": 2,
   "app": {
     "background": {
-      "scripts": ["background.js"]
+      "scripts": ["src/background.js"]
     }
   },
-  "icons": { "16": "calculator-16.png", "128": "calculator-128.png" },
-  "bluetooth": {
-    "uuids": ["180a"]
-  },
+  "icons": { "16": "media/calculator-16.png", "128": "media/calculator-128.png" },
   "permissions": [
     "serial"
   ]

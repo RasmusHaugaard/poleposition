@@ -112,6 +112,16 @@
 
 
 ;***** Bit Definitions
+;SREG
+.equ	SREGC	=0
+.equ	SREGZ	=1
+.equ	SREGN	=2
+.equ	SREGV	=3
+.equ	SREGS	=4
+.equ	SREGH	=5
+.equ	SREGT	=6
+.equ	SREGI	=7
+
 ;GIMSK
 .equ	INT1	=7
 .equ	INT0	=6
@@ -176,9 +186,11 @@
 ;TCCR0
 .equ    FOC0    =7
 .equ    PWM0    =6
+.equ 	WGM00	=6		; Obsolete
 .equ	COM01	=5
 .equ	COM00	=4
 .equ	CTC0	=3
+.equ	WGM01	=3		; Obsolete
 .equ	CS02	=2
 .equ	CS01	=1
 .equ	CS00	=0
@@ -206,9 +218,11 @@
 ;TCCR2
 .equ	FOC2	=7
 .equ    PWM2    =6
+.equ	WGM20	=6		; Obsolete
 .equ    COM21   =5
 .equ    COM20   =4
 .equ    CTC2    =3
+.equ	WGM21	=3		; Obsolete
 .equ    CS22    =2
 .equ    CS21    =1
 .equ    CS20    =0
