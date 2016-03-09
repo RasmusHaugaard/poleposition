@@ -122,7 +122,7 @@
 .equ	SREGT	=6
 .equ	SREGI	=7
 
-;GIMSK
+;GIMSK / GICR
 .equ	INT1	=7
 .equ	INT0	=6
 .equ	INT2	=5

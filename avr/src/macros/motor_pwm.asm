@@ -9,8 +9,3 @@
 	ldi R16, @0
 	out OCR2, R16
 .endm
-
-.macro	setspeed_8_i	;tager konstant
-	ldi @0, @1
-	out OCR2, @0
-.endm
