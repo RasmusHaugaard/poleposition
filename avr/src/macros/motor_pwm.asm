@@ -6,6 +6,8 @@
 .endm
 
 .macro	setspeed_i	;tager konstant
+	push R16
 	ldi R16, @0
 	out OCR2, R16
+	pop R16
 .endm

@@ -2,13 +2,13 @@
 PROJECT=program
 PROGRAMMER=-c usbasp -P usb
 
-default: compile upload
+default: assembly flash
 
-compile: clean
+assembly: clean
 	avra src/$(PROJECT).asm
 	mv src/*.{cof,obj,hex} build
 
-upload:
+flash:
 	sudo avrdude -p m32 $(PROGRAMMER) -U flash:w:build/$(PROJECT).hex
 
 fuse:	#(s. 294)
@@ -24,5 +24,5 @@ erase:
 watch: #kræver nodejs og watch-cli
 	watch "**/*.{asm,inc}" "clear; make"
 
-watchcompile:
-	watch "**/*.{asm,inc}" "clear; make compile"
+watchassembly:
+	watch "**/*.{asm,inc}" "clear; make assembly"

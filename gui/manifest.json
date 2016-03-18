@@ -1,11 +1,11 @@
 {
-  "name": "Robtek2-3-DICKMINIZER!",
-  "description": "Racecar interface",
+  "name": "poleposition",
+  "description": "poleposition web interface",
   "version": "0.1",
   "manifest_version": 2,
   "app": {
     "background": {
-      "scripts": ["src/background.js"]
+      "scripts": ["background.js"]
     }
   },
   "icons": { "16": "media/calculator-16.png", "128": "media/calculator-128.png" },

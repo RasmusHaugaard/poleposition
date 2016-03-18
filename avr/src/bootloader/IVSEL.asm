@@ -1,4 +1,4 @@
-	;sørg for interrupts ligger i bootloaderen
+	;Interrupts ligger i bootloaderen
 	;(s. 48 i datablad)
 	in R16, GICR	;load GICR register
 	sbr R16, IVSEL	;sæt Interrupt Vector Select i R16
