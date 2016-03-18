@@ -9,7 +9,7 @@ ReactDom.render(
     <AppBar title="poleposition"/>
     <RaisedButton label="Hey Mikkel"/>
       <AutoComplete
-          hintText="Skriv type"
+          hintText="Skriv type!"
           dataSource={["SET", "GET", "REPLY", "REPLYTWICE"]}
         />
   </div>,
