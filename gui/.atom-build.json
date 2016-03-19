@@ -1,0 +1,4 @@
+{
+  "cmd": "npm run reload",
+  "sh": true
+}
