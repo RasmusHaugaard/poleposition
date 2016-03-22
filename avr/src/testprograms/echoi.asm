@@ -1,11 +1,15 @@
 .include "src/m32def.inc"
 .org 0x00
 	rjmp init
-
+.org 0x1a
+  rjmp rxciehandler
 .org 0x2a ;efter interrupt table
 init:
 	.include "src/setup/bluetooth.asm"
 	.include "src/setup/stack_pointer.asm"
+
+	sbi UCSRB, RXCIE
+	sei
 	rjmp main
 
 sendchar:
@@ -19,12 +23,9 @@ sendchar:
 	ret
 
 main:
-	;Er der en ny byte i receiver buffer?
-	sbis UCSRA, RXC
-	;hvis ikke, vent
 	rjmp main
-	;load byte i receiver buffer til R16
-	in R16, UDR
-	;gå til sendchar
-	call sendchar
-	rjmp main
+
+rxciehandler:
+  in R16, UDR
+	rcall sendchar
+	reti
