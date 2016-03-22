@@ -5,8 +5,8 @@ out UCSRB, R16
 ldi R16, (1<<UCSZ1) | (1<<UCSZ0) | (1<<URSEL)
 out UCSRC, R16
 ;Set baudrate (16MHz / (16 * (9600)) - 1) -> HEX
-ldi R16, 0x03
+ldi R16, 25
 out UBRRL, R16
 
 
-;Send "$$$" + "F,1" for at gå i fast mode
+;Send "$$$" (wait) "F,1\n" for at gå i fast mode

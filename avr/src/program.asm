@@ -1,1 +1,1 @@
-.include "src/testprograms/echo.asm"
+.include "src/programs/master.asm"
