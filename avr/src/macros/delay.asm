@@ -28,7 +28,7 @@ fulldec3:	;5 + (7 + (9 + 4 c1) c2) c3 inkl. kald & return
 
 delayms:	; solved for values
 	push c1
-	push c2 
+	push c2
 	push counter1
 	push counter2
 	push counter3
@@ -37,7 +37,7 @@ delayms:	; solved for values
 	ldi c2, 228
 	ldi counter3, 1
 	rcall fulldec3
-	
+
 	pop counter3
 	pop counter2
 	pop counter1
@@ -47,7 +47,7 @@ delayms:	; solved for values
 
 delays:		;solved for values
 	push c1
-	push c2 
+	push c2
 	push counter1
 	push counter2
 	push counter3
