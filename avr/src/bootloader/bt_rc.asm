@@ -42,12 +42,14 @@ received_set_code:
   sts bt_rc_status, temp1
   rjmp rxcie_end
 received_ping_code:
-  send_bt [ping_code]
+  ldi temp1, ping_code
+  send_bt_byte [temp1]
   rjmp rxcie_end
 received_reprogram_code:
   rjmp rxcie_end
 error_undefined_rc_code:
-  send_bt [error_code_bl_undefined_rc_code]
+  ldi temp1, error_code_bl_undefined_rc_code
+  send_bt_byte [temp1]
   rjmp rxcie_end
 
 expecting_other_than_first_byte:

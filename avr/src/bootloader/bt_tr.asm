@@ -26,7 +26,7 @@ check_send_bt_from_buf:
   lds YL, bt_tr_send_pointer_L
   lds YH, bt_tr_send_pointer_H
 
-  cp ZL, YL ; Hvis ikke vores send pointer peger det samme sted  hen, som vores store pointer, vil der være data, der skal sendes.
+  cp ZL, YL ; Hvis ikke vores send pointer peger det samme sted hen, som vores store pointer, vil der være data, der skal sendes.
   brne send_bt_from_buf
   cp ZH, YH
   brne send_bt_from_buf
@@ -34,8 +34,7 @@ check_send_bt_from_buf:
   cbi UCSRB, UDRIE ; turn off interrupt for ready to send and return, if buffer is empty.
   rjmp restore_tr_pointer_registers
 send_bt_from_buf:
-  ld temp, Y+
-  out UDR, temp
+  adiw YH:YL, 1
 
   cpi YL, low(bt_tr_buf_end + 1)
   sbis SREG, SREG_Z
@@ -50,6 +49,9 @@ send_bt_from_buf:
 update_send_pointer:
   sts bt_tr_send_pointer_L, YL
   sts bt_tr_send_pointer_H, YH
+
+  ld temp, Y
+  out UDR, temp
 restore_tr_pointer_registers:
   pop YH
   pop YL

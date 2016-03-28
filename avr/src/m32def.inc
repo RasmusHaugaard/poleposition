@@ -37,20 +37,20 @@
 ;* ...                         ;otherwise do something else
 ;*************************************************************************
 
-#ifndef _M32DEF_INC_
-#define _M32DEF_INC_
+;ifndef _M32DEF_INC_
+;define _M32DEF_INC_
 
 
-#pragma partinc 0
+;pragma partinc 0
 
 ; ***** SPECIFY DEVICE ***************************************************
 .device ATmega32
-#pragma AVRPART ADMIN PART_NAME ATmega32
+;pragma AVRPART ADMIN PART_NAME ATmega32
 .equ	SIGNATURE_000	= 0x1e
 .equ	SIGNATURE_001	= 0x95
 .equ	SIGNATURE_002	= 0x02
 
-#pragma AVRPART CORE CORE_VERSION V2E
+;pragma AVRPART CORE CORE_VERSION V2E
 
 
 ; ***** I/O REGISTER DEFINITIONS *****************************************
@@ -414,7 +414,12 @@
 .equ	ADPS2	= 2	; ADC  Prescaler Select Bits
 .equ	ADIE	= 3	; ADC Interrupt Enable
 .equ	ADIF	= 4	; ADC Interrupt Flag
-.equ	ADATE	= 5	; When this bit is written to one,the Timer/Counter2 prescaler will be reset.The bit will be cleared by hardware after the operation is performed.Writing a zero to this bit will have no effect.This bit will always be read as zero if Timer/Counter2 is clocked by the internal CPU clock.If this bit is written when Timer/Counter2 is operating in asynchronous mode,the bit will remain one until the prescaler has been reset.
+.equ	ADATE	= 5	; When this bit is written to one,the Timer/Counter2 prescaler will be reset.
+                ;The bit will be cleared by hardware after the operation is performed.
+                ;Writing a zero to this bit will have no effect.
+                ;This bit will always be read as zero if Timer/Counter2 is clocked
+                ;by the internal CPU clock.If this bit is written when Timer/Counter2 is
+                ;operating in asynchronous mode,the bit will remain one until the prescaler has been reset.
 .equ	ADFR	= ADATE	; For compatibility
 .equ	ADSC	= 6	; ADC Start Conversion
 .equ	ADEN	= 7	; ADC Enable
@@ -764,10 +769,10 @@
 .equ	E2END	= 0x03ff
 .equ	EEPROMEND	= 0x03ff
 .equ	EEADRBITS	= 10
-#pragma AVRPART MEMORY PROG_FLASH 32768
-#pragma AVRPART MEMORY EEPROM 1024
-#pragma AVRPART MEMORY INT_SRAM SIZE 2048
-#pragma AVRPART MEMORY INT_SRAM START_ADDR 0x60
+;pragma AVRPART MEMORY PROG_FLASH 32768
+;pragma AVRPART MEMORY EEPROM 1024
+;pragma AVRPART MEMORY INT_SRAM SIZE 2048
+;pragma AVRPART MEMORY INT_SRAM START_ADDR 0x60
 
 
 
@@ -810,6 +815,6 @@
 
 .equ	INT_VECTORS_SIZE	= 42	; size in words
 
-#endif  /* _M32DEF_INC_ */
+;endif  /* _M32DEF_INC_ */
 
 ; ***** END OF FILE ******************************************************

@@ -3,7 +3,7 @@
 .macro send_bt_byte
 .endm
 
-.macro send_bt_byte [8]
+.macro send_bt_byte_8
   push store_byte
   mov store_byte, @0
   call store_bt_to_buf
