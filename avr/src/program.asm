@@ -1,1 +1,1 @@
-.include "src/programs/master.asm"
+.include "src/programs/bootloader.asm"
