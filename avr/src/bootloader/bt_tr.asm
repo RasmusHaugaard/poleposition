@@ -1,4 +1,5 @@
 .def store_byte = R16
+.def temp1 = R17
 
 init_bt_tr_pointers:
   ldi ZL, low(bt_tr_buf_start)
@@ -37,12 +38,10 @@ send_bt_from_buf:
   adiw YH:YL, 1
 
   cpi YL, low(bt_tr_buf_end + 1)
-  sbis SREG, SREG_Z
-  rjmp update_send_pointer
+  brne update_send_pointer
 
   cpi YH, high(bt_tr_buf_end + 1)
-  sbis SREG, SREG_Z
-  rjmp update_send_pointer
+  brne update_send_pointer
 
   ldi YL, low(bt_tr_buf_start)
   ldi YH, high(bt_tr_buf_start)
@@ -50,8 +49,8 @@ update_send_pointer:
   sts bt_tr_send_pointer_L, YL
   sts bt_tr_send_pointer_H, YH
 
-  ld temp, Y
-  out UDR, temp
+  ld temp1, Y
+  out UDR, temp1
 restore_tr_pointer_registers:
   pop YH
   pop YL
@@ -73,12 +72,10 @@ store_bt_to_buf:
   adiw ZH:ZL, 1
 
   cpi ZL, low(bt_tr_buf_end + 1)
-  sbis SREG, SREG_Z
-  rjmp update_store_pointer
+  brne update_store_pointer
 
   cpi ZH, high(bt_tr_buf_end + 1)
-  sbis SREG, SREG_Z
-  rjmp update_store_pointer
+  brne update_store_pointer
 
   ldi ZL, low(bt_tr_buf_start)
   ldi ZH, high(bt_tr_buf_start)
@@ -100,3 +97,6 @@ buffer_not_full:
   pop ZH
   pop ZL
   ret
+
+.undef temp1
+.undef store_byte

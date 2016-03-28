@@ -1,10 +1,18 @@
-.def counter1 = R16
+;.def counter1 = R16
 .def counter2 = R17
 .def counter3 = R18
 .def c1 = R19
 .def c2 = R20
 .def usercounter = R21
 .def temp = R22
+
+.undef counter1
+.undef counter2
+.undef counter3
+.undef c1
+.undef c2
+.undef usercounter
+.undef temp
 
 fulldec1:	; 5 + 4 c1 inkl. kald & return
 	dec counter1

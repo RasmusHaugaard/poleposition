@@ -7,6 +7,9 @@
 
 .equ error_code_bl_undefined_rc_code = 0xa0
 
+.DEF input = R16
+.def temp1 = R17
+
 bl_rxcie_handler:
   push input
   push temp1
@@ -61,10 +64,9 @@ expecting_data:
   rcall store_input_in_rc_buffer
   dec temp1
   sts bt_rc_status, temp1
-  sbis SREG, SREG_Z
-  rjmp rxcie_end
+  brne rxcie_end
   rcall reset_bt_rc_pointer
-  rcall app_command_handler
+  call app_command_handler
   rjmp rxcie_end
 
 store_input_in_rc_buffer:
@@ -81,3 +83,6 @@ reset_bt_rc_pointer:
   sts bt_rc_pointer_L, ZL
   sts bt_rc_pointer_H, ZH
   ret
+
+.undef input
+.undef temp1

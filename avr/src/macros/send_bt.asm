@@ -1,11 +1,14 @@
-.def store_byte = R16
+.def storebyte = R16
 
 .macro send_bt_byte
+  call store_bt_to_buf
 .endm
 
 .macro send_bt_byte_8
-  push store_byte
-  mov store_byte, @0
+  push storebyte
+  mov storebyte, @0
   call store_bt_to_buf
-  pop store_byte
+  pop storebyte
 .endm
+
+.undef storebyte

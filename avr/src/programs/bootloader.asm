@@ -20,13 +20,7 @@ app_command_handler:
 main:
   rjmp main
 
-;Her starter bootloaderen
-.equ bootload_start = LARGEBOOTSTART ; skal sættes til starten af bootloadersektionen. (s. 263 i datablad)
-.def input = R16
-.def temp1 = R17
-.def temp2 = R18
-
-.org bootload_start
+.org LARGEBOOTSTART
 	rjmp init
 	.include "src/macros/soft_reset.asm"
 	.include "src/macros/delay.asm"
@@ -38,6 +32,9 @@ init:
 	.include "src/setup/stack_pointer.asm"
 	delays [1]
 	.include "src/setup/bluetooth.asm"
+
+.def temp1 = R17
+
   ldi temp1, 0
   sts bt_rc_status, temp1
   rcall reset_bt_rc_pointer
