@@ -8,7 +8,7 @@ const userinput = require('./userinput');
 var conn = null;
 
 var onData = (data) => {
-  console.log(data.toString());
+  console.log(data[0].toString());
 }
 
 var callback = (_conn) => {

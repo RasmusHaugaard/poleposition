@@ -8,5 +8,4 @@ out UCSRC, R16
 ldi R16, 25
 out UBRRL, R16
 
-
 ;Send "$$$" (wait) "F,1\n" for at gå i fast mode
