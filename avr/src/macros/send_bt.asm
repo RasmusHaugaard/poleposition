@@ -1,4 +1,4 @@
-.def storebyte = R16
+;?def storebyte = R16
 
 .macro send_bt_byte
 	call store_bt_to_buf
@@ -10,6 +10,3 @@
 	call store_bt_to_buf
 	pop storebyte
 .endm
-
-.undef storebyte
-#undef storebyte

@@ -35,16 +35,16 @@ def:
 	.equ	SCL=0b00000110		;Her sættes SCL (Clock frekvensen), ud fra en værdi der bestemmes af CPU clocken.
 	.equ	accWadress=0b00111000 ;Adresse til acc for at skrive til den. SDO = GND
 	.equ	accRadress=0b00111001 ;Adresse til acc for at læse fra den. SDO = GND
-	.equ	accRegisterX=0x27 ;Register adresse for x-værdi
+	.equ	accRegisterX=0x2b ;Register adresse for x-værdi
 	.equ	accRegisterY=0x2b ;Register adresse for y-værdi
 	.equ	accRegisterZ=0x2d ;Register adresse for z-værdi
 	.equ	DataVar = TWDR
 
 
 .macro delay500ms
-	ldi 	R16, 160
+	ldi 	R16, 16
 delay1:
-	ldi 	R17, 250
+	ldi 	R17, 25
 delay2:
 	ldi 	R18, 50
 delay3:

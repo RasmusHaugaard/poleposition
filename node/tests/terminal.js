@@ -8,7 +8,8 @@ const userinput = require('./userinput');
 var conn = null;
 
 var onData = (data) => {
-  console.log(data[0].toString());
+	var val = data[0];
+  console.log((val > 127 ? val - 255 : val).toString());
 }
 
 var callback = (_conn) => {
