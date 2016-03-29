@@ -1,15 +1,12 @@
 "use strict";
 
-var t0 = new Date();
+var d0 = new Date();
 
 const fs = require('fs');
 const escapeRgx = require('escape-string-regexp');
-const rimraf = require('rimraf');
 
-var outputDir = './temp';
-var inputDir = './src';
-
-rimraf.sync(outputDir);
+var inputDir = process.argv[2];
+var outputDir = process.argv[3];
 
 var files = [];
 var readPath = (path) => {

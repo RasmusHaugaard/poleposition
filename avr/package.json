@@ -1,14 +1,6 @@
 {
-  "name": "avr",
-  "version": "1.0.0",
-  "description": "",
-  "main": "preprocessor.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "rimraf": "^2.5.2"
