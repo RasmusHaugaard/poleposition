@@ -26,10 +26,3 @@ watch: #kræver nodejs og watch-cli
 
 watchassembly:
 	watch "**/*.{asm,inc}" "clear; make assembly"
-
-gcc-assembler:
-	avr-gcc -x assembler -nostdlib -mmcu=atmega32a -o program.obj src/program.asm
-	avr-objcopy -O ihex program.obj program-gcc.hex
-
-diff:
-	diff program-gcc.hex build/program.hex
