@@ -1,4 +1,4 @@
-.include "src/m32def.inc"
+.include "src/def/m32def.inc"
 .def char = R16
 .def temp = R17
 .def cnt1 = R18

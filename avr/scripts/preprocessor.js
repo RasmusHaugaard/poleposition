@@ -3,6 +3,7 @@
 var d0 = new Date();
 
 const fs = require('fs');
+var mkdirp = require('mkdirp');
 const escapeRgx = require('escape-string-regexp');
 
 var inputDir = process.argv[2];
@@ -15,7 +16,7 @@ var readPath = (path) => {
 		var fileext = path.substr(-4).toUpperCase();
 		if (fileext === '.ASM' || fileext === '.INC') files.push(path);
 	}else if (stats.isDirectory()){
-		fs.mkdirSync(path.replace(inputDir, outputDir));
+		mkdirp.sync(path.replace(inputDir, outputDir));
 
 		fs.readdirSync(path).forEach(subPath => {
 			readPath(path + '/' + subPath);
@@ -57,14 +58,14 @@ var processFile = (inputPath, outputPath) => {
 		var name = m[1].toUpperCase();
 		var nameIndex = fileDefs.names.indexOf(name);
 		if(nameIndex !== -1){
-			lineErr(filePath, i);
+			lineErr(inputPath, i);
 			console.log('Name "' + name + '" already defined to value "' + fileDefs.values[nameIndex] + '"');
 			process.exit(1);
 		}
 		var value = m[2].toUpperCase();
 		var valueIndex = fileDefs.values.indexOf(value);
 		if(valueIndex !== -1){
-			lineErr(filePath, i);
+			lineErr(inputPath, i);
 			console.log('Value "' + value + '" already defined to name "' + fileDefs.names[valueIndex] + '"');
 			process.exit(1);
 		}

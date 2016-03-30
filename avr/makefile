@@ -7,18 +7,18 @@ temp = temp
 out = build
 
 inDir = ./$(in)/
-tempDir = ./$(temp)/
+tempDir = ./$(temp)/$(in)/
 outDir = ./$(out)/
 
-default: assembly flash
+default: assemble flash
 
 flash:
 	sudo avrdude -p m32 $(PROGRAMMER) -U flash:w:build/$(PROJECT).hex
 
-assembly: preprocess cleanOut
+assemble: preprocess cleanOut
 	mkdir $(out)
-	avra "$(tempDir)$(PROJECT).asm"
-	mv $(temp)/*.{cof,obj,hex} $(out)
+	(cd $(temp) && avra -l listfile "$(inDir)$(PROJECT).asm")
+	mv $(temp)/$(in)/*.{cof,obj,hex} $(out)
 
 preprocess: cleanTemp
 	node scripts/preprocessor $(inDir) $(tempDir)
@@ -30,10 +30,10 @@ cleanTemp:
 	node scripts/clean $(tempDir)
 
 watch: #kræver nodejs og watch-cli
-	watch $(inDir)**/*.{asm,inc} "clear; make"
+	watch "$(inDir)**/*.{asm,inc}" "clear; make"
 
 watchassemble:
-	watch "$(inDir)*.{asm,inc}" "clear; make assembly"
+	watch "$(inDir)**/*.{asm,inc}" "clear; make assemble"
 
 fuse:	#(s. 294)
 	sudo avrdude -p m32 $(PROGRAMMER) -U hfuse:w:0xd8:m -U lfuse:w:0xff:m
