@@ -61,6 +61,7 @@ init_bt_tr_pointers:
 .endif
   ret
 
+.org 15000
 bl_udrei_handler:
   rcall check_send_bt_from_buf
   reti
