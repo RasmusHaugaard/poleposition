@@ -1,4 +1,4 @@
-.include "src/m32def.inc"
+.include "src/def/m32def.inc"
 .org 0x00
 	rjmp init
 .org 0x1a

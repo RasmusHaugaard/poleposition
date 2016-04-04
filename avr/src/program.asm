@@ -1,1 +1,1 @@
-.include "src/programs/bootloader.asm"
+.include "src/testprograms/bt_lib_test.asm"

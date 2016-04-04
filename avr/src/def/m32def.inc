@@ -37,8 +37,8 @@
 ;* ...                         ;otherwise do something else
 ;*************************************************************************
 
-;ifndef _M32DEF_INC_
-;define _M32DEF_INC_
+;.ifndef _M32DEF_INC_
+;.define _M32DEF_INC_
 
 
 ;pragma partinc 0
@@ -815,6 +815,6 @@
 
 .equ	INT_VECTORS_SIZE	= 42	; size in words
 
-;endif  /* _M32DEF_INC_ */
+;.endif  ; _M32DEF_INC_
 
 ; ***** END OF FILE ******************************************************

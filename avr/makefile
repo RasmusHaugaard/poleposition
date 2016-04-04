@@ -1,28 +1,42 @@
 # Makefile for programming ATmega32 using assembler
-PROJECT=program
-PROGRAMMER=-c usbasp -P usb
+PROJECT = program
+PROGRAMMER = -c usbasp -P usb
 
-default: assembly flash
+in = src
+temp = temp
+out = build
 
-assembly: clean
-	avra src/$(PROJECT).asm
-	mv src/*.{cof,obj,hex} build
+inDir = ./$(in)/
+tempDir = ./$(temp)/$(in)/
+outDir = ./$(out)/
+
+default: assemble flash
 
 flash:
 	sudo avrdude -p m32 $(PROGRAMMER) -U flash:w:build/$(PROJECT).hex
 
+assemble: preprocess cleanOut
+	mkdir $(out)
+	(cd $(temp) && avra -l listfile "$(inDir)$(PROJECT).asm")
+	mv $(temp)/$(in)/*.{cof,obj,hex} $(out)
+
+preprocess: cleanTemp
+	node scripts/preprocessor $(inDir) $(tempDir)
+
+cleanOut:
+	node scripts/clean $(outDir)
+
+cleanTemp:
+	node scripts/clean $(tempDir)
+
+watch: #kræver nodejs og watch-cli
+	watch "$(inDir)**/*.{asm,inc}" "clear; make"
+
+watchassemble:
+	watch "$(inDir)**/*.{asm,inc}" "clear; make assemble"
+
 fuse:	#(s. 294)
 	sudo avrdude -p m32 $(PROGRAMMER) -U hfuse:w:0xd8:m -U lfuse:w:0xff:m
 
-clean:
-	rm -rf build
-	mkdir build
-
 erase:
 	sudo avrdude -p m32 $(PROGRAMMER) -e
-
-watch: #kræver nodejs og watch-cli
-	watch "**/*.{asm,inc}" "clear; make"
-
-watchassembly:
-	watch "**/*.{asm,inc}" "clear; make assembly"
