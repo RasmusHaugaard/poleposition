@@ -113,7 +113,7 @@ readAcc:
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x08 		;Hvis vores "masking" ikke er lig 08 i hex, så gå til fejl. 0x08 er status for start signal.
 		brne 	jump1	;Gå til ERRROR, hvis de to ikke er lig hinanden.
-		rjmp	adressWadress
+		rjmp	adressWadress	;hej
 
 		jump1:
 		rjmp	Error6  		;D0 blinker
