@@ -11,7 +11,7 @@ pi_start:
 	ldi ZH, 0
 	ldi counter, PAGESIZE
 
-wrloop:
+pi_wrloop:
 	lpm r0, Z+
 	lpm r1, Z+
 	subi ZL, 2
@@ -46,34 +46,34 @@ not_udrei_1:
 not_udrei_2:
 
 	ldi spmcrval, (1<<SPMEN)
-	rcall do_spm
+	rcall pi_do_spm
 	inc ZL
 	inc ZL
 	dec counter
-	brne wrloop
+	brne pi_wrloop
 	subi ZL, PAGESIZEB
 	ldi spmcrval, (1<<PGERS) | (1<<SPMEN)
-	rcall do_spm
+	rcall pi_do_spm
 	ldi spmcrval, (1<<PGWRT) | (1<<SPMEN)
-	rcall do_spm
-return:
+	rcall pi_do_spm
+pi_return:
 	ldi spmcrval, (1<<RWWSRE) | (1<<SPMEN)
-	rcall do_spm
+	rcall pi_do_spm
 	in temp1, SPMCR
 	sbrs temp1, RWWSB
 	rjmp pi_end
-	rjmp return
+	rjmp pi_return
 
-do_spm:	;Fra datablad (s. 326)
+pi_do_spm:	;Fra datablad (s. 326)
 	; check for previous SPM complete
-wait_spm:
+pi_wait_spm:
 	in temp1, SPMCR
 	sbrc temp1, SPMEN
-	rjmp wait_spm
+	rjmp pi_wait_spm
 	; check that no EEPROM write access is present
-wait_ee:
+pi_wait_ee:
 	sbic EECR, EEWE
-	rjmp wait_ee
+	rjmp pi_wait_ee
 	; SPM timed sequence
 	out SPMCR, spmcrval
 	spm
