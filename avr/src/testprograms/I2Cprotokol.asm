@@ -36,10 +36,9 @@ def:
 	.equ	SCL=0b00000110		;Her sættes SCL (Clock frekvensen), ud fra en værdi der bestemmes af CPU clocken.
 	.equ	accWadress=0b00111000 ;Adresse til acc for at skrive til den. SDO = GND
 	.equ	accRadress=0b00111001 ;Adresse til acc for at læse fra den. SDO = GND
-	.equ	accRegisterX=0x2b ;Register adresse for x-værdi
-	.equ	accRegisterY=0x2b ;Register adresse for y-værdi
-	.equ	accRegisterZ=0x2d ;Register adresse for z-værdi
+	.equ	accRegisterX=0x29 ;Register adresse for x-værdi
 	.equ	DataVar = TWDR
+	.equ	I2CS = 				;Status på hvilken akse vi læser fra. 
 
 
 .macro delay500ms
@@ -90,12 +89,17 @@ program:
 	;out 	PRR, R16 			;Muligvis RPR i stedet for PRR0
 
 
-setupAcc:
+setupAcc:			;Sætter acceleromteret op
 
 	.include	"src/testprograms/int.asm"
 
+startover: 			;starter læsning forfra med første x-værdi
 
-readAcc:
+	ldi			R16, accRegisterX	;Vores start register 
+	out			I2CS, R16		
+
+
+readComponent:		;Læser én byte fra vores komponent 
 
 		ldi		R16, 0b00100001
 		out		PORTA, R16
@@ -105,33 +109,35 @@ readAcc:
 		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
 		out 	TWCR, R16								;indstilling videregives til control register.
 
-		wait1_x:				;Venter på at TWINT er blevet sat, altså at start bitten er blevet sendt afsted.
+		wait1:				;Venter på at TWINT er blevet sat, altså at start bitten er blevet sendt afsted.
 			in 		R16,TWCR 	;Vi indlæser control registeret ind i R16.
 			sbrs 	R16,TWINT 	;Vi skipper næste handling, hvis TWINT i register 16 er sat.
-			rjmp 	wait1_x		;Ellers tjekker vi igen, indtil den er sat.
+			rjmp 	wait1		;Ellers tjekker vi igen, indtil den er sat.
 
 		in 		R16, TWSR 		;Smider vores status register ind i R16
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x08 		;Hvis vores "masking" ikke er lig 08 i hex, så gå til fejl. 0x08 er status for start signal.
-		brne 	jump1	;Gå til ERRROR, hvis de to ikke er lig hinanden.
-		rjmp	adressWadress	
+
+		brne 	jump1			;Gå til ERRROR, hvis de to ikke er lig hinanden.
+		rjmp	adressWrite		;Hopper til adresswrite 
+
 
 
 		jump1:
 		rjmp	Error6  		;D0 blinker
 
 ;SAD + W - Send slave adresse med write og vent på ack
-	adressWadress:
+	adressWrite:
 
 		ldi		R16, accWadress	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
 
-		wait2_x:				;Samme som wait1. Vi venter på at TWINT bliver sat.
+		wait2:				;Samme som wait1. Vi venter på at TWINT bliver sat.
 			in 		R16, TWCR
 			sbrs	R16, TWINT
-			rjmp	wait2_x
+			rjmp	wait2
 
 ; SAK - Slave ack bit.
 
@@ -139,23 +145,24 @@ readAcc:
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x18 		;Sammenligner vores "masking" med hex værdien 18. Hvis de ikke er lig med hinanden, så gå til fejl. 0x18 for SLAQ+W og ACK.
 		brne 	jump2	;Gå til ERRROR, hvis de to ikke er lig hinanden.
-		rjmp	adressRadressX
+		rjmp	adressRegister
 
 		jump2:
 		rjmp 	Error2 		;D0 lyser og D1 blinker
+
 ;SUB adrasse - Send register adresse med read og vent på ack.
 
-adressRadressX:
+adressRegister: ;Der bruges I2CS, fordi det er status register og derved den næste værdi der skal læses. 
 
-		ldi		R16, accRegisterX	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
+		ldi		R16, I2CS	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
 
-		wait3_x:				;Samme som wait1. Vi venter på at TWINT bliver sat.
+		wait3: 					;Samme som wait1. Vi venter på at TWINT bliver sat.
 			in 		R16, TWCR
 			sbrs	R16, TWINT
-			rjmp	wait3_x
+			rjmp	wait3
 ;SAK - Slave ack bit.
 		in 		R16,TWSR 		;Smider vores status register ind i R16
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
@@ -173,32 +180,32 @@ restartBit:
 		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
 		out 	TWCR, R16								;indstilling videregives til control register.
 
-		wait4_x:				;Venter på at TWINT er blevet sat, altså at start bitten er blevet sendt afsted.
+		wait4: 					;Venter på at TWINT er blevet sat, altså at start bitten er blevet sendt afsted.
 			in 		R16,TWCR 	;Vi indlæser control registeret ind i R16.
 			sbrs 	R16,TWINT 	;Vi skipper næste handling, hvis TWINT i register 16 er sat.
-			rjmp 	wait4_x		;Ellers tjekker vi igen, indtil den er sat.
+			rjmp 	wait4		;Ellers tjekker vi igen, indtil den er sat.
 
 		in 		R16, TWSR 		;Smider vores status register ind i R16
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x10 		;Hvis vores "masking" ikke er lig 10 i hex. 0x10 er status for restart signal.
 		brne 	jump4	;Gå til ERRROR, hvis de to ikke er lig hinanden.
-		rjmp	adressRadress
+		rjmp	adressRead
 
 		jump4:
 		rjmp 	Error4
 
 ;SAD + R - Slave adresse men nu med wite data.
-adressRadress:
+adressRead:
 
 		ldi		R16, accRadress				;Loader vores accelerometer adresse ind med read, fordi vi læser.
 		out		TWDR, R16					;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 					;Dette sendes til control registeret.
 
-		wait5_x:							;Samme som wait1. Vi venter på at TWINT bliver sat.
+		wait5	:							;Samme som wait1. Vi venter på at TWINT bliver sat.
 			in 		R16, TWCR
 			sbrs	R16, TWINT
-			rjmp	wait5_x
+			rjmp	wait5
 
 ; SAK - Slave ack bit.
 
@@ -206,21 +213,21 @@ adressRadress:
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x40 		;Sammenligner vores "masking" med hex værdien 40. 0x40 er for SLA+R sendt og ACK modtaget.
 		brne 	jump5	;Gå til ERRROR, hvis de to ikke er lig hinanden.
-		rjmp	dataXvalue
+		rjmp	dataValue
 
 		jump5:
 		rjmp 	Error5
 
 ;DATA - 8 bit data fra slaven
 
-	dataXvalue:
+	dataValue:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares, enabel sættes høj. ACK sendes ikke, fordi vi ikke vil modtage mere.
 		out 	TWCR, R16
 
-		wait6_x:
+		wait6:
 			in 		R16, TWCR	;Vi skal tjekke om TWINT flaget er sat, så vi loader control registeret ind.
 			sbrs	R16, TWINT	;Vi tjekker TWINT, og går videre og læser vores data hvis den er sat.
-			rjmp	wait6_x 	;Vi Hvis den ikke er sat kigger vi igen.
+			rjmp	wait6 	;Vi Hvis den ikke er sat kigger vi igen.
 
 
 		rcall sendchar
@@ -229,13 +236,13 @@ adressRadress:
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x58 		;Sammenligner vores "masking" med hex værdien 58. 0x58 for data modtaget og nack sendt.
 		brne 	jump6	;Gå til ERRROR, hvis de to ikke er lig hinanden.
-		rjmp	stop_x
+		rjmp	stop_bit
 
 		jump6:
 		rjmp 	Error6
 
 ;SP - Stop bit fra master.
-	stop_x:
+	stop_bit:
 
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) | (1<<TWSTO) ;Alle flag cleares, enabel sættes høj og sender stop signal.
 		out 	TWCR, R16
@@ -246,7 +253,18 @@ adressRadress:
 		out		PORTA, R16
 		delay500ms
 
-		rjmp	readAcc
+	nextValue: 
+
+		ldi		R16, I2CS			;Loader vores status ind i register
+		ldi		R17, 0b0000010   	;Loader værdien 2 ind i register 17
+		add 	R17, R16 			;Plusser de to sammen og lægger dem i R17
+
+		out		I2CS, R17 			;Smider den nye værdi, ind som vores nye status. 
+
+		ldi 	R18, 0b0101111 		;Loader 47 ind i R18
+		cpse	R17, R18			;Hvis R17=R18, skip næste instruktion
+		rjmp	readComponent 		;Hopper tilbage til readAcc, hvis vi stadig mangler at læse flere akser 
+		rjmp	startover			;Hopper tilbage og sætter I2CS til vores x-værdi igen. 
 
 Error1:
 
