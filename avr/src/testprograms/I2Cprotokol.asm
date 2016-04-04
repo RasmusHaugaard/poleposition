@@ -40,6 +40,7 @@ def:
 	.equ	accRegisterY=0x2b ;Register adresse for y-værdi
 	.equ	accRegisterZ=0x2d ;Register adresse for z-værdi
 	.equ	DataVar = TWDR
+	.equ	I2CS = 				;Status på hvilken akse vi læser fra. 
 
 
 .macro delay500ms
@@ -94,6 +95,11 @@ setupAcc:
 
 	.include	"src/testprograms/int.asm"
 
+startover: 
+
+	ldi			R16, accRegisterX	;Vores start register 
+	out			I2CS, R16		
+
 
 readAcc:
 
@@ -145,9 +151,9 @@ readAcc:
 		rjmp 	Error2 		;D0 lyser og D1 blinker
 ;SUB adrasse - Send register adresse med read og vent på ack.
 
-adressRadressX:
+adressRadressX: ;Der bruges I2CS, fordi det er status register og derved den næste værdi der skal læses. 
 
-		ldi		R16, accRegisterX	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
+		ldi		R16, I2CS	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
@@ -246,7 +252,18 @@ adressRadress:
 		out		PORTA, R16
 		delay500ms
 
-		rjmp	readAcc
+	nextValue: 
+
+		ldi		R16, I2CS			;Loader vores status ind i register
+		ldi		R17, 0b0000010   	;Loader værdien 2 ind i register 17
+		add 	R17, R16 			;Plusser de to sammen og lægger dem i R17
+
+		out		I2CS, R17 			;Smider den nye værdi, ind som vores nye status. 
+
+		ldi 	R18, 0b0101111 		;Loader 47 ind i R18
+		cpse	R17, R18			;Hvis R17=R18, skip næste instruktion
+		rjmp	readAcc 			;Hopper tilbage til readAcc, hvis vi stadig mangler at læse flere akser 
+		rjmp	startover			;Hopper tilbage og sætter I2CS til vores x-værdi igen. 
 
 Error1:
 
