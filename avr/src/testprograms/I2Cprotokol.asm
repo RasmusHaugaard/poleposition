@@ -38,7 +38,7 @@ def:
 	.equ	accRadress=0b00111001 ;Adresse til acc for at læse fra den. SDO = GND
 	.equ	accRegisterX=0x29 ;Register adresse for x-værdi
 	.equ	DataVar = TWDR
-	.equ	I2CS = 				;Status på hvilken akse vi læser fra. 
+	.equ	I2CS = 			;Status på hvilken akse vi læser fra. 
 
 
 .macro delay500ms
@@ -202,7 +202,7 @@ adressRead:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 					;Dette sendes til control registeret.
 
-		wait5	:							;Samme som wait1. Vi venter på at TWINT bliver sat.
+		wait5:							;Samme som wait1. Vi venter på at TWINT bliver sat.
 			in 		R16, TWCR
 			sbrs	R16, TWINT
 			rjmp	wait5
@@ -231,6 +231,7 @@ adressRead:
 
 
 		rcall sendchar
+		
 ;NACK - Not ack bit fra master.
 		in 		R16, TWSR 		;Smider vores status register ind i R16
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
