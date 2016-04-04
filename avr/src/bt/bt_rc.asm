@@ -73,7 +73,7 @@ expecting_data:
 	sts bt_rc_status, temp1
   brne rxcie_end
   rcall reset_bt_rc_pointer
-  ;call app_command_handler
+  call app_receive_command_interrupt_vector
 	send_bt_byte [49]
   rjmp rxcie_end
 

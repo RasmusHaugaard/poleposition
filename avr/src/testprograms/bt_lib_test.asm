@@ -21,7 +21,10 @@
   ;jmp bl_rxcie_handler; USART RX Complete Handler
 .org 0x1c
   ;jmp bl_udrei_handler ; UDR Empty handler
+app_receive_command_interrupt_vector:
 .org 0x2a
+	;Nu har vi modtaget en hel kommando. Find ud af, hvad der skal ske.
+	jmp app_receive_command_handler
 init:
 	force_send_bt_byte [255]
 	send_bt_byte [0]
@@ -29,3 +32,7 @@ init:
 .org 500
 main:
 	rjmp main
+
+app_receive_command_handler:
+
+	ret
