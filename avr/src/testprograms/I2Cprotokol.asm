@@ -116,6 +116,7 @@ readAcc:
 		brne 	jump1	;Gå til ERRROR, hvis de to ikke er lig hinanden.
 		rjmp	adressWadress	;hallo
 
+
 		jump1:
 		rjmp	Error6  		;D0 blinker
 
