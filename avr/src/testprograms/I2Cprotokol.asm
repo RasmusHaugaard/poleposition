@@ -1,4 +1,4 @@
-	.include "src/def/m32def.inc"
+ 	.include "src/def/m32def.inc"
 
 .org	0x0000
 	rjmp	init
@@ -38,7 +38,7 @@ def:
 	.equ	accRadress=0b00111001 ;Adresse til acc for at læse fra den. SDO = GND
 	.equ	accRegisterX=0x29 ;Register adresse for x-værdi
 	.equ	DataVar = TWDR
-	.equ	I2CS = 				;Status på hvilken akse vi læser fra. 
+
 
 
 .macro delay500ms
@@ -96,7 +96,7 @@ setupAcc:			;Sætter acceleromteret op
 startover: 			;starter læsning forfra med første x-værdi
 
 	ldi			R16, accRegisterX	;Vores start register 
-	out			I2CS, R16		
+	sts 		I2CS, R16 			;Smides ind i I2CS i SRAM - defineret i data.inc
 
 
 readComponent:		;Læser én byte fra vores komponent 
@@ -154,7 +154,7 @@ readComponent:		;Læser én byte fra vores komponent
 
 adressRegister: ;Der bruges I2CS, fordi det er status register og derved den næste værdi der skal læses. 
 
-		ldi		R16, I2CS	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
+		lds		R16, I2CS	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
@@ -202,7 +202,7 @@ adressRead:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 					;Dette sendes til control registeret.
 
-		wait5	:							;Samme som wait1. Vi venter på at TWINT bliver sat.
+		wait5:							;Samme som wait1. Vi venter på at TWINT bliver sat.
 			in 		R16, TWCR
 			sbrs	R16, TWINT
 			rjmp	wait5
@@ -231,6 +231,7 @@ adressRead:
 
 
 		rcall sendchar
+		
 ;NACK - Not ack bit fra master.
 		in 		R16, TWSR 		;Smider vores status register ind i R16
 		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
@@ -255,16 +256,18 @@ adressRead:
 
 	nextValue: 
 
-		ldi		R16, I2CS			;Loader vores status ind i register
+		lds		R16, I2CS			;Loader vores status ind i register
 		ldi		R17, 0b0000010   	;Loader værdien 2 ind i register 17
 		add 	R17, R16 			;Plusser de to sammen og lægger dem i R17
+	
+		cpi		R17, 0b0101111 		;Sammenlignger R17 med 47 
+		brne	nextReadAdress		;Hopper til start 
+		rjmp	startover 			;Hopper tilbage og sætter I2CS til vores x-værdi igen. 
 
-		out		I2CS, R17 			;Smider den nye værdi, ind som vores nye status. 
-
-		ldi 	R18, 0b0101111 		;Loader 47 ind i R18
-		cpse	R17, R18			;Hvis R17=R18, skip næste instruktion
-		rjmp	readComponent 		;Hopper tilbage til readAcc, hvis vi stadig mangler at læse flere akser 
-		rjmp	startover			;Hopper tilbage og sætter I2CS til vores x-værdi igen. 
+	
+		nextReadAdress:
+		sts		I2CS, R17 			;Smider den nye værdi, ind som vores nye status. 
+		rjmp	readComponent		;Hopper tilbage og sætter I2CS til vores x-værdi igen. 
 
 Error1:
 
