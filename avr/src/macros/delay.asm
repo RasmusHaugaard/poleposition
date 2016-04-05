@@ -78,7 +78,7 @@ delays:		;solved for values
 	cpi usercounter, 0
 	breq PC + 4
 ;loop
-	rcall delayms
+	call delayms
 	dec usercounter
 	brne PC - 2
 	pop usercounter
@@ -92,7 +92,7 @@ delays:		;solved for values
 	cpi @0, 0
 	breq PC + 4
 ;loop
-	rcall delayms
+	call delayms
 	dec usercounter
 	brne PC - 2
 	out SREG, temp
@@ -110,7 +110,7 @@ delays:		;solved for values
 	cpi usercounter, 0
 	breq PC + 4
 ;loop
-	rcall delays
+	call delays
 	dec usercounter
 	brne PC - 2
 	pop usercounter
@@ -124,7 +124,7 @@ delays:		;solved for values
 	cpi @0, 0
 	breq PC + 4
 ;loop
-	rcall delays
+	call delays
 	dec usercounter
 	brne PC - 2
 	out SREG, temp

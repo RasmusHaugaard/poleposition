@@ -3,34 +3,36 @@
 
 .def I2CSR = R25
 
+.org LARGEBOOTSTART
+	.include "src/setup/stack_pointer.asm"
+	.include "src/bt/bt_bl.asm"
+	.include "src/bl/program_interrupts.asm"
+	.include "src/macros/delay.asm"
+
 .org	0x00
 	rjmp	init
 
 .org	0x26
-	rjmp	twint_handler
+	jmp	twint_handler
 
 .org 0x2A ;app_command_handler
 
 .org 0x2C
 
 init:
-	.include "src/setup/stack_pointer.asm"
-	.include "src/bt/bt_bl.asm"
-	.include "src/macro/delay.asm"
-
 	ldi I2CSR, 0x00
 	ldi R16, 0xFF
 	out DDRA, R16
 	ldi R16, 0
 	out PORTA, R16
 
-	.equ STA0=0
-	.equ STA1=1
-	.equ STA2=2
-	.equ STA3=3
-	.equ STA4=4
-	.equ STA5=5
-	.equ STA6=6
+	.equ STA0 = 0
+	.equ STA1 = 1
+	.equ STA2 = 2
+	.equ STA3 = 3
+	.equ STA4 = 4
+	.equ STA5 = 5
+	.equ STA6 = 6
 
 	;Frekvensen regnes ud fra 16 MHz og 400 khz = 12.
 	.equ	SCL=0b00000110								;Her sættes SCL (Clock frekvensen), ud fra en værdi der bestemmes af CPU clocken.
@@ -54,10 +56,26 @@ init:
 	out 	TWCR, R16	;enable interrupts
 
 	sei
+
+	ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
+	out 	TWCR, R16								;indstilling videregives til control register.
+
+	inc		I2CSR									;sætter I2CSR low nibble til 0001
+
+	ldi R16, 1
+	out PORTA, R16
+	delayms [100]
+	ldi R16, 0
+	out PORTA, R16
 main:
 	rjmp	main
 
 twint_handler:
+	ldi R18, 1
+	out PORTA, R18
+	delayms [100]
+	reti
+
 	LDI 	R16, 0b00000111
 	AND		R16, I2CSR									;Mask'er alt undtageg de tre LSB væk
 
@@ -92,7 +110,8 @@ notSTA6:
 	rjmp error
 
 error:
-	out		PORTA, 0b00000001
+	ldi 	R16, 1
+	out		PORTA, R16
 	rjmp 	error
 
 status0:
@@ -100,7 +119,7 @@ status0:
 	ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
 	out 	TWCR, R16								;indstilling videregives til control register.
 
-	add		I2CSR, 0x01									;sætter I2CSR low nibble til 0001
+	inc		I2CSR									;sætter I2CSR low nibble til 0001
 	reti
 
 Status1:
@@ -110,7 +129,7 @@ Status1:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) 			;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 								;Dette sendes til control registeret.
 
-	add		I2CSR, 0x01									;sætter I2CSR low nibble til 0010
+	inc		I2CSR								;sætter I2CSR low nibble til 0010
 
 	reti
 
@@ -130,7 +149,7 @@ Status2:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) 			;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 								;Dette sendes til control registeret.
 
-	add		I2CSR, 0x01									;sætter I2CSR low nibble til 0011
+	inc		I2CSR								;sætter I2CSR low nibble til 0011
 
 	reti
 
@@ -145,7 +164,7 @@ Status3:
 		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
 		out 	TWCR, R16								;indstilling videregives til control register.
 
-	add		I2CSR, 0x01									;sætter I2CSR low nibble til 0100
+	inc		I2CSR					;sætter I2CSR low nibble til 0100
 
 	reti
 
@@ -156,7 +175,7 @@ Status4:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN)				;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 								;Dette sendes til control registeret.
 
-		add		I2CSR, 0x01								;sætter I2CSR low nibble til 0101
+		inc		I2CSR								;sætter I2CSR low nibble til 0101
 
 	reti
 
@@ -170,7 +189,7 @@ Status5:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) 			;Alle flag cleares, enabel sættes høj. ACK sendes ikke, fordi vi ikke vil modtage mere.
 		out 	TWCR, R16
 
-	add		I2CSR, 0x01									;sætter I2CSR low nibble til 0110
+	inc		I2CSR									;sætter I2CSR low nibble til 0110
 
 	reti
 
@@ -191,7 +210,7 @@ Status6:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);Alle flag cleares, enabel sættes høj og sender stop signal.
 		out 	TWCR, R16
 
-	and 	I2CSR, 0x10									;sætter I2CSR low nibble til 0000
+	andi 	I2CSR, 0x10									;sætter I2CSR low nibble til 0000
 
 	reti
 

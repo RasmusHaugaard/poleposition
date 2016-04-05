@@ -44,7 +44,7 @@ sendchar_%:
 
 bt_tr_start:
 	rcall init_bt_tr_pointers
-	rjmp bt_tr_end
+	jmp bt_tr_end
 
 init_bt_tr_pointers:
   ldi ZL, low(bt_tr_buf_start)

@@ -17,7 +17,7 @@ WriteAcc:
 		rjmp	adressWadressSetup
 
 		jump1Setup:
-		rjmp	Error1  		;D0 blinker
+		rjmp	error  		;D0 blinker
 
 
 ;SAD + W - Send slave adresse med write og vent på ack
@@ -41,7 +41,7 @@ WriteAcc:
 		rjmp	adressWCrtlReg
 
 		jump2Setup:
-		rjmp 	Error2 		;D0 lyser og D1 blinker
+		rjmp 	error 		;D0 lyser og D1 blinker
 ;SUB adrasse - Send register adresse med read og vent på ack.
 
 adressWCrtlReg:
@@ -62,7 +62,7 @@ adressWCrtlReg:
 		rjmp	dataOutCrtlReg
 
 		jump3Setup:
-		rjmp 	Error3 	;D0 og D1 lyser og D2 blinker
+		rjmp 	error 	;D0 og D1 lyser og D2 blinker
 ;SAD + W - Data Send
 dataOutCrtlReg:
 		ldi		R16, 0b11000111
@@ -82,7 +82,7 @@ dataOutCrtlReg:
 		rjmp	stop_xSetup
 
 		jump4Setup:
-		rjmp 	Error4 	;D0 og D1 lyser og D2 blinker
+		rjmp 	error 	;D0 og D1 lyser og D2 blinker
 
 
 
@@ -91,4 +91,4 @@ dataOutCrtlReg:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) | (1<<TWSTO) ;Alle flag cleares, enabel sættes høj og sender stop signal.
 		out 	TWCR, R16
 
-		delay500ms
+		delayms [100]
