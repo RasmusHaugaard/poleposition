@@ -1,0 +1,145 @@
+
+.org	0x00
+	rjmp	init
+
+.org	0x26
+	rjmp	TwiInt
+
+
+init:
+	sei
+	.equ I2CSR=0b00000000
+	.equ STA1=0b00000000
+	.equ STA2=0b00000001
+	.equ STA3=0b00000010
+	.equ STA4=0b00000011
+	.equ STA5=0b00000100
+	.equ STA6=0b00000101
+	.equ STAD=0b00000110 
+
+
+	rjmp	 main
+
+main:
+	;START - Start condition
+	startBit:
+		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
+		out 	TWCR, R16								;indstilling videregives til control register.
+
+	loop:
+	rjmp	loop
+
+	rjmp	 main
+
+Status1:
+	;SAD + W - Send slave adresse med write
+	adressWadress:
+		ldi		R16, accWadress							;Loader vores accelerometer adresse ind med write, fordi vi skriver.
+		out		TWDR, R16								;Smider værdien fra R16 ind i vores dataregsiter.
+		ldi 	R16, (1<<TWINT) | (1<<TWEN) 			;Alle flag cleares og enabel sættes høj.
+		out 	TWCR, R16 								;Dette sendes til control registeret.
+	;sæt I2CSR low nibble til 0001
+
+	reti
+
+Status2:
+	; SAK - Slave ack bit.
+		in 		R16,TWSR 								;Smider vores status register ind i R16
+		andi 	R16, 0xF8 								;"Masking" vores status register med hex værdien F8.
+		cpi 	R16, 0x18 								;Sammenligner vores "masking" med hex værdien 18. Hvis de ikke er lig med hinanden, så gå til fejl. 0x18 for SLAQ+W og ACK.
+		brne	main
+
+		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
+		out 	TWCR, R16								;indstilling videregives til control register.
+
+	;SUB adrasse - Send register adresse med read og vent på ack.
+	adressRadressX:
+
+		ldi		R16, accRegisterX						;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
+		out		TWDR, R16								;Smider værdien fra R16 ind i vores dataregsiter.
+		ldi 	R16, (1<<TWINT) | (1<<TWEN) 			;Alle flag cleares og enabel sættes høj.
+		out 	TWCR, R16 								;Dette sendes til control registeret.
+
+	;sæt I2CSR low nibble til 0010
+
+	reti
+
+Status3:
+	;SAK - Slave ack bit.
+		in 		R16,TWSR 								;Smider vores status register ind i R16
+		andi 	R16, 0xF8 								;"Masking" vores status register med hex værdien F8.
+		cpi 	R16, 0x28 								;Sammenligner vores "masking" med hex værdien 28. 0x28 for data sendt og ACH modtaget.
+		brne	main
+
+		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
+		out 	TWCR, R16								;indstilling videregives til control register.
+
+	;SR - Repeated Start
+		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
+		out 	TWCR, R16								;indstilling videregives til control register.
+
+	;sæt I2CSR low nibble til 0011
+
+	reti
+
+Status4:
+	;SAD + R - Slave adresse men nu med wite data.
+	adressRadress:
+		ldi		R16, accRadress							;Loader vores accelerometer adresse ind med read, fordi vi læser.
+		out		TWDR, R16								;Smider værdien fra R16 ind i vores dataregsiter.
+		ldi 	R16, (1<<TWINT) | (1<<TWEN)				;Alle flag cleares og enabel sættes høj.
+		out 	TWCR, R16 								;Dette sendes til control registeret.
+		;sæt I2CSR low nibble til 0100
+
+	reti
+
+Status5:
+	; SAK - Slave ack bit.
+		in 		R16,TWSR 								;Smider vores status register ind i R16
+		andi 	R16, 0xF8 								;"Masking" vores status register med hex værdien F8.
+		cpi 	R16, 0x40 								;Sammenligner vores "masking" med hex værdien 40. 0x40 er for SLA+R sendt og ACK modtaget.
+		brne 	main									;Gå til ERRROR, hvis de to ikke er lig hinanden.
+
+		ldi 	R16, (1<<TWINT) | (1<<TWEN) 			;Alle flag cleares, enabel sættes høj. ACK sendes ikke, fordi vi ikke vil modtage mere.
+		out 	TWCR, R16
+
+	;sæt I2CSR low nibble til 0101
+
+	reti
+
+Status6:
+	;DATA - 8 bit data fra slaven
+		in R16, DataVar
+		senddata
+	;sæt I2CSR low nibble til 0110
+
+	reti
+
+
+TwiInt:
+	LDI 	R16, 0x1F
+	AND		R16, I2CSR									;Mask'er den høje nibble ud af I2C status registret
+
+	CPI		R16, STA1
+	BREQ	Status1										;Sammenligner status væriden med den aktuelle status
+
+	CPI		R16, STA2
+	BREQ	Status2
+
+	CPI		R16, STA3
+	BREQ	Status3
+
+	CPI		R16, STA4
+	BREQ	Status4
+
+	CPI		R16, STA5
+	BREQ	Status6
+
+	CPI		R16, STA6
+	BREQ	Status6
+
+	CPI		R16, STA7
+	BREQ	Status7
+
+	rjmp	main
+
