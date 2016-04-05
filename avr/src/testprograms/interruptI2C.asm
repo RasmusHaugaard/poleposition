@@ -1,58 +1,63 @@
-	.include "src/def/m32def.inc"
+.include "src/def/m32def.inc"
+.include "src/def/data.inc"
+
+.def I2CSR = R25
 
 .org	0x00
 	rjmp	init
 
 .org	0x26
-	rjmp	TwiInt
+	rjmp	twint_handler
 
+.org 0x2A ;app_command_handler
+
+.org 0x2C
 
 init:
 	.include "src/setup/stack_pointer.asm"
-	.include "src/setup/bluetooth.asm"
+	.include "src/bt/bt_bl.asm"
 	.include "src/macro/delay.asm"
 
-	sei
-	.def I2CSR = R25
-	ldi 	I2CSR, 0x00
-
+	ldi I2CSR, 0x00
 	ldi R16, 0xFF
 	out DDRA, R16
 	ldi R16, 0
 	out PORTA, R16
 
-	.equ STA0=0b00000000
-	.equ STA1=0b00000001
-	.equ STA2=0b00000010
-	.equ STA3=0b00000011
-	.equ STA4=0b00000100
-	.equ STA5=0b00000101
-	.equ STA6=0b00000110
-	 
+	.equ STA0=0
+	.equ STA1=1
+	.equ STA2=2
+	.equ STA3=3
+	.equ STA4=4
+	.equ STA5=5
+	.equ STA6=6
 
 	;Frekvensen regnes ud fra 16 MHz og 400 khz = 12.
 	.equ	SCL=0b00000110								;Her sættes SCL (Clock frekvensen), ud fra en værdi der bestemmes af CPU clocken.
 	.equ	accWadress=0b00111000 						;Adresse til acc for at skrive til den. SDO = GND
 	.equ	accRadress=0b00111001 						;Adresse til acc for at læse fra den. SDO = GND
-	.equ	accRegisterX=0x2b 							;Register adresse for x-værdi
+	.equ	accRegisterX=0x29 							;Register adresse for x-værdi
 	.equ	accRegisterY=0x2b							;Register adresse for y-værdi
 	.equ	accRegisterZ=0x2d 							;Register adresse for z-værdi
 	.equ	DataVar = TWDR
 
-	ldi 	R16, (1<<TWIE)								;Sættes til 1, som enabler interrupts.
-	out 	TWCR, r16
-
-	ldi 	R16, (0<<TWPS0)|(0<<TWPS1)					;Fordi vi IKKE bruger prescaler på vores bit rate, sættes disse to værdier til 0.
+	ldi 	R16, (0<<TWPS0) | (0<<TWPS1)					;Fordi vi IKKE bruger prescaler på vores bit rate, sættes disse to værdier til 0.
 	out 	TWSR, R16 									;Burde være sat til 0 som deafault.
 
 	ldi 	R16, SCL									;Hastigheden på clocken. Indstilles øverst. Tabelafhængig i forhold til CPU.
 	out 	TWBR, R16
 
+	.include	"src/testprograms/int.asm"
 
-	rjmp	 init2
+	in		R16, TWCR
+	ori		R16, (1<<TWIE)
+	out 	TWCR, R16	;enable interrupts
 
+	sei
+main:
+	rjmp	main
 
-TwiInt:
+twint_handler:
 	LDI 	R16, 0b00000111
 	AND		R16, I2CSR									;Mask'er alt undtageg de tre LSB væk
 
@@ -61,51 +66,42 @@ TwiInt:
 	rjmp Status0
 notSTA0:
 	CPI		R16, STA1
-	brne	notSTA1	
-	rjmp	Status1		
-notSTA1:								
+	brne	notSTA1
+	rjmp	Status1
+notSTA1:
 	CPI		R16, STA2
-	brne	notSTA2	
+	brne	notSTA2
 	rjmp	Status2
 notSTA2:
 	CPI		R16, STA3
-	brne	notSTA3	
+	brne	notSTA3
 	rjmp	Status3
 notSTA3:
 	CPI		R16, STA4
-	brne	notSTA4	
+	brne	notSTA4
 	rjmp	Status4
 notSTA4:
 	CPI		R16, STA5
-	brne	notSTA5	
+	brne	notSTA5
 	rjmp	Status6
 notSTA5:
 	CPI		R16, STA6
 	brne	notSTA6
 	rjmp	Status6
 notSTA6:
-	rjmp	main
+	rjmp error
 
 error:
 	out		PORTA, 0b00000001
-	rjmp error
+	rjmp 	error
 
-init2:
-
-	.include	"src/testprograms/int.asm"
-
-	rjmp main
-
-main:
 status0:
 	;START - Start condition
-		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
-		out 	TWCR, R16								;indstilling videregives til control register.
+	ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
+	out 	TWCR, R16								;indstilling videregives til control register.
 
 	add		I2CSR, 0x01									;sætter I2CSR low nibble til 0001
-
-loop:	
-	rjmp	loop
+	reti
 
 Status1:
 	;SAD + W - Send slave adresse med write
@@ -180,15 +176,10 @@ Status5:
 
 Status6:
 	;DATA - 8 bit data fra slaven
-		in R16, DataVar
 	;send_data [accx, R16]
 		in R16, DataVar
-		;Er der plads i transmitter buffer?
-		sbis UCSRA, UDRE
-		;hvis ikke, vent
-		rjmp sendchar
-		;send R16 til transmitter buffer
-		out UDR, R16
+
+		rcall sendchar
 
 	;NACK - Not ack bit fra master.
 		in 		R16, TWSR 								;Smider vores status register ind i R16
@@ -204,6 +195,12 @@ Status6:
 
 	reti
 
+sendchar:
+	;Er der plads i transmitter buffer?
+	sbis UCSRA, UDRE
+	;hvis ikke, vent
+	rjmp sendchar
+	;send R16 til transmitter buffer
+	out UDR, R16
 
-
-
+	ret
