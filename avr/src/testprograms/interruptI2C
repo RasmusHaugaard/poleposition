@@ -13,7 +13,7 @@ init:
 	.include "src/macro/delay.asm"
 
 	sei
-	.def R25, I2CSR
+	.def I2CSR = R25
 	ldi 	I2CSR, 0x00
 
 	ldi R16, 0xFF
@@ -53,32 +53,37 @@ init:
 
 
 TwiInt:
-	LDI 	R16, 0x1F
-	AND		R16, I2CSR									;Mask'er den høje nibble ud af I2C status registret
+	LDI 	R16, 0b00000111
+	AND		R16, I2CSR									;Mask'er alt undtageg de tre LSB væk
 
 	CPI		R16, STA0 	 								;Sammenligner status væriderne med den aktuelle status
-	BREQ	Status0
-
+	brne	notSTA0
+	rjmp Status0
+notSTA0:
 	CPI		R16, STA1
-	BREQ	Status1										
-
+	brne	notSTA1	
+	rjmp	Status1		
+notSTA1:								
 	CPI		R16, STA2
-	BREQ	Status2
-
+	brne	notSTA2	
+	rjmp	Status2
+notSTA2:
 	CPI		R16, STA3
-	BREQ	Status3
-
+	brne	notSTA3	
+	rjmp	Status3
+notSTA3:
 	CPI		R16, STA4
-	BREQ	Status4
-
+	brne	notSTA4	
+	rjmp	Status4
+notSTA4:
 	CPI		R16, STA5
-	BREQ	Status6
-
+	brne	notSTA5	
+	rjmp	Status6
+notSTA5:
 	CPI		R16, STA6
-	BREQ	Status6
-
-
-
+	brne	notSTA6
+	rjmp	Status6
+notSTA6:
 	rjmp	main
 
 error:
@@ -92,17 +97,15 @@ init2:
 	rjmp main
 
 main:
-	status0:
+status0:
 	;START - Start condition
 		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
 		out 	TWCR, R16								;indstilling videregives til control register.
 
 	add		I2CSR, 0x01									;sætter I2CSR low nibble til 0001
 
-	loop:
+loop:	
 	rjmp	loop
-
-	rjmp	 main
 
 Status1:
 	;SAD + W - Send slave adresse med write
@@ -157,7 +160,7 @@ Status4:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN)				;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 								;Dette sendes til control registeret.
 
-		add		I2CSR, 0x01									;sætter I2CSR low nibble til 0101
+		add		I2CSR, 0x01								;sætter I2CSR low nibble til 0101
 
 	reti
 
@@ -178,7 +181,14 @@ Status5:
 Status6:
 	;DATA - 8 bit data fra slaven
 		in R16, DataVar
-		senddata
+	;send_data [accx, R16]
+		in R16, DataVar
+		;Er der plads i transmitter buffer?
+		sbis UCSRA, UDRE
+		;hvis ikke, vent
+		rjmp sendchar
+		;send R16 til transmitter buffer
+		out UDR, R16
 
 	;NACK - Not ack bit fra master.
 		in 		R16, TWSR 								;Smider vores status register ind i R16
