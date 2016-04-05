@@ -3,7 +3,6 @@
 .filedef temp1 = R18
 
 .equ jmp_opcode_1b = 0x940c
-.equ PAGESIZEB = PAGESIZE * 2
 
 pi_start:
 	cli

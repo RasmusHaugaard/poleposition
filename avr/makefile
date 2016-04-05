@@ -17,8 +17,8 @@ flash:
 
 assemble: preprocess cleanOut
 	mkdir $(out)
-	(cd $(temp) && avra -l listfile "$(inDir)$(PROJECT).asm")
-	mv $(temp)/$(in)/*.{cof,obj,hex} $(out)
+	(cd $(temp) && avra -l "$(inDir)listfile.lst" "$(inDir)$(PROJECT).asm")
+	mv $(temp)/$(in)/*.{cof,obj,hex,lst} $(out)
 
 preprocess: cleanTemp
 	node scripts/preprocessor $(inDir) $(tempDir)
