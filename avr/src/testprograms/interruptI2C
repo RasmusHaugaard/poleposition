@@ -17,6 +17,24 @@ init:
 	.equ STA6=0b00000101
 	.equ STAD=0b00000110 
 
+	;Frekvensen regnes ud fra 16 MHz og 400 khz = 12.
+	.equ	SCL=0b00000110								;Her sættes SCL (Clock frekvensen), ud fra en værdi der bestemmes af CPU clocken.
+	.equ	accWadress=0b00111000 						;Adresse til acc for at skrive til den. SDO = GND
+	.equ	accRadress=0b00111001 						;Adresse til acc for at læse fra den. SDO = GND
+	.equ	accRegisterX=0x2b 							;Register adresse for x-værdi
+	.equ	accRegisterY=0x2b							;Register adresse for y-værdi
+	.equ	accRegisterZ=0x2d 							;Register adresse for z-værdi
+	.equ	DataVar = TWDR
+
+	ldi 	R16, (0<<TWIE)		;Sættes til 0, når vi bruger polling, og ikke interrups. 1 = interrups.
+	out 	TWCR, r16
+
+	ldi 	R16, (0<<TWPS0)|(0<<TWPS1)			;Fordi vi IKKE bruger prescaler på vores bit rate, sættes disse to værdier til 0.
+	out 	TWSR, R16 			;Burde være sat til 0 som deafault.
+
+	ldi 	R16, SCL			;Hastigheden på clocken. Indstilles øverst. Tabelafhængig i forhold til CPU.
+	out 	TWBR, R16
+
 
 	rjmp	 main
 
@@ -47,7 +65,7 @@ Status2:
 		in 		R16,TWSR 								;Smider vores status register ind i R16
 		andi 	R16, 0xF8 								;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x18 								;Sammenligner vores "masking" med hex værdien 18. Hvis de ikke er lig med hinanden, så gå til fejl. 0x18 for SLAQ+W og ACK.
-		brne	main
+		brne	error
 
 		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
 		out 	TWCR, R16								;indstilling videregives til control register.
@@ -69,10 +87,7 @@ Status3:
 		in 		R16,TWSR 								;Smider vores status register ind i R16
 		andi 	R16, 0xF8 								;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x28 								;Sammenligner vores "masking" med hex værdien 28. 0x28 for data sendt og ACH modtaget.
-		brne	main
-
-		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
-		out 	TWCR, R16								;indstilling videregives til control register.
+		brne	error
 
 	;SR - Repeated Start
 		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
@@ -98,7 +113,7 @@ Status5:
 		in 		R16,TWSR 								;Smider vores status register ind i R16
 		andi 	R16, 0xF8 								;"Masking" vores status register med hex værdien F8.
 		cpi 	R16, 0x40 								;Sammenligner vores "masking" med hex værdien 40. 0x40 er for SLA+R sendt og ACK modtaget.
-		brne 	main									;Gå til ERRROR, hvis de to ikke er lig hinanden.
+		brne 	error									;Gå til ERRROR, hvis de to ikke er lig hinanden.
 
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) 			;Alle flag cleares, enabel sættes høj. ACK sendes ikke, fordi vi ikke vil modtage mere.
 		out 	TWCR, R16
@@ -111,6 +126,17 @@ Status6:
 	;DATA - 8 bit data fra slaven
 		in R16, DataVar
 		senddata
+
+	;NACK - Not ack bit fra master.
+		in 		R16, TWSR 		;Smider vores status register ind i R16
+		andi 	R16, 0xF8 		;"Masking" vores status register med hex værdien F8.
+		cpi 	R16, 0x58 		;Sammenligner vores "masking" med hex værdien 58. 0x58 for data modtaget og nack sendt.
+		brne 	error 			;Gå til ERRROR, hvis de to ikke er lig hinanden.
+
+		;SP - Stop bit fra master
+		ldi 	R16, (1<<TWINT) | (1<<TWEN) | (1<<TWSTO) ;Alle flag cleares, enabel sættes høj og sender stop signal.
+		out 	TWCR, R16
+		
 	;sæt I2CSR low nibble til 0110
 
 	reti
@@ -142,4 +168,8 @@ TwiInt:
 	BREQ	Status7
 
 	rjmp	main
+
+error:
+
+	rjmp error
 
