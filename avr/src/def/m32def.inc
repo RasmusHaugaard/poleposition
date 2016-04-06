@@ -54,7 +54,6 @@
 
 
 ; ***** I/O REGISTER DEFINITIONS *****************************************
-; NOTE:
 ; Definitions marked "MEMORY MAPPED"are extended I/O ports
 ; and cannot be used with IN/OUT instructions
 .equ	SREG	= 0x3f

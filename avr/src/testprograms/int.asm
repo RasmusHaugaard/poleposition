@@ -22,7 +22,7 @@ WriteAcc:
 
 ;SAD + W - Send slave adresse med write og vent på ack
 	adressWadressSetup:
-		ldi		R16, accWadress	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
+		ldi		R16, acc_addr_w	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
@@ -83,8 +83,6 @@ dataOutCrtlReg:
 
 		jump4Setup:
 		rjmp 	error 	;D0 og D1 lyser og D2 blinker
-
-
 
 ;SP - Stop bit fra master.
 	stop_xSetup:

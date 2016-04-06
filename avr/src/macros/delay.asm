@@ -76,11 +76,11 @@ delays:		;solved for values
 	push usercounter
 	ldi usercounter, @0
 	cpi usercounter, 0
-	breq PC + 4
+	breq PC + 5
 ;loop
 	call delayms
 	dec usercounter
-	brne PC - 2
+	brne PC - 3
 	pop usercounter
 	out SREG, temp
 	pop temp
@@ -90,11 +90,11 @@ delays:		;solved for values
 	push temp
 	in temp, SREG
 	cpi @0, 0
-	breq PC + 4
+	breq PC + 5
 ;loop
 	call delayms
 	dec usercounter
-	brne PC - 2
+	brne PC - 3
 	out SREG, temp
 	pop temp
 .endm
@@ -108,11 +108,11 @@ delays:		;solved for values
 	push usercounter
 	ldi usercounter, @0
 	cpi usercounter, 0
-	breq PC + 4
-;loop
+	breq PC + 5
+;loop:
 	call delays
 	dec usercounter
-	brne PC - 2
+	brne PC - 3
 	pop usercounter
 	out SREG, temp
 	pop temp
@@ -122,11 +122,11 @@ delays:		;solved for values
 	push temp
 	in temp, SREG
 	cpi @0, 0
-	breq PC + 4
+	breq PC + 5
 ;loop
 	call delays
 	dec usercounter
-	brne PC - 2
+	brne PC - 3
 	out SREG, temp
 	pop temp
 .endm
