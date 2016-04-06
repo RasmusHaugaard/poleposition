@@ -8,6 +8,7 @@
 .equ STA4 = 4
 .equ STA5 = 5
 .equ STA6 = 6
+.equ STA7 = 7
 
 ;Frekvensen regnes ud fra 16 MHz og 400 khz = 12.
 .equ	SCL=0b00000110								;(Clock frekvensen), ud fra en værdi der bestemmes af CPU clocken.
@@ -47,7 +48,7 @@ init:
 	out PORTA, temp
 
 	ldi 	temp, (0<<TWPS0) | (0<<TWPS1)	;Fordi vi IKKE bruger prescaler på vores bit rate, sættes disse to værdier til 0.
-	out 	TWSR, temp	;Burde være sat til 0 som default.
+	out 	TWSR, temp						;Burde være sat til 0 som default.
 
 	ldi 	temp, SCL	;Hastigheden på clocken. Indstilles øverst. Tabelafhængig i forhold til CPU.
 	out 	TWBR, temp
@@ -76,7 +77,7 @@ twint_handler:
 	delayms [100]
 
 	ldi 	temp, 0b00000111
-	and		temp, I2CSR									;Masker alt undtageg de tre LSB væk
+	and		temp, I2CSR									;Masker alt undtagen de tre LSB væk
 
 	cpi		temp, STA0 	 								;Sammenligner status væriderne med den aktuelle status
 	brne	notSTA0
@@ -106,6 +107,10 @@ notSTA5:
 	brne	notSTA6
 	rjmp	Status6
 notSTA6:
+	cpi		temp, STA7
+	brne	notSTA7
+	rjmp	Status7
+notSTA7:
 	rcall err_STA
 	reti
 
@@ -132,7 +137,6 @@ Status1:
 	out 	TWCR, temp 								;Dette sendes til control registeret.
 
 	inc		I2CSR								;sætter I2CSR low nibble til 2
-
 	reti
 
 Status2:
@@ -142,29 +146,28 @@ Status2:
 	andi 	temp, 0xF8	;"Masking" vores status register med hex værdien F8.
 	cpi 	temp, 0x18	;Sammenligner vores "masking" med hex værdien 18. Hvis de ikke er lig med hinanden, så gå til fejl. 0x18 for SLAQ+W og ACK.
 	brne 	err_2
-	ldi 	temp, (1<<TWINT)|(1<<TWSTA)|(1<<TWEN)	;Forskellige indstillinger sættes.
+	ldi 	temp, (1<<TWINT)|(1<<TWSTA)|(1<<TWEN)|(1<<TWIE)	;Forskellige indstillinger sættes.
 	out 	TWCR, temp	;indstilling videregives til control register.
 
-	wait2_x:	;TODO: Dette skal også være interrupt!
-		in 		temp, TWCR
-		sbrs	temp, TWINT
-		rjmp	wait2_x
+	inc		I2CSR
+	reti
 
-	;SUB adrasse - Send register X-adresse med read.
+Status3:
+;SUB adrasse - Send register X-adresse med read.
 	ldi		temp, acc_reg_x						;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
 	out		TWDR, temp								;Smider værdien fra temp ind i vores dataregsiter.
 	ldi 	temp, (1<<TWINT)|(1<<TWEN)|(1<<TWIE) 			;Alle flag cleares og enabel sættes høj.
 	out 	TWCR, temp 								;Dette sendes til control registeret.
 
 	inc		I2CSR								;sætter I2CSR low nibble til 3
-	reti
+	reti	
 
 err_2:
 	force_send_bt_byte [102]
 	delays [3]
 	rjmp err_2
 
-Status3:
+Status4:
 	force_send_bt_byte [3]
 	;SAK - Slave ack bit.
 	in 		temp,TWSR 								;Smider vores status register ind i temp
@@ -177,15 +180,15 @@ Status3:
 	out 	TWCR, temp								;indstilling videregives til control register.
 
 	inc		I2CSR					;sætter I2CSR low nibble til 0100
-
 	reti
+
 err_3:
 	force_send_bt_byte [103]
 	force_send_bt_byte [temp]
 	delays [50]
 	rjmp err_3
 
-Status4:
+Status5:
 	force_send_bt_byte [4]
 	;SAD + R - Slave adresse men nu med wite data.
 	ldi		temp, acc_addr_r							;Loader vores accelerometer adresse ind med read, fordi vi læser.
@@ -194,10 +197,9 @@ Status4:
 	out 	TWCR, temp 								;Dette sendes til control registeret.
 
 	inc		I2CSR								;sætter I2CSR low nibble til 0101
-
 	reti
 
-Status5:
+Status6:
 	force_send_bt_byte [5]
 	; SAK - Slave ack bit.
 	in 		temp,TWSR 								;Smider vores status register ind i temp
@@ -209,14 +211,14 @@ Status5:
 	out 	TWCR, temp
 
 	inc		I2CSR									;sætter I2CSR low nibble til 0110
-
 	reti
+
 err_5:
 	force_send_bt_byte [105]
 	delays [3]
 	rjmp err_5
 
-Status6:
+Status7:
 	force_send_bt_byte [6]
 	;DATA - 8 bit data fra slaven
 	;send_data [accx, temp]
@@ -233,7 +235,6 @@ Status6:
 	out 	TWCR, temp
 
 	andi 	I2CSR, 0x10									;sætter I2CSR low nibble til 0000
-
 	reti
 
 err_6:
