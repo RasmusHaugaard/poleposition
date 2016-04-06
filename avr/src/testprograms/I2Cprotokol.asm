@@ -7,13 +7,14 @@
 
 init:
 	.include "src/setup/stack_pointer.asm"
+	.include "src/macros/delay.asm"
 
 	ldi R16, 0xFF
 	out DDRA, R16
-	ldi R16, 0
+	ldi R16, 0x00
 	out PORTA, R16
 
-	.include "src/setup/bluetooth.asm"
+	.include "src/bt/bt_setup.asm"
 
 wait_for_conn:
 	;Er der en ny byte i receiver buffer?
@@ -33,11 +34,11 @@ def:
 
 	;Frekvensen regnes ud fra 16 MHz og 400 khz = 12.
 	.equ	SCL=0b00000110		;Her sættes SCL (Clock frekvensen), ud fra en værdi der bestemmes af CPU clocken.
-	.equ	accWadress=0b00111000 ;Adresse til acc for at skrive til den. SDO = GND
-	.equ	accRadress=0b00111001 ;Adresse til acc for at læse fra den. SDO = GND
-	.equ	accRegisterX=0x29 ;Register adresse for x-værdi
-	.equ	accRegisterY=0x2b ;Register adresse for y-værdi
-	.equ	accRegisterZ=0x2d ;Register adresse for z-værdi
+	.equ	acc_addr_w=0b00111000 ;Adresse til acc for at skrive til den. SDO = GND
+	.equ	acc_addr_r=0b00111001 ;Adresse til acc for at læse fra den. SDO = GND
+	.equ	acc_reg_x=0x29 ;Register adresse for x-værdi
+	.equ	acc_reg_y=0x2b ;Register adresse for y-værdi
+	.equ	acc_reg_z=0x2d ;Register adresse for z-værdi
 	.equ	DataVar = TWDR
 
 
@@ -121,7 +122,7 @@ readAcc:
 ;SAD + W - Send slave adresse med write og vent på ack
 	adressWadress:
 
-		ldi		R16, accWadress	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
+		ldi		R16, acc_addr_w	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
@@ -145,7 +146,7 @@ readAcc:
 
 adressRadressX:
 
-		ldi		R16, accRegisterX	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
+		ldi		R16, acc_reg_x	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
@@ -188,7 +189,7 @@ restartBit:
 ;SAD + R - Slave adresse men nu med wite data.
 adressRadress:
 
-		ldi		R16, accRadress				;Loader vores accelerometer adresse ind med read, fordi vi læser.
+		ldi		R16, acc_addr_r				;Loader vores accelerometer adresse ind med read, fordi vi læser.
 		out		TWDR, R16					;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 					;Dette sendes til control registeret.

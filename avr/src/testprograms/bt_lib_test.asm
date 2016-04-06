@@ -22,6 +22,10 @@
 .org 0x1c
   ;jmp bl_udrei_handler ; UDR Empty handler
 .org 0x2a
+app_command_handler:
+	force_send_bt_byte [49]
+	ret
+
 init:
 	force_send_bt_byte [255]
 	send_bt_byte [0]

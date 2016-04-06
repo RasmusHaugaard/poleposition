@@ -10,6 +10,8 @@
 
 .equ error_code_bl_undefined_rc_code = 100
 
+.include "src/bt/bt_rc_force.asm"
+
 bt_rc_start:
 	ldi temp1, 0
 	sts bt_rc_status, temp1

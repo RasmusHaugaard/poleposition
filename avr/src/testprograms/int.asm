@@ -90,3 +90,12 @@ dataOutCrtlReg:
 		out 	TWCR, R16
 
 		delayms [100]
+
+rjmp int_end
+	error:
+		cli
+		ldi R16, 1
+		out PORTA, R16
+		rjmp error
+
+int_end:
