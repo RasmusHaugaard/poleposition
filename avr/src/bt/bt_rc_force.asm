@@ -1,10 +1,17 @@
+.filedef temp1 = R16
+
 .macro force_receive_bt_byte
-force_receive_%:
+	push temp1
+fr_%:
 	sbis UCSRA, RXC
-	rjmp force_receive_%
+	rjmp fr_%
+	in temp1, UDR
+	pop temp1
 .endm
 
 .macro force_receive_bt_byte_8
-	force_receive_bt_byte
+fr_8_%:
+	sbis UCSRA, RXC
+	rjmp fr_8_%
 	in @0, UDR
 .endm
