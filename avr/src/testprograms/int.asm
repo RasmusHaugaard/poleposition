@@ -2,7 +2,7 @@ WriteAcc:
 
 ;START - Start condition
 	startBitSetup:
-		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
+		ldi 	R16, (1<<TWINT)|(1<<TWSTA)|(1<<TWEN)	;Forskellige indstillinger sættes.
 		out 	TWCR, R16								;indstilling videregives til control register.
 
 		wait1_xSetup:				;Venter på at TWINT er blevet sat, altså at start bitten er blevet sendt afsted.
@@ -17,6 +17,8 @@ WriteAcc:
 		rjmp	adressWadressSetup
 
 		jump1Setup:
+		force_send_bt_byte [101]
+		force_send_bt_byte [R16]
 		rjmp	error  		;D0 blinker
 
 
@@ -41,6 +43,8 @@ WriteAcc:
 		rjmp	adressWCrtlReg
 
 		jump2Setup:
+		force_send_bt_byte [102]
+		force_send_bt_byte [R16]
 		rjmp 	error 		;D0 lyser og D1 blinker
 ;SUB adrasse - Send register adresse med read og vent på ack.
 
@@ -62,6 +66,8 @@ adressWCrtlReg:
 		rjmp	dataOutCrtlReg
 
 		jump3Setup:
+		force_send_bt_byte [103]
+		force_send_bt_byte [R16]
 		rjmp 	error 	;D0 og D1 lyser og D2 blinker
 ;SAD + W - Data Send
 dataOutCrtlReg:
@@ -82,6 +88,8 @@ dataOutCrtlReg:
 		rjmp	stop_xSetup
 
 		jump4Setup:
+		force_send_bt_byte [104]
+		force_send_bt_byte [R16]
 		rjmp 	error 	;D0 og D1 lyser og D2 blinker
 
 ;SP - Stop bit fra master.
