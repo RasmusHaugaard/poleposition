@@ -1,1 +1,1 @@
-.include "src/testprograms/twint2.asm"
+.include "src/i2c/i2c_test.asm"

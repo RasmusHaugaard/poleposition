@@ -22,10 +22,24 @@ var connect = (callback, onData) => {
       }else{
         console.log("Connection established!");
         conn.on("data", onData);
+				conn.on("close", () => {
+					console.log("Connection was closed.");
+					process.exit();
+				});
+				conn.on("disconnect", (e) => {
+					console.log("Connection lost.", e);
+					process.exit(1);
+				});
+				conn.on("error", (e) => {
+					console.log("Connection error.", e);
+					process.exit(1);
+				});
         callback(conn);
       }
     });
   });
 }
+
+
 
 module.exports = {connect};
