@@ -7,20 +7,21 @@
 
 init:
 	.include "src/setup/stack_pointer.asm"
+	.include "src/macros/delay.asm"
 
 	ldi R16, 0xFF
 	out DDRA, R16
-	ldi R16, 0
+	ldi R16, 0x00
 	out PORTA, R16
 
-	.include "src/setup/bluetooth.asm"
+	.include "src/bt/bt_setup.asm"
 
 wait_for_conn:
 	;Er der en ny byte i receiver buffer?
 	;sbis UCSRA, RXC
 	;hvis ikke, vent
 	;rjmp wait_for_conn
-	
+
 
 def:
 	.equ	err1=0b00000000
@@ -34,11 +35,13 @@ def:
 
 	;Frekvensen regnes ud fra 16 MHz og 400 khz = 12.
 	.equ	SCL=0b00000110		;Her sættes SCL (Clock frekvensen), ud fra en værdi der bestemmes af CPU clocken.
-	.equ	accWadress=0b00111000 ;Adresse til acc for at skrive til den. SDO = GND
-	.equ	accRadress=0b00111001 ;Adresse til acc for at læse fra den. SDO = GND
-	.equ	accRegisterX=0x29 ;Register adresse for x-værdi
+	.equ	acc_addr_w=0b00111000 ;Adresse til acc for at skrive til den. SDO = GND
+	.equ	acc_addr_r=0b00111001 ;Adresse til acc for at læse fra den. SDO = GND
+	.equ	acc_reg_x=0x29 ;Register adresse for x-værdi
+	.equ	acc_reg_y=0x2b ;Register adresse for y-værdi
+	.equ	acc_reg_z=0x2d ;Register adresse for z-værdi
 	.equ	DataVar = TWDR
-	.equ	I2CS = 				;Status på hvilken akse vi læser fra. 
+	.equ	I2CS = 				;Status på hvilken akse vi læser fra.
 
 
 .macro delay500ms
@@ -95,11 +98,11 @@ setupAcc:			;Sætter acceleromteret op
 
 startover: 			;starter læsning forfra med første x-værdi
 
-	ldi			R16, accRegisterX	;Vores start register 
-	out			I2CS, R16		
+	ldi			R16, accRegisterX	;Vores start register
+	out			I2CS, R16
 
 
-readComponent:		;Læser én byte fra vores komponent 
+readComponent:		;Læser én byte fra vores komponent
 
 		ldi		R16, 0b00100001
 		out		PORTA, R16
@@ -119,7 +122,7 @@ readComponent:		;Læser én byte fra vores komponent
 		cpi 	R16, 0x08 		;Hvis vores "masking" ikke er lig 08 i hex, så gå til fejl. 0x08 er status for start signal.
 
 		brne 	jump1			;Gå til ERRROR, hvis de to ikke er lig hinanden.
-		rjmp	adressWrite		;Hopper til adresswrite 
+		rjmp	adressWrite		;Hopper til adresswrite
 
 
 
@@ -129,7 +132,7 @@ readComponent:		;Læser én byte fra vores komponent
 ;SAD + W - Send slave adresse med write og vent på ack
 	adressWrite:
 
-		ldi		R16, accWadress	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
+		ldi		R16, acc_addr_w	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
@@ -152,9 +155,9 @@ readComponent:		;Læser én byte fra vores komponent
 
 ;SUB adrasse - Send register adresse med read og vent på ack.
 
-adressRegister: ;Der bruges I2CS, fordi det er status register og derved den næste værdi der skal læses. 
+adressRegister: ;Der bruges I2CS, fordi det er status register og derved den næste værdi der skal læses.
 
-		ldi		R16, I2CS	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
+		ldi		R16, acc_reg_x	;Loader vores accelerometer adresse ind med READ, fordi vi nu vil læse..
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
@@ -197,7 +200,7 @@ restartBit:
 ;SAD + R - Slave adresse men nu med wite data.
 adressRead:
 
-		ldi		R16, accRadress				;Loader vores accelerometer adresse ind med read, fordi vi læser.
+		ldi		R16, acc_addr_r				;Loader vores accelerometer adresse ind med read, fordi vi læser.
 		out		TWDR, R16					;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 					;Dette sendes til control registeret.
@@ -253,18 +256,18 @@ adressRead:
 		out		PORTA, R16
 		delay500ms
 
-	nextValue: 
+	nextValue:
 
 		ldi		R16, I2CS			;Loader vores status ind i register
 		ldi		R17, 0b0000010   	;Loader værdien 2 ind i register 17
 		add 	R17, R16 			;Plusser de to sammen og lægger dem i R17
 
-		out		I2CS, R17 			;Smider den nye værdi, ind som vores nye status. 
+		out		I2CS, R17 			;Smider den nye værdi, ind som vores nye status.
 
 		ldi 	R18, 0b0101111 		;Loader 47 ind i R18
 		cpse	R17, R18			;Hvis R17=R18, skip næste instruktion
-		rjmp	readComponent 		;Hopper tilbage til readAcc, hvis vi stadig mangler at læse flere akser 
-		rjmp	startover			;Hopper tilbage og sætter I2CS til vores x-værdi igen. 
+		rjmp	readComponent 		;Hopper tilbage til readAcc, hvis vi stadig mangler at læse flere akser
+		rjmp	startover			;Hopper tilbage og sætter I2CS til vores x-værdi igen.
 
 Error1:
 

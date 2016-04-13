@@ -2,7 +2,7 @@ WriteAcc:
 
 ;START - Start condition
 	startBitSetup:
-		ldi 	R16, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)	;Forskellige indstillinger sættes.
+		ldi 	R16, (1<<TWINT)|(1<<TWSTA)|(1<<TWEN)	;Forskellige indstillinger sættes.
 		out 	TWCR, R16								;indstilling videregives til control register.
 
 		wait1_xSetup:				;Venter på at TWINT er blevet sat, altså at start bitten er blevet sendt afsted.
@@ -17,12 +17,14 @@ WriteAcc:
 		rjmp	adressWadressSetup
 
 		jump1Setup:
-		rjmp	Error1  		;D0 blinker
+		force_send_bt_byte [101]
+		force_send_bt_byte [R16]
+		rjmp	error  		;D0 blinker
 
 
 ;SAD + W - Send slave adresse med write og vent på ack
 	adressWadressSetup:
-		ldi		R16, accWadress	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
+		ldi		R16, acc_addr_w	;Loader vores accelerometer adresse ind med write, fordi vi skriver.
 		out		TWDR, R16		;Smider værdien fra R16 ind i vores dataregsiter.
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) ;Alle flag cleares og enabel sættes høj.
 		out 	TWCR, R16 		;Dette sendes til control registeret.
@@ -41,7 +43,9 @@ WriteAcc:
 		rjmp	adressWCrtlReg
 
 		jump2Setup:
-		rjmp 	Error2 		;D0 lyser og D1 blinker
+		force_send_bt_byte [102]
+		force_send_bt_byte [R16]
+		rjmp 	error 		;D0 lyser og D1 blinker
 ;SUB adrasse - Send register adresse med read og vent på ack.
 
 adressWCrtlReg:
@@ -62,7 +66,9 @@ adressWCrtlReg:
 		rjmp	dataOutCrtlReg
 
 		jump3Setup:
-		rjmp 	Error3 	;D0 og D1 lyser og D2 blinker
+		force_send_bt_byte [103]
+		force_send_bt_byte [R16]
+		rjmp 	error 	;D0 og D1 lyser og D2 blinker
 ;SAD + W - Data Send
 dataOutCrtlReg:
 		ldi		R16, 0b11000111
@@ -82,13 +88,22 @@ dataOutCrtlReg:
 		rjmp	stop_xSetup
 
 		jump4Setup:
-		rjmp 	Error4 	;D0 og D1 lyser og D2 blinker
-
-
+		force_send_bt_byte [104]
+		force_send_bt_byte [R16]
+		rjmp 	error 	;D0 og D1 lyser og D2 blinker
 
 ;SP - Stop bit fra master.
 	stop_xSetup:
 		ldi 	R16, (1<<TWINT) | (1<<TWEN) | (1<<TWSTO) ;Alle flag cleares, enabel sættes høj og sender stop signal.
 		out 	TWCR, R16
 
-		delay500ms
+		delayms [100]
+
+rjmp int_end
+	error:
+		cli
+		ldi R16, 1
+		out PORTA, R16
+		rjmp error
+
+int_end:

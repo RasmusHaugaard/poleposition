@@ -3,6 +3,7 @@
 
 .filedef store_byte = R16
 .filedef temp1 = R17
+.filedef tempm = R18
 
 .macro send_bt_byte
 	call store_bt_to_buf
@@ -22,29 +23,11 @@
 	pop store_byte
 .endm
 
-.macro force_send_bt_byte
-sendchar_%:
-	sbis UCSRA, UDRE
-	rjmp sendchar_%
-	out UDR, store_byte
-	sei
-.endm
-
-.macro force_send_bt_byte_i
-	cli
-	ldi store_byte, @0
-	force_send_bt_byte
-.endm
-
-.macro force_send_bt_byte_8
-	cli
-	mov store_byte, @0
-	force_send_bt_byte
-.endm
+.include "src/bt/bt_tr_force.asm"
 
 bt_tr_start:
 	rcall init_bt_tr_pointers
-	rjmp bt_tr_end
+	jmp bt_tr_end
 
 init_bt_tr_pointers:
   ldi ZL, low(bt_tr_buf_start)
@@ -61,7 +44,6 @@ init_bt_tr_pointers:
 .endif
   ret
 
-.org 15000
 bl_udrei_handler:
   rcall check_send_bt_from_buf
   reti
@@ -117,6 +99,9 @@ restore_tr_pointer_registers:
   ret
 
 store_bt_to_buf:
+	push temp1
+	in temp1, SREG
+	cli
 .if tr_preserve_z = 1
   push ZL
   push ZH
@@ -149,7 +134,7 @@ update_store_pointer:
   brne buffer_not_full
   cp ZH, YH
   brne buffer_not_full
-  ;THROW ERROR!! (Force Send Error over bluetooth)
+
 buffer_not_full:
   st Z, store_byte
   sbi UCSRB, UDRIE ; turn on interrupt for ready to send, if not on already. If UDR is ready, interrupt will be instantiated immidiately.
@@ -161,6 +146,8 @@ buffer_not_full:
   pop ZH
   pop ZL
 .endif
+	out SREG, temp1
+	pop temp1
   ret
 
 bt_tr_end:
