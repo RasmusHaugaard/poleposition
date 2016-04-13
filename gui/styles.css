@@ -1,4 +1,25 @@
 body {
   margin: 0;
 }
-  
+
+@keyframes wiggle {
+  from { opacity: .5}
+  to { opacity: .9}
+}
+
+.wiggle {
+  animation-name: wiggle;
+  animation-duration: .7s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+}
+
+p.roboto {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  word-wrap: break-word;
+}
+
+.greyed-out{
+  opacity: .5;
+}

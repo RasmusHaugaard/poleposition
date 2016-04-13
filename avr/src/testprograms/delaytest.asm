@@ -1,8 +1,10 @@
 .include "src/m32def.inc"
-.org 0x0000
+.org 0x00
 	rjmp init
+
+.org 0x2a
 .include "src/macros/delay.asm"
-init: 
+init:
 	.include "src/bootloader/stack_pointer.asm"
 	ldi R16, (1<<4)
 	out DDRD, R16
