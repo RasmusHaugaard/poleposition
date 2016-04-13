@@ -2,8 +2,8 @@
 /*
 
 */
-const connect = require('../bt').connect;
-const userinput = require('./userinput');
+const connect = require('./bt').connect;
+const userinput = require('./util/userinput');
 
 var retries = 3;
 var conn = null;
