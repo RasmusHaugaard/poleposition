@@ -21,7 +21,7 @@
 .equ acc_reg_y = 0x2B | (acc_inc_sub<<7)
 .equ acc_reg_z = 0x2D | (acc_inc_sub<<7)
 .equ acc_reg_start = acc_reg_x
-.equ acc_reg_count = 0
+.equ acc_reg_count = 5
 .equ acc_skip_every_2nd = 1
 
 .equ gyr_inc_sub = 1
