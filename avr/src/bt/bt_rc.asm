@@ -3,14 +3,11 @@
 
 .equ set_code = 85
 .equ set_length = 3
-
 .equ ping_code = 86
-.equ var_code = 255
 .equ reprogram_code = 87
+.equ var_code = 255
 
-.equ error_code_bl_undefined_rc_code = 100
-
-.include "src/bt/bt_rc_force.asm"
+.equ error_code_bl_undefined_rc_code = 103
 
 bt_rc_start:
 	ldi temp1, 0
@@ -63,8 +60,7 @@ received_ping_code:
 received_reprogram_code:
   jmp bl_reprogram
 error_undefined_rc_code:
-  ldi temp1, error_code_bl_undefined_rc_code
-  send_bt_byte [temp1]
+  send_bt_byte [error_code_bl_undefined_rc_code]
   rjmp rxcie_end
 
 expecting_other_than_first_byte:

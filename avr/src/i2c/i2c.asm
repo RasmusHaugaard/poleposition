@@ -79,7 +79,7 @@ I2C_next:
 	cpi_rjmp_eq [I2CSR_P, I2CSR_P_SADR, P_SADR]
 	cpi_rjmp_eq [I2CSR_P, I2CSR_P_DATA, P_DATA]
 
-	force_send_bt_byte [100] ;Error overflow
+	force_send_bt_byte [104] ;Error overflow
 	ldi I2CSR, 0
 	ret
 

@@ -1,5 +1,4 @@
 .set addr = 0x60  ; her starter sram - hvor vi kan gemme data under kørslen
-
 ;bootloader data adresses:
 ;bluetooth receiver:
 .equ bt_rc_buf_start = addr
@@ -26,7 +25,6 @@
   .set addr = addr + 1
 .equ bt_tr_send_pointer_H = addr
   .set addr = addr + 1
-
-;da bootloaderen programmeres sepperat, bør der ikke tilføjes noget i filen før denne linje!
-;hvis der tilføjes noget før, vil de bruge de samme addresser i data-memory.
-;gloabl data adresses
+;Denne fil er kun tænkt til at skulle sætte hukommelsesadresser af til bootloaderen.
+;Den skal inkluderes i alle programmer for at man ikke kommer til at bruge de samme adresser.
+;brug istedet addr i de filer, hvor der skal bruges hukommelse.

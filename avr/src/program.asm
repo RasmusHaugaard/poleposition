@@ -1,1 +1,1 @@
-.include "src/bl/program_interrupts_test.asm"
+.include "src/bl/bl.asm"

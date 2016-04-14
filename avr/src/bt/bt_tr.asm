@@ -23,8 +23,6 @@
 	pop store_byte
 .endm
 
-.include "src/bt/bt_tr_force.asm"
-
 bt_tr_start:
 	rcall init_bt_tr_pointers
 	jmp bt_tr_end
