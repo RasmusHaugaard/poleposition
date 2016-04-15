@@ -17,6 +17,17 @@ init:
 	rjmp main
 
 main:
-	force_receive_bt_byte [temp1]
-	force_send_bt_byte [temp1]
-	rjmp main
+	ldi temp1, 6
+	cpi_rjmp_eq [temp1, 6, equal]
+	rjmp not_equal
+
+not_equal:
+	force_send_bt_byte [100]
+	rjmp end
+
+equal:
+	force_send_bt_byte [200]
+	rjmp end
+
+end:
+	rjmp end

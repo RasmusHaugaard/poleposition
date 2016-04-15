@@ -5,7 +5,7 @@
   rjmp rxciehandler
 .org 0x2a ;efter interrupt table
 init:
-	.include "src/setup/bluetooth.asm"
+	.include "src/bt/bt_setup.asm"
 	.include "src/setup/stack_pointer.asm"
 
 	sbi UCSRB, RXCIE

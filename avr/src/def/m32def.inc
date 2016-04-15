@@ -54,7 +54,6 @@
 
 
 ; ***** I/O REGISTER DEFINITIONS *****************************************
-; NOTE:
 ; Definitions marked "MEMORY MAPPED"are extended I/O ports
 ; and cannot be used with IN/OUT instructions
 .equ	SREG	= 0x3f
@@ -782,6 +781,7 @@
 .equ	RWW_START_ADDR	= 0x0
 .equ	RWW_STOP_ADDR	= 0x37ff
 .equ	PAGESIZE	= 64
+.equ	PAGESIZEB = PAGESIZE * 2
 .equ	FIRSTBOOTSTART	= 0x3f00
 .equ	SECONDBOOTSTART	= 0x3e00
 .equ	THIRDBOOTSTART	= 0x3c00

@@ -1,18 +1,12 @@
-;.def counter1 = R16
-.def counter2 = R17
-.def counter3 = R18
-.def c1 = R19
-.def c2 = R20
-.def usercounter = R21
-.def temp = R22
+.filedef counter1 = R16
+.filedef counter2 = R17
+.filedef counter3 = R18
+.filedef c1 = R19
+.filedef c2 = R20
+.filedef usercounter = R21
+.filedef temp = R22
 
-.undef counter1
-.undef counter2
-.undef counter3
-.undef c1
-.undef c2
-.undef usercounter
-.undef temp
+rjmp delay_macro_end
 
 fulldec1:	; 5 + 4 c1 inkl. kald & return
 	dec counter1
@@ -82,11 +76,11 @@ delays:		;solved for values
 	push usercounter
 	ldi usercounter, @0
 	cpi usercounter, 0
-	breq PC + 4
+	breq PC + 5
 ;loop
-	rcall delayms
+	call delayms
 	dec usercounter
-	brne PC - 2
+	brne PC - 3
 	pop usercounter
 	out SREG, temp
 	pop temp
@@ -96,11 +90,11 @@ delays:		;solved for values
 	push temp
 	in temp, SREG
 	cpi @0, 0
-	breq PC + 4
+	breq PC + 5
 ;loop
-	rcall delayms
+	call delayms
 	dec usercounter
-	brne PC - 2
+	brne PC - 3
 	out SREG, temp
 	pop temp
 .endm
@@ -114,11 +108,11 @@ delays:		;solved for values
 	push usercounter
 	ldi usercounter, @0
 	cpi usercounter, 0
-	breq PC + 4
-;loop
-	rcall delays
+	breq PC + 5
+;loop:
+	call delays
 	dec usercounter
-	brne PC - 2
+	brne PC - 3
 	pop usercounter
 	out SREG, temp
 	pop temp
@@ -128,11 +122,13 @@ delays:		;solved for values
 	push temp
 	in temp, SREG
 	cpi @0, 0
-	breq PC + 4
+	breq PC + 5
 ;loop
-	rcall delays
+	call delays
 	dec usercounter
-	brne PC - 2
+	brne PC - 3
 	out SREG, temp
 	pop temp
 .endm
+
+delay_macro_end:
