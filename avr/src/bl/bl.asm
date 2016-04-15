@@ -33,7 +33,7 @@ app_receive_command_interrupt_vector:
 	jmp app_receive_command_handler
 
 app_receive_command_handler:
-	force_send_bt_byte [53] ; clean - not reprogrammed - bl code
+	force_send_bt_byte [51] ; clean - not reprogrammed - bl code
 	ret
 
 main:
