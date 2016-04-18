@@ -36,7 +36,7 @@ retry_get_time:
 ;========== ISR ==========
 ;=========================
 
-T1_OV_ISR:						;Interrupt(timer1 compare flag OCF1A)
+T1_OV_ISR:						;Interrupt(timer1 overflow)
 	lds R16, TCNT1HH			;kopier værdien fra TCNT1HH til R16
 	inc R16						;R16 ++ (ligger 1 til R16)
 	sts TCNT1HH, R16			;Kopier værdi fra R16 Til TCNT1HH
