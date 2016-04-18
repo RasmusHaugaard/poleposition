@@ -17,7 +17,7 @@ let BluetoothButton = ({btService, onClick}) => {
 				return <Bluetooth color={"white"} className={"greyed-out"}/>
 			case STATUS.CONNECTING:
 			case STATUS.DISCONNECTING:
-				return <BluetoothSearching color={"white"} className={"wiggle"}/>
+				return <BluetoothSearching color={"white"} className={"wiggle bluetooth"} style={{"transform":"translateX(8px)"}}/>
 		}
 	})()
   return(

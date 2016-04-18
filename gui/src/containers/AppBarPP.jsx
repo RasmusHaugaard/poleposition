@@ -1,7 +1,8 @@
 import React, {PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {AppBar} from 'material-ui'
-import BluetoothButton from './BluetoothButton.jsx';
+import BluetoothButton from './BluetoothButton.jsx'
+import UploadButton from './UploadButton.jsx'
 import {toggleLeftNav} from '../actions/leftNavOpen'
 
 let AppBarPP = ({onLeftIconClick}) => (
@@ -9,7 +10,7 @@ let AppBarPP = ({onLeftIconClick}) => (
 		style={{"zIndex" : 1400}}
 		title="poleposition"
 		onLeftIconButtonTouchTap={onLeftIconClick}
-		iconElementRight={<BluetoothButton/>}
+		iconElementRight={<div><UploadButton/><BluetoothButton/></div>}
 		/>
 )
 

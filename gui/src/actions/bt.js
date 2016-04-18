@@ -72,6 +72,54 @@ export const btReceivedData = (info, btService) => {
 	}
 }
 
+export const BT_TRANSMIT_DATA = "BT_TRANSMIT_DATA"
+export const btTransmit = (data, callback) => {
+	let state = window.store.getState()
+	if (typeof state.btService.connId !== "number"){
+		callback(false)
+	}else{
+		let buf
+		if (typeof data === "string"){
+			buf = new ArrayBuffer(data.length)
+			let bufView = new Uint8Array(buf)
+			for (let i in data){
+				bufView[i] = data.charCodeAt(i)
+			}
+		}else if (Array.isArray(data)){
+			buf = new ArrayBuffer(data.length);
+			let bufView = new Uint8Array(buf);
+			for (let i = 0; i < data.length; i++){
+				let value = data[i];
+				if (typeof value !== "number"){
+					console.log("Cannot send array with other than numbers.", value)
+					callback(false)
+					return;
+				}
+				bufView[i] = value
+			}
+		}else{
+			console.log("Type error. What is THIS?", data)
+			callback(false)
+			return;
+		}
+		chrome.serial.send(state.btService.connId, buf, (e) => {
+			if (e.error){
+				callback(false)
+			}else{
+				callback(true)
+			}
+		})
+	}
+}
+
+export const BT_TRANSMIT_ERROR = "BT_TRANSMIT_ERROR"
+export const btTransmitError = (errorText) => {
+	return {
+		type: BT_TRANSMIT_ERROR,
+		errorText
+	}
+}
+
 export const BT_RECEIVED_BYTE = "BT_RECEIVED_BYTE"
 export const btReceivedByte = (byte) => {
 	return {

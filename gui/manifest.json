@@ -10,6 +10,14 @@
   },
   "icons": { "16": "media/calculator-16.png", "128": "media/calculator-128.png" },
   "permissions": [
-    "serial"
+    "serial",
+		{
+			"fileSystem":
+			[
+				"write",
+				"retainEntries",	
+				"directory"
+			]
+		}
   ]
 }

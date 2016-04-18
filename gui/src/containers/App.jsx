@@ -24,7 +24,7 @@ let App = ({mainRoute}) => {
 			<LeftNavPP />
 			<div style={{
 					"height": "calc(100% - 64px)",
-					"box-sizing": "border-box",
+					"boxSizing": "border-box",
 					"padding": "15px",
 					"overflow": "scroll"
 				}}>

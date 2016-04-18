@@ -15,10 +15,19 @@ html, body {
   animation-iteration-count: infinite;
 }
 
-p.roboto {
+.wiggle.bluetooth{
+	transform: translateX(2px);
+}
+
+div.roboto, p.roboto {
   font-family: Roboto, sans-serif;
   font-size: 16px;
   word-wrap: break-word;
+}
+
+span.roboto {
+	font-family: Roboto, sans-serif;
+	font-size: 14px;
 }
 
 .greyed-out{
