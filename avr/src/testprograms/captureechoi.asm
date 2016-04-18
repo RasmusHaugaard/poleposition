@@ -1,4 +1,4 @@
-.include "src/m32def.inc"
+.include "src/def/m32def.inc"
 .equ RAMSTART = 0x60
 .def temp = R16
 .def temp1 = R17
