@@ -2,10 +2,13 @@
 ;========== Initalisering ==========
 ;===================================
 
-.def old_time_h=				;gamle timer værdi (high bite)	<---------------------------- skal have en adresse
-.def old_time_l=				;gamle timer værdi (low bite)	<---------------------------- skal have en adresse
-.def dif_time_h=				;sidste hastighed (high bite)	<---------------------------- skal have en adresse
-.def dif_time_l=				;sidste hastighed (low bite)	<---------------------------- skal have en adresse
+.equ old_time_h=				;gamle timer værdi (high bite)	<---------------------------- skal have en adresse
+.equ old_time_l = addr			;gamle timer værdi (low bite)	<---------------------------- skal have en adresse
+.set addr = addr + 1			;..
+.equ dif_time_h = addr			;sidste hastighed (high bite)	<---------------------------- skal have en adresse
+.set addr = addr + 1			;..
+.equ dif_time_l = addr			;sidste hastighed (low bite)	<---------------------------- skal have en adresse
+.set addr = addr + 1			;..
 
 ldi 0, R16						;nulstiller sidste timer værdi (high and low)
 sts last_time_h, R16			;..

@@ -2,7 +2,8 @@
 ;========== Initalisering ==========
 ;===================================
 
-.def TCNT1HH=					;Opbevare værdi når timer1 overflower (24-bit register) <------------------------- skal have en lokation i sram
+.equ TCNT1HH = addr
+.set addr = addr + 1					;Opbevare værdi når timer1 overflower (24-bit register) <------------------------- skal have en lokation i sram
 
 ;===========================
 ;========== Macro ==========
@@ -10,6 +11,7 @@
 
 .macro get_time_full			;macro som retunere TCNT1HH, TCNT1H og TCNT1L.
 retry_get_time:
+	;tjek overflow
 	lds R16, TCNT1HH			
 	in R17, TCNT1L
 	in R18, TCNT1H
@@ -37,10 +39,16 @@ retry_get_time:
 ;=========================
 
 T1_OV_ISR:						;Interrupt(timer1 overflow)
+	rcall Clear_TOV1
+	reti						;retunere fra ISR
+
+Clear_TOV1:						;inkrimentere HH og clear overflow flag
 	lds R16, TCNT1HH			;kopier værdien fra TCNT1HH til R16
 	inc R16						;R16 ++ (ligger 1 til R16)
 	sts TCNT1HH, R16			;Kopier værdi fra R16 Til TCNT1HH
-	reti						;retunere fra ISR
+	;sidde overflow lavt		;clear overflow flag
+	ret							;retunere
+	
 
 EX2_ISR:						;Interrupt(kommer over lap-stregen)
 	ldi R16, 0x00				;stopper timer1
