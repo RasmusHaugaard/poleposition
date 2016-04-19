@@ -18,6 +18,7 @@ boot_init:
 	.include "src/bt/bt_tr_force.asm"
 	.include "src/bl/program_interrupts.asm"
 	.include "src/bl/program_flash.asm"
+	force_send_bt_byte [128]
 	jmp 0x00
 
 .org 0x00
