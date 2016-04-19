@@ -14,8 +14,8 @@ boot_init:
 	.include "src/setup/stack_pointer.asm"
 	.include "src/util/delay.asm"
 	.include "src/util/soft_reset.asm"
-	.include "src/bt/bt_bl.asm"
 	.include "src/bt/bt_tr_force.asm"
+	.include "src/bt/bt_bl.asm"
 	.include "src/bl/program_interrupts.asm"
 	.include "src/bl/program_flash.asm"
 	force_send_bt_byte [128]

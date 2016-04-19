@@ -15,11 +15,22 @@ bt_rc_start:
 	rcall reset_bt_rc_pointer
 	rjmp bt_rc_end
 
+bl_error_rxcie:
+	force_send_bt_byte [108]
+bl_error_rxcie_loop:
+	rjmp bl_error_rxcie_loop
+
 bl_rxcie_handler:
 	push input
   push temp1
+	lds temp1, SREG
+	push temp1
   push ZL
   push ZH
+
+	sbis UCSRA, RXC ; make sure, we don't end in the handler without interrupt
+	rjmp bl_error_rxcie
+
 	in input, UDR
   lds temp1, bt_rc_status
   cpi temp1, 0
@@ -41,6 +52,8 @@ bl_rxcie_handler:
 rxcie_end:
   pop ZH
   pop ZL
+	pop temp1
+	out SREG, temp1
   pop temp1
   pop input
   reti
