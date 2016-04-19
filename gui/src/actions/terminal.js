@@ -149,11 +149,12 @@ const parseInput = (value, encoding) => {
 					valid: false,
 					errorText: match +"? Haha, you are so silly! Binary numbers can only contain ones and zeroes."
 				}
-			}
-			let match = str.match(/[^0-9]/)
-			if (match !== null) return {
-				valid: false,
-				errorText: '"' +  match + '" That is personally my favorite number.'
+			}else{
+				let match = str.match(/[^0-9]/)
+				if (match !== null) return {
+					valid: false,
+					errorText: '"' +  match + '" That is personally my favorite number.'
+				}
 			}
 			number = parseInt(str, base);
 			if (number !== number) return {
