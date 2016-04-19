@@ -79,7 +79,7 @@ class Terminal extends Component {
 						disabled={encoding === "ASCII"} label="Signed" style={{"width":""}}/>
 				</div>
 
-				<ChatList encoding={encoding} list={chat}/>
+				<ChatList encoding={encoding} signed={signed} list={chat}/>
 			</div>
 		)
 	}
