@@ -1,6 +1,7 @@
 import {send} from './bluetooth'
 import {tmReceived} from '../actions/terminal'
 import {PROGRAMMING, NOT_PROGRAMMING} from '../actions/bl'
+import {addDataToGraph} from '../actions/graph'
 
 export const init = () => {
 	window.protocol = new ProtocolService()
@@ -44,17 +45,27 @@ const toSigned = (val) => {
 	return val > 127 ? val - 256 : val
 }
 
+
+
+const quickAddToGraph = (name, point) => {
+	window.store.dispatch(
+		addDataToGraph({name, point})
+	)
+}
+
+let idx = 0, idy = 0, idz = 0
+
 const types = {
 	128: new Type("Start", 1, () => {
-		console.log("Atmega Restarted!")
+		window.speak("Controller restarted.")
 	}),
 	30: new Type("accX", 2, (data) => {
-		console.log(this.name, toSigned(data[0]))
+		quickAddToGraph("accX", {x:idx++, y: toSigned(data[0])})
 	}),
 	31: new Type("accY", 2, (data) => {
-		console.log(this.name, toSigned(data[0]))
+		quickAddToGraph("accY", {x:idy++, y: toSigned(data[0])})
 	}),
 	32: new Type("accZ", 2, (data) => {
-		console.log(this.name, toSigned(data[0]))
+		quickAddToGraph("accZ", {x:idz++, y: toSigned(data[0])})
 	})
 }

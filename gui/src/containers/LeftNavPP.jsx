@@ -6,7 +6,7 @@ import MainRouteLink from '../containers/MainRouteLink.jsx'
 let LeftNavPP = ({leftNavOpen}) => (
 	<LeftNav open={leftNavOpen} width={150}>
 		<div style={{height:"75px"}}></div>
-		<MainRouteLink route={'Stats'}/>
+		<MainRouteLink route={'Graph'}/>
 		<MainRouteLink route={'Terminal'}/>
 	</LeftNav>
 )

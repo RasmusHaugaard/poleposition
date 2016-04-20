@@ -1,5 +1,5 @@
 import parseIHex from './parseIHex'
-import {blsuccess} from '../actions/bl'
+import {blSuccess, blError} from '../actions/bl'
 import {send as btSend} from './bluetooth'
 
 const DEBUG = false
@@ -74,7 +74,10 @@ class Flasher {
 	}
 
 	handleBtCallback(success){
-		if(!success) throw("Bt error!")
+		if(!success){
+			window.speak("I am sorry master. Something went wrong while programming the controller.")
+			window.store.dispatch(blError())
+		}
 	}
 
 	decreaseBytesInBuffer(byteCount){
@@ -157,6 +160,7 @@ class Flasher {
 		this.status.push(STATUS.waitingForResetting)
 		var completeTime = new Date()
 		this.completionTime = completeTime - this.startTime
+		window.speak("Uploaded your program to the controller in " + (this.completionTime / 1000).toFixed(2).toString() +  " seconds.")
 	}
 
 	erasePage(pageIndex){

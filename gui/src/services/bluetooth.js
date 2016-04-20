@@ -24,19 +24,24 @@ export const init = () => {
 }
 
 const receiveData = (buf) => {
-	let store = window.store
-	let state = store.getState()
 	let bufView = new Uint8Array(buf)
 	let data = new Array(bufView.length)
 	for (let i in bufView){
 		data[i] = bufView[i]
 	}
+	receiveArray(data)
+}
+
+const receiveArray = (data) => {
+	let store = window.store
+	let state = store.getState()
 	if (state.mainRoute === "TERMINAL" && state.bl.status !== BL_STATUS.PROGRAMMING){
 		store.dispatch(tmReceived(data))
 	}else{
 		data.forEach(byte => receiveByte(byte))
 	}
 }
+window.receiveArray = receiveArray
 
 const receiveByte = (byte) => {
 	let state = window.store.getState()

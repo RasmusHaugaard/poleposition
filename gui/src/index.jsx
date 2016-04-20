@@ -7,7 +7,10 @@ import {Provider} from 'react-redux'
 import configureStore from './store/configureStore'
 import App from './containers/App.jsx'
 
+import voiceControlInit from './services/voiceControl'
 import {getHex} from './services/flasher'
+
+voiceControlInit()
 
 let store = configureStore()
 window.store = store

@@ -12,6 +12,7 @@
   "permissions": [
 		"storage",
     "serial",
+		"audioCapture",
 		{
 			"fileSystem":
 			[

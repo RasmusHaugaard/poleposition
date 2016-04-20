@@ -34,7 +34,7 @@
 .equ gyr_reg_zl = 0x2C | (gyr_inc_sub<<7)
 .equ gyr_reg_zh = 0x2D | (gyr_inc_sub<<7)
 .equ gyr_reg_start = gyr_reg_xh
-.equ gyr_reg_count = 5
+.equ gyr_reg_count = 0
 .equ gyr_skip_every_2nd = 1
 
 .equ I2CSR_DATA_ADDRESS = addr
@@ -146,11 +146,21 @@ P_DATA:
 	sbrc I2CSR, ACCGYR
 	rjmp GYR_RECEIVE
 ACC_RECEIVE:
-.if acc_skip_every_2nd = 1
+;.if acc_skip_every_2nd = 1
 	sbrs I2CSR_SO, 0 ;(acc) hvis det er et ulige tal, er der en brugbar værdi
 	rjmp AFTER_ACC_RECEIVE
-.endif
-	force_send_bt_byte [temp1]
+;.endif
+	cpi I2CSR_SO, 1
+	brne not_acc_x
+	call gotAccX_R16
+	rjmp AFTER_ACC_RECEIVE
+not_acc_x:
+	cpi I2CSR_SO, 3
+	brne not_acc_y
+	call gotAccY_R16
+	rjmp AFTER_ACC_RECEIVE
+not_acc_y:
+	call gotAccZ_R16
 AFTER_ACC_RECEIVE:
 	cpi I2CSR_SO, acc_reg_count - 1 ; Vi skal sende nmak ved sidste byte.
 	breq ask_for_last_byte
