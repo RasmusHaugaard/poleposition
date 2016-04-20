@@ -10,7 +10,7 @@ let AppBarPP = ({onLeftIconClick}) => (
 		style={{"zIndex" : 1400}}
 		title="poleposition"
 		onLeftIconButtonTouchTap={onLeftIconClick}
-		iconElementRight={<div><BluetoothButton/></div>}
+		iconElementRight={<div><UploadButton/><BluetoothButton/></div>}
 		/>
 )
 

@@ -1,40 +1,46 @@
-import React, {PropTypes} from 'react'
+import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
 
-import {IconButton} from 'material-ui'
+import {IconButton, CircularProgress} from 'material-ui'
 import FileUpload from 'material-ui/lib/svg-icons/file/file-upload.js'
 
-//import {STATUS} from '../actions/upload'
-const STATUS = {}
+import {STATUS, blProgram} from '../actions/bl'
 
-let UploadButton = ({upload, onClick}) => {
-	let icon = (() => {
-		switch (upload.status) {
-			case STATUS.UPLOADING:
-				return <FileUpload color={"white"} className={"wiggle"}/>
-			case STATUS.NOTUPLOADING:
-				return <FileUpload color={"white"} className={"greyed-out"}/>
-		}
-	})()
-  return(
-    <IconButton
-      onClick={() => {
-				onClick()
-			}}>
-      {icon}
-    </IconButton>
-  )
+class UploadButton extends Component{
+	constructor(props){
+		super(props)
+	}
+	render(){
+		let {status, progress, onClick} = this.props
+		let icon = (
+			status === STATUS.PROGRAMMING ?
+				<FileUpload color={"white"} className={"wiggle"}/>
+				:
+				<FileUpload color={"white"} className={"greyed-out"}/>
+		)
+		return(
+			<IconButton
+				onClick={() => {
+					if(status === STATUS.NOT_PROGRAMMING) onClick()
+				}}>
+				{icon}
+			</IconButton>
+		)
+	}
 }
 
 const mapStateToProps = (state) => {
 	return {
-		upload: {}
+		status: state.bl.status,
+		progress: state.bl.progress
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		onClick: ()=>{}
+		onClick: (status) => {
+			dispatch(blProgram())
+		}
 	}
 }
 

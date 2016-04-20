@@ -3,6 +3,7 @@ import {TERMINAL_VALID_INPUT, TERMINAL_INVALID_INPUT, TERMINAL_SENT,
 	TERMINAL_SENDING, TERMINAL_NOT_SENT, TERMINAL_RECEIVED} from '../actions/terminal'
 
 let messageId = 0
+const keyPrefix = "message-"
 const maxChatSize = 70
 
 export default function terminal(state = {
@@ -44,7 +45,7 @@ export default function terminal(state = {
 		case TERMINAL_SENDING:
 			return {
 				...state,
-				chat: [...state.chat.slice(- maxChatSize + 1), {value: action.value, sender: "MASTER", key: messageId++}]
+				chat: [...state.chat.slice(- maxChatSize + 1), {value: action.value, sender: "MASTER", key: keyPrefix + messageId++}]
 			}
 		case TERMINAL_SENT:
 			return {
@@ -59,7 +60,7 @@ export default function terminal(state = {
 		case TERMINAL_RECEIVED:
 			return {
 				...state,
-				chat: [...state.chat.slice(- maxChatSize + 1), {value: action.value, sender: "SLAVE", key: messageId++}]
+				chat: [...state.chat.slice(- maxChatSize + 1), {value: action.value, sender: "SLAVE", key: keyPrefix + messageId++}]
 			}
 		default:
 			return state;

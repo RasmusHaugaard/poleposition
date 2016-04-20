@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 
 //TODO: Only use numbers. No text. Number shall be able to be shown as ascii
+
 class Number extends Component{
 	constructor(props){
 		super(props)
@@ -56,7 +57,7 @@ class SlaveMessage extends Component{
 			)
 		}
 		return (
-			<div style={{"marginLeft":"10px"}}>
+			<div style={{"marginLeft":"5px", "color":palette.primary1Color}}>
 				<span className={"roboto"}>
 					{"> "}{body}
 				</span>
@@ -78,7 +79,6 @@ class MasterMessage extends Component{
 		super(props)
 	}
 	render(){
-		console.log(this.context)
 		let palette = this.context.muiTheme.baseTheme.palette
 		let {value, sent, key} = this.props
 		let body
@@ -93,7 +93,7 @@ class MasterMessage extends Component{
 			})
 		}
 		return (
-			<div style={{"marginLeft":"10px"}}>
+			<div>
 				<span className={"roboto"}>
 					{"> "}{body}
 				</span>
@@ -114,20 +114,12 @@ class ChatList extends Component{
 		let {list, encoding, signed} = this.props
 		return (
 			<div>
-				{list.map((message) => {
-					if (message.sender === "MASTER"){
-						return (
-							<MasterMessage sent={message.sent} value={message.value} key={message.key} />
-						)
-					}
-					if (message.sender === "SLAVE"){
-						return (
-							<SlaveMessage value={message.value} encoding={encoding} signed={signed} key={message.key}/>
-						)
-					}
-					console.log(message)
-					throw("Message sender unknown")
-				})}
+				{list.map((message) => (
+					message.sender === "MASTER" ?
+					(<MasterMessage sent={message.sent} value={message.value} key={message.key} />)
+					:
+					(<SlaveMessage value={message.value} encoding={encoding} signed={signed} key={message.key} />)
+				))}
 			</div>
 		)
 	}

@@ -1,13 +1,7 @@
 .filedef input = R16
 .filedef temp1 = R17
 
-.equ set_code = 85
 .equ set_length = 3
-.equ ping_code = 86
-.equ reprogram_code = 87
-.equ var_code = 255
-
-.equ error_code_bl_undefined_rc_code = 103
 
 bt_rc_start:
 	ldi temp1, 0
@@ -16,7 +10,7 @@ bt_rc_start:
 	rjmp bt_rc_end
 
 bl_error_rxcie:
-	force_send_bt_byte [108]
+	force_send_bt_byte [bl_fist_page_empty]
 bl_error_rxcie_loop:
 	rjmp bl_error_rxcie_loop
 
@@ -73,13 +67,13 @@ received_ping_code:
 received_reprogram_code:
   jmp bl_reprogram
 error_undefined_rc_code:
-  send_bt_byte [error_code_bl_undefined_rc_code]
+  send_bt_byte [bl_rc_unknown_set_code]
   rjmp rxcie_end
 
 expecting_other_than_first_byte:
   cpi temp1, var_code
   brne expecting_data
-  sts bt_rc_status, input
+  sts bt_rc_status, input ; received the length of the variable command - future bytes will be stored in receive buffer
   rjmp rxcie_end
 expecting_data:
   rcall store_input_in_rc_buffer
@@ -87,7 +81,7 @@ expecting_data:
 	sts bt_rc_status, temp1
   brne rxcie_end
   rcall reset_bt_rc_pointer
-  call app_receive_command_interrupt_vector
+  call 0x2A
   rjmp rxcie_end
 
 store_input_in_rc_buffer:

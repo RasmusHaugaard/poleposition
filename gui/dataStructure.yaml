@@ -1,0 +1,19 @@
+#beskriver den ønskede datastruktur
+data: folder
+  races: folder
+    race: folder - guid
+      info: file
+        title: string
+        creationDate: string
+        purpose: string
+        result: string
+        onTrack: boolean
+        track(optional): int
+      drivers: folder
+        driver: folder
+          info: file
+            setup: string
+
+  tracks:
+    track: file
+      

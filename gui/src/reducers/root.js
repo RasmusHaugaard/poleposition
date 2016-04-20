@@ -1,14 +1,16 @@
 import {combineReducers} from 'redux'
 import mainRoute from './mainRoute'
 import leftNavOpen from './leftNavOpen'
-import btService from './btService'
+import bt from './bt'
 import terminal from './terminal'
+import bl from './bl'
 
 const rootReducer = combineReducers({
 	mainRoute,
 	leftNavOpen,
-	btService,
-	terminal
+	bt,
+	terminal,
+	bl
 });
 
 export default rootReducer

@@ -10,7 +10,7 @@ const configureStore = () => {
 		rootReducer,
 		applyMiddleware(
 			thunkMiddleware,
-			loggerMiddleware
+			//loggerMiddleware
 		)
 	)
 }

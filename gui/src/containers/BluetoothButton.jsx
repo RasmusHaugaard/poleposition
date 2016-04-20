@@ -6,40 +6,45 @@ import Bluetooth from 'material-ui/lib/svg-icons/device/bluetooth.js'
 import BluetoothConnected from 'material-ui/lib/svg-icons/device/bluetooth-connected.js'
 import BluetoothSearching from 'material-ui/lib/svg-icons/device/bluetooth-searching.js'
 
-import {btClick, STATUS} from '../actions/bt'
+import {btClick} from '../actions/bt'
+import {STATUS} from '../services/bluetooth'
 
-let BluetoothButton = ({btService, onClick}) => {
-	let icon = (() => {
-		switch (btService.status) {
-			case STATUS.CONNECTED:
-				return <BluetoothConnected color={"white"}/>
-			case STATUS.NOTCONNECTED:
-				return <Bluetooth color={"white"} className={"greyed-out"}/>
-			case STATUS.CONNECTING:
-			case STATUS.DISCONNECTING:
-				return <BluetoothSearching color={"white"} className={"wiggle bluetooth"} style={{"transform":"translateX(8px)"}}/>
-		}
-	})()
-  return(
-    <IconButton
-      onClick={() => {
-				onClick(btService)
-			}}>
-      {icon}
-    </IconButton>
-  )
+let BluetoothButton = ({bt, onClick}) => {
+	let icon
+	switch (bt) {
+		case STATUS.CONNECTED:
+			icon = (<BluetoothConnected color={"white"} />)
+			break
+		case STATUS.NOTCONNECTED:
+			icon = (<Bluetooth color={"white"} className={"greyed-out"} />)
+			break
+		case STATUS.CONNECTING:
+		case STATUS.DISCONNECTING:
+			icon = (<BluetoothSearching color={"white"} className={"wiggle bluetooth"} style={{"transform":"translateX(8px)"}} />)
+			break
+	}
+	return(
+		<IconButton
+			onClick={
+				() => {
+					onClick(bt)
+				}
+			}>
+			{icon}
+		</IconButton>
+	)
 }
 
 const mapStateToProps = (state) => {
 	return {
-		btService: state.btService
+		bt: state.bt
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		onClick: (btService) => {
-			dispatch(btClick(btService))
+		onClick: (bt) => {
+			dispatch(btClick(bt))
 		}
 	}
 }

@@ -9,6 +9,10 @@ import AppBarPP from './AppBarPP.jsx'
 
 import Terminal from './Terminal.jsx'
 
+import {btConnect} from '../actions/bt'
+import {init as btInit} from '../services/bluetooth'
+import {init as protocolInit} from '../services/protocol'
+
 class App extends Component{
 	constructor(props){
 		super(props)
@@ -18,9 +22,14 @@ class App extends Component{
 			muiTheme: getMuiTheme(theme)
 		}
 	}
+	componentDidMount(){
+		btInit()
+		protocolInit()
+		this.props.btConnect()
+	}
 	render(){
 		let {mainRoute} = this.props
-		let body = null
+		let body
 		switch (mainRoute) {
 			case "TERMINAL":
 				body = <Terminal />
@@ -39,7 +48,7 @@ class App extends Component{
 						"height": "calc(100% - 64px)",
 						"boxSizing": "border-box",
 						"padding": "15px",
-						"overflow": "scroll"
+						"overflow": "auto"
 					}}>
 					{body}
 				</div>
@@ -58,8 +67,17 @@ const mapStateToProps = (state) => {
 	}
 }
 
+const mapDispatchToProps = (dispatch) => {
+	return {
+		btConnect: () => {
+			dispatch(btConnect())
+		}
+	}
+}
+
 App = connect(
-	mapStateToProps
+	mapStateToProps,
+	mapDispatchToProps
 )(App)
 
 export default App
