@@ -8,14 +8,23 @@ class Graph extends Component {
 		super(props)
 	}
 	componentDidMount(){
-		Rx.Observable.fromEvent(window, 'resize')
-			//.debounce(200)
+		this.resizeObserver = Rx.Observable.fromEvent(window, 'resize')
+			.debounce(200)
 			.subscribe(() => {
 				this.updateSize()
 				this.forceUpdate()
 			})
 		this.updateSize()
 		this.forceUpdate()
+		this.timerObserver = Rx.Observable
+			.interval(400)
+			.subscribe(() => {
+				this.forceUpdate()
+			})
+	}
+	componentWillUnmount(){
+		this.resizeObserver.dispose()
+		this.timerObserver.dispose()
 	}
 	updateSize(){
 		let rect = this.refs.container.getClientRects()[0]
@@ -27,14 +36,17 @@ class Graph extends Component {
 		return (
 			<div ref="container" style={{"overflow":"hidden", "width":"100%", "height":"100%"}}>
 				<LineChart
-				  legend={true}
+				  legend={false}
 				  data={data}
 				  width={this.width}
 				  height={this.height}
-					colors={(a) => {return ["red","blue","green"][a]}}
+					colors={(a) => {return ["red","green","blue", "orange", "pink", "purple"][a]}}
 				/>
 			</div>
 		)
+	}
+	shouldComponentUpdate(){
+		return false
 	}
 }
 

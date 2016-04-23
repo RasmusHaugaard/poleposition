@@ -91,9 +91,9 @@ export const disconnect = (callback) => {
 	}
 }
 
-export const send = (data, callback) => {
+const send = (data, callback) => {
 	if (typeof window.connId !== "number"){
-		callback(false)
+		if (callback) callback(false)
 		return
 	}
 	let buf
@@ -110,7 +110,7 @@ export const send = (data, callback) => {
 			let value = data[i];
 			if (typeof value !== "number"){
 				console.log("Cannot send array with other than numbers.", value)
-				callback(false)
+				if (callback) callback(false)
 				throw("Bt error")
 				return;
 			}
@@ -118,15 +118,19 @@ export const send = (data, callback) => {
 		}
 	}else{
 		console.log("Type error. What is THIS?", data)
-		callback(false)
+		if (callback) callback(false)
 		throw("Type error")
 		return;
 	}
 	chrome.serial.send(window.connId, buf, (e) => {
 		if (e.error){
-			callback(false)
+			if (callback) callback(false)
 		}else{
-			callback(true)
+			if (callback) callback(true)
 		}
 	})
 }
+
+window.send = send
+
+exports.send = send

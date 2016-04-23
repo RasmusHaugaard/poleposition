@@ -1,6 +1,6 @@
 import {ADD_DATA_TO_GRAPH, CLEAR_GRAPH} from '../actions/graph'
 
-const MAX_VALUES = 50
+const MAX_VALUES = 20000
 
 export default function graph(
 	state = [],

@@ -20,6 +20,7 @@ class ProtocolService {
 		if (this.type === null){
 			this.type = types[byte]
 			if (typeof this.type === "undefined"){
+				this.type = null
 				throw("Type not known?", byte)
 			}
 		}else{
@@ -45,6 +46,10 @@ const toSigned = (val) => {
 	return val > 127 ? val - 256 : val
 }
 
+/*const quickAddToGraph = (name, point) => {
+	let data = window.data.name || (window.data.name = [])
+	data.push(point)
+}*/
 
 
 const quickAddToGraph = (name, point) => {
@@ -52,6 +57,7 @@ const quickAddToGraph = (name, point) => {
 		addDataToGraph({name, point})
 	)
 }
+
 
 let idx = 0, idy = 0, idz = 0
 
@@ -67,5 +73,14 @@ const types = {
 	}),
 	32: new Type("accZ", 2, (data) => {
 		quickAddToGraph("accZ", {x:idz++, y: toSigned(data[0])})
+	}),
+	40: new Type("gyrX", 2, (data) => {
+		quickAddToGraph("gyrX", {x:idz++, y: toSigned(data[0])})
+	}),
+	41: new Type("gyrY", 2, (data) => {
+		quickAddToGraph("gyrY", {x:idz++, y: toSigned(data[0])})
+	}),
+	42: new Type("gyrZ", 2, (data) => {
+		quickAddToGraph("gyrZ", {x:idz++, y: toSigned(data[0])})
 	})
 }
