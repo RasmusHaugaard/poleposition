@@ -1,0 +1,5 @@
+På langsiderne skal der enten gives maks gas, 100% duty cycle, eller bremses 100%.
+Alt efter, hvordan vi bremser, må vi kunne udregne bremselængden til indgangshastigheden i et sving ud fra den aktuelle hastighed.
+Da svingene har samme radius ligegyldigt antallet af segmenter, er der sandsynligvis én indgangshastighed til sving, der ligger i den ydre bane, og én til dem i den indre bane.
+
+Rundt i svingene ønsker vi en konstant hastighed. 
