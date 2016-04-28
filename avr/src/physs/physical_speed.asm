@@ -1,7 +1,18 @@
 ;===================================
 ;========== Initalisering ==========
 ;===================================
-.include "lap_timer_v2.1.asm"
+
+;=====Timer0 (8-bit physucal_speed)=====
+;=TCCR0(control)=
+ldi R16, 0x00	;ligger værdien 0 i register R16
+out TCCR0, R16	;stopper timer0
+;=TCNT0(counter)=
+ldi R16, 0x00	;ligger værdien 0 i register R16
+out TCNT0, R16	;nulstiller timer0
+;=TCCR0(control)=
+ldi R16, 		;ligger værdien 0 i register R16
+out TCCR0, R16	;starter timer0
+
 .equ old_time_h = addr			;gamle timer værdi (high bite)
 .set addr = addr + 1			;..
 .equ old_time_l = addr			;gamle timer værdi (low bite)
@@ -25,21 +36,33 @@ sts distance_tek, R16			;nulstiller distance register
 ;===========================
 
 .macro phys_speed_8_8		;Retunere tid mellem motor tiks
+	push R16
+	in R16, SREG
+	push R16
 	ldi R16, 0<<INT1		;Disabler interrupt ved externt trigger 1 (Port D, pin 3)
 	out GICR, R16			;..
 	lds @0, dif_time_h		;retunere high byte
 	lds @1, dif_time_l		;retunere low byte
 	ldi R16, 1<<INT1		;tilader interrupt ved externt trigger 1 (Port D, pin 3)
 	out GICR, R16			;..
+	pop R16
+	out SREG, R16
+	pop R16
 .endmacro
 
 .macro get_dis_hl_8_8
+	push R16
+	in R16, SREG
+	push R16
 	ldi R16, 0<<INT1		;Disabler interrupt ved externt trigger 1 (Port D, pin 3)
 	out GICR, R16			;..
 	ldi @0, dis_tik_h		;retunere high byte
 	lds @1, dis_tik_l		;retunere low byte
 	ldi R16, 1<<INT1		;tilader interrupt ved externt trigger 1 (Port D, pin 3)
 	out GICR, R16			;..
+	pop R16
+	out SREG, R16
+	pop R16
 .endmacro
 
 ;=========================
@@ -47,6 +70,11 @@ sts distance_tek, R16			;nulstiller distance register
 ;=========================
 
 EX1_ISR:					;interrupt(motor tick)
+	push R16
+	push R17
+	push R18
+	in R16, SREG
+	push R16
 	get_time_hl [R18, R19]	;kopier "nye timer" til R18 og R19
 	lds R16, old_time_h		;koper "old timer" fra adresse til R16 og R17
 	lds R17, old_time_l		;..
@@ -67,6 +95,11 @@ EX1_ISR:					;interrupt(motor tick)
 	sts dis_tik_h, R17		;kopier R17 ind i "dis_tik_h"
 dis_no_overflow:
 	sts distance_tek, R16	;Kopier R16 ind i "distance_tek"
+	pop R16
+	out SREG, R16
+	pop R18
+	pop R17
+	pop R16
 	reti					;retunere fra interrupt
 
 ;===========================
