@@ -1,3 +1,5 @@
+;En mapning, hvis interrupt tabellen blev flyttet ned i bootloader sektionen.
+;Dette bruges ikke pt.
 .org bootload_start + 0x02 ; External I R 0
 	jmp 0x02
 .org bootload_start + 0x04 ; External I R 1

@@ -3,12 +3,11 @@
 
 .equ set_code = 85
 .equ set_length = 3
-
 .equ ping_code = 86
-.equ var_code = 255
 .equ reprogram_code = 87
+.equ var_code = 255
 
-.equ error_code_bl_undefined_rc_code = 100
+.equ error_code_bl_undefined_rc_code = 103
 
 bt_rc_start:
 	ldi temp1, 0
@@ -25,14 +24,19 @@ bl_rxcie_handler:
   lds temp1, bt_rc_status
   cpi temp1, 0
   brne expecting_other_than_first_byte
+
   cpi input, var_code
   breq received_var_code
+
   cpi input, set_code
   breq received_set_code
+
   cpi input, ping_code
   breq received_ping_code
+
   cpi input, reprogram_code
   breq received_reprogram_code
+
   rjmp error_undefined_rc_code
 rxcie_end:
   pop ZH
@@ -51,15 +55,12 @@ received_set_code:
   sts bt_rc_status, temp1
   rjmp rxcie_end
 received_ping_code:
-  ;ldi temp1, ping_code
-  ;send_bt_byte [temp1]
 	send_bt_byte [ping_code]
 	rjmp rxcie_end
 received_reprogram_code:
-  rjmp rxcie_end
+  jmp bl_reprogram
 error_undefined_rc_code:
-  ldi temp1, error_code_bl_undefined_rc_code
-  send_bt_byte [temp1]
+  send_bt_byte [error_code_bl_undefined_rc_code]
   rjmp rxcie_end
 
 expecting_other_than_first_byte:
@@ -74,7 +75,6 @@ expecting_data:
   brne rxcie_end
   rcall reset_bt_rc_pointer
   call app_receive_command_interrupt_vector
-	send_bt_byte [49]
   rjmp rxcie_end
 
 store_input_in_rc_buffer:

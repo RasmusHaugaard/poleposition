@@ -1,1 +1,1 @@
-.include "src/testprograms/bt_lib_test.asm"
+.include "src/bl/bl.asm"
