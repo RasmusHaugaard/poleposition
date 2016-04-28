@@ -1,18 +1,6 @@
 ;===================================
 ;========== Initalisering ==========
 ;===================================
-
-;=====Timer0 (8-bit physucal_speed)=====
-;=TCCR0(control)=
-ldi R16, 0x00	;ligger værdien 0 i register R16
-out TCCR0, R16	;stopper timer0
-;=TCNT0(counter)=
-ldi R16, 0x00	;ligger værdien 0 i register R16
-out TCNT0, R16	;nulstiller timer0
-;=TCCR0(control)=
-ldi R16, 		;ligger værdien 0 i register R16
-out TCCR0, R16	;starter timer0
-
 .equ old_time_h = addr			;gamle timer værdi (high bite)
 .set addr = addr + 1			;..
 .equ old_time_l = addr			;gamle timer værdi (low bite)
