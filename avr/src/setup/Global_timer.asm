@@ -1,4 +1,4 @@
-;=====Timer (8-bit physucal_speed)=====
+;=====Timer0 (8-bit physucal_speed)=====
 ;=TCCR0(control)=
 ldi R16, 0x00	;ligger værdien 0 i register R16
 out TCCR0, R16	;stopper timer0
