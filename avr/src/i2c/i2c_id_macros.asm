@@ -1,31 +1,33 @@
-.filedef temp1 = R16
+;macroer, der gør det nemt at skrive i2c kode uden interrupts
+
+.filedef temp = R16
 
 .macro I2C_ID_START
-	push temp1
-	ldi temp1, (1<<TWINT)|(1<<TWSTA)|(1<<TWEN)
-	out TWCR, temp1
-	pop temp1
+	push temp
+	ldi temp, (1<<TWINT)|(1<<TWSTA)|(1<<TWEN)
+	out TWCR, temp
+	pop temp
 .endm
 
 .macro I2C_ID_STOP
-	push temp1
-	ldi temp1, (1<<TWINT)|(1<<TWEN)|(1<<TWSTO)
-	out TWCR, temp1
-	pop temp1
+	push temp
+	ldi temp, (1<<TWINT)|(1<<TWEN)|(1<<TWSTO)
+	out TWCR, temp
+	pop temp
 .endm
 
 .macro I2C_ID_NMAK
-	push temp1
-	ldi temp1, (1<<TWINT)|(1<<TWEN)
-	out TWCR, temp1
-	pop temp1
+	push temp
+	ldi temp, (1<<TWINT)|(1<<TWEN)
+	out TWCR, temp
+	pop temp
 .endm
 
 .macro I2C_ID_MAK
-	push temp1
-	ldi temp1, (1<<TWINT)|(1<<TWEN)|(1<<TWEA)
-	out TWCR, temp1
-	pop temp1
+	push temp
+	ldi temp, (1<<TWINT)|(1<<TWEN)|(1<<TWEA)
+	out TWCR, temp
+	pop temp
 .endm
 
 .macro I2C_ID_SEND
@@ -33,29 +35,29 @@ ERROR Skal bruges med argumenter
 .endm
 
 .macro I2C_ID_SEND_i
-	push temp1
-	ldi temp1, @0
-	out TWDR, temp1
-	ldi temp1, (1<<TWINT)|(1<<TWEN)
-	out TWCR, temp1
-	pop temp1
+	push temp
+	ldi temp, @0
+	out TWDR, temp
+	ldi temp, (1<<TWINT)|(1<<TWEN)
+	out TWCR, temp
+	pop temp
 .endm
 
 .macro I2C_ID_SEND_8
-	push temp1
+	push temp
 	out TWDR, @0
-	ldi temp1, (1<<TWINT)|(1<<TWEN)
-	out TWCR, temp1
-	pop temp1
+	ldi temp, (1<<TWINT)|(1<<TWEN)
+	out TWCR, temp
+	pop temp
 .endm
 
 .macro I2C_ID_WAIT_TWINT
-	push temp1
+	push temp
 I2C_ID_WAIT_TWINT_%:
-	in 		temp1, TWCR
-	sbrs 	temp1, TWINT
+	in 		temp, TWCR
+	sbrs 	temp, TWINT
 	rjmp 	I2C_ID_WAIT_TWINT_%
-	pop temp1
+	pop temp
 .endm
 
 .macro I2C_ID_WRITE

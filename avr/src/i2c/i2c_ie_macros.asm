@@ -1,3 +1,5 @@
+;macroer, der gør det nemt at skrive i2c kode med interrupts
+
 .filedef temp1 = R16
 
 .macro I2C_IE_START
