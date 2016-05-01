@@ -73,8 +73,9 @@ class Flasher {
 		this.bytesInBuffer++
 	}
 
-	handleBtCallback(success){
+	handleBtCallback(success, error){
 		if(!success){
+			console.log(error)
 			window.speak("I am sorry master. Something went wrong while programming the controller.")
 			window.store.dispatch(blError())
 		}

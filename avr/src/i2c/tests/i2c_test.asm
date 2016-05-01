@@ -22,11 +22,10 @@ init:
 	rjmp main
 
 main:
-	delayms [3]
+	delayms [100]
 	lds temp, ON_ADDR
 	cpi temp, 1
 	brne main
-	;send_bt_byte [90]
 	rcall I2C_next
 	rjmp main
 

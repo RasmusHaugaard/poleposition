@@ -57,7 +57,7 @@ class SlaveMessage extends Component{
 			)
 		}
 		return (
-			<div style={{"marginLeft":"5px", "color":palette.primary1Color}}>
+			<div style={{"marginLeft":"5px", "marginRight":"15px", "color":palette.primary1Color}}>
 				<span className={"roboto"}>
 					{"> "}{body}
 				</span>

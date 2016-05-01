@@ -53,12 +53,12 @@ const receiveByte = (byte) => {
 }
 
 export const connect = (success, error) => {
+	window.connId = null
 	chrome.serial.getDevices((devs) => {
 		let dev = devs.filter((dev) => {
 			return dev.path.indexOf(DEVICE_NAME) !== -1
 		})[0];
 		if (!dev) {
-			window.connId = null
 			error(
 				"No such available device: " + DEVICE_NAME +
 				". Make sure you have connected manually at least once."
@@ -66,13 +66,13 @@ export const connect = (success, error) => {
 		}else{
 			chrome.serial.connect(dev.path, {bitrate: BITRATE}, (ConnInfo) => {
 				if (!ConnInfo) {
-					window.connId = null
 					error(
 						"Failed to connec: " + DEVICE_NAME +
 						", with path: " + dev.path + ". Make sure bluetooth is on."
 					)
 				}else{
 					window.connId = ConnInfo.connectionId
+					window.btSendBuffer = new btSendBuffer()
 					success()
 				}
 			})
@@ -93,7 +93,7 @@ export const disconnect = (callback) => {
 
 const send = (data, callback) => {
 	if (typeof window.connId !== "number"){
-		if (callback) callback(false)
+		if (callback) callback(false, "Not currently connected. Cannot send byte.")
 		return
 	}
 	let buf
@@ -109,26 +109,56 @@ const send = (data, callback) => {
 		for (let i in data){
 			let value = data[i];
 			if (typeof value !== "number"){
-				console.log("Cannot send array with other than numbers.", value)
-				if (callback) callback(false)
-				throw("Bt error")
+				if (callback) callback(false, {string:"Cannot send array with other than numbers.", value})
 				return;
 			}
 			bufView[i] = value
 		}
 	}else{
 		console.log("Type error. What is THIS?", data)
-		if (callback) callback(false)
-		throw("Type error")
+		if (callback) callback(false, {string:"Unknown data type. Data must be either a string or an array of numbers.", data})
 		return;
 	}
-	chrome.serial.send(window.connId, buf, (e) => {
-		if (e.error){
-			if (callback) callback(false)
-		}else{
-			if (callback) callback(true)
-		}
-	})
+	window.btSendBuffer.add(buf, callback)
+}
+
+class btSendBuffer{
+	constructor(){
+		this.sendBuf = []
+		this.ready = true
+		this.pending = false
+	}
+	sendNext(){
+		if(this.sendBuf.length === 0 || this.ready === false || this.pending) return
+		this.ready = false
+		var {aBuf, callback} = this.sendBuf[0]
+		chrome.serial.send(window.connId, aBuf, (e) => {
+			if (e.error){
+				if (e.error === "pending"){
+					console.log("Controlled pending")
+					this.pending = true
+					setTimeout(() => {
+						this.pending = false
+						this.sendNext()
+					}, 10)
+				}else{
+					console.log("Unhandled bt error.", e.error, "Flushing btSendBuffer")
+					this.sendBuf = []
+					this.ready = true
+					if (callback) callback(false, e.error)
+				}
+			}else{
+				this.sendBuf.shift()
+				this.ready = true
+				if (callback) callback(true)
+				this.sendNext()
+			}
+		})
+	}
+	add(aBuf, callback){
+		this.sendBuf.push({aBuf, callback})
+		this.sendNext()
+	}
 }
 
 window.send = send
