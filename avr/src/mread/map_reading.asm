@@ -12,6 +12,12 @@
 .set addr = addr + 1			;..
 .equ b_dis_l = addr				;bremse længde (l-bite)
 .set addr = addr + 1			;..
+.equ p_dis_h = addr				;distance to next point (h-bite)
+.set addr = addr + 1			;..
+.equ p_dis_l = addr				;distance to next point (l-bite)
+.set addr = addr + 1			;..
+.equ status_dis = addr			;status register for sekment
+.set addr = addr + 1			;..
 
 ;==========================
 ;========== Macro =========
@@ -38,11 +44,15 @@ line_scan:
 	ldi R16, 1<<TOV1			;tilader interrupt ved timer1 overflow
 	out TIMSK, R16				;.. 
 
+load_next_sek:					
 	rjmp get_next_sek			;loader næste sekment
-	;Hvis sving skip next line
+	;Hvis sving, jmp "goto_turn"
 	rjmp drive_straight			;Køre lige stykke
+	rjmp skip_turn				;skipper sving
+goto_turn:
 	rjmp drive_turn				;køre igennem sving
-
+skip_turn:
+	rjmp load_next_sek			;køre rutine igen
 	
 	;KØR! MuKØR!!
 
@@ -54,44 +64,56 @@ drive_straight:
 	get_dis_hl [R16, R17]		;gemmer tilbagelagte distance
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
-	setspeed [100]				;set speed 100%
 	rjmp b_dis					;udregner bremse længde
-	cp_b_dis:						;tjekker om der skal bremses
+	setspeed [100]				;set speed 100%
+cp_b_dis:						;tjekker om der skal bremses
 	get_dis_hl [R16, R17]		;henter nyværendene tilbagelagte distance
 	cp	R16, R29				;sammenligner med bremselængde (high-byte)
 	brne cp_b_dis				;..
 	cp	R17, R30				;sammenligner med bremselængde (low-byte)
 	brne cp_b_dis				;..
-	ret
+	rjmp turn_speed				;sætter hastighed til max for sving
+
+	ret							;retunere
 
 drive_turn:
 	
-	ret
+	ret							;retunere
 
-b_dis:							;R19 b_dis_h, R20 b_dis_l
-	ldi R18, 40					;bremselængde = 40 tiks (19,33 cm)
-	lds R19, dis_ref_h			;høje referance distance
-	lds R20, dis_ref_l			;lave referance distance
-	lds R21, 0
+b_dis:							; (retunere: b_dis_h og b_dis_l)
+	ldi R18, 40					;bremselængde = 40 tiks (19,33cm)
+	lds R19, p_dis_h			;distance til næste point (sekment længde)
+	lds R20, p_dis_l			;..
+	lds R21, 0					;
 	sub R20, R18				;trækker bremselængde fra referance distance
 	sbc R19, R21				;..
-	sts b_dis_h, R19
+	;ligger dis_ref til
+	sts b_dis_h, R19			
 	sts b_dis_l, R20
-	ret
+	ret							;retunere
 
-get_next_sek:					;R28 status, R29 distance h-bite, R30 distance l-bite
+get_next_sek:					;R28 bruges (retunere: status_dis, p_dis_h og p_dis_l)
 	lds R28, sek_adr			;status
-	.set sek_adr = sek_adr + 1	;distance h-bite
-	lds R29, sek_adr			;..
-	.set sek_adr = sek_adr + 1	;distance l-bite
-	lds R30, sek_adr			;..
-	ret
+	sts dis_status, R28			;..
+	.set sek_adr = sek_adr + 1	;..
+	lds R28, sek_adr			;distance h-bite
+	sts p_dis_h, R28			;..
+	.set sek_adr = sek_adr + 1	;..
+	lds R28, sek_adr			;distance l-bite
+	sts p_dis_l, R28
+	.set sek_adr = sek_adr +1	;..
+	ret							;retunere	
 
 reset_sek_adr:
 	lds R16, def_sek_adr		;Resitter sek_adr
 	sts sek_adr, R16			;..
 	ret
 
+turn_speed:
+	setspeed [20]				;setter max hastighed i sving
+
+b_mode:							;maksimale bremsning
+	
 
 ;=========================
 ;========== ISR ==========
