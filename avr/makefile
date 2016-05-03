@@ -13,7 +13,7 @@ outDir = ./$(out)/
 default: assemble flash
 
 flash:
-	sudo avrdude -p m32 $(PROGRAMMER) -U flash:w:build/$(PROJECT).hex
+	sudo avrdude -p m32 $(PROGRAMMER) -U flash:w:$(out)/$(PROJECT).hex
 
 assemble: preprocess cleanOut
 	mkdir $(out)
