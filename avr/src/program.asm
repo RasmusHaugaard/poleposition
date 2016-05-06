@@ -1,1 +1,1 @@
-.include "src/bl/bl.asm"
+.include "src/mapning/Integrate_test.asm"
