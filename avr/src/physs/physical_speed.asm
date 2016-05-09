@@ -23,6 +23,10 @@ sts distance_tek, R16			;nulstiller distance register
 ;========== Macro ==========
 ;===========================
 
+.macro	phys_speed
+	Error "phys_speed"
+.endmacro
+
 .macro phys_speed_8_8		;Retunere tid mellem motor tiks
 	push R16
 	in R16, SREG
@@ -36,6 +40,10 @@ sts distance_tek, R16			;nulstiller distance register
 	pop R16
 	out SREG, R16
 	pop R16
+.endmacro
+
+.macro	get_dis_hl
+	Error "get_dis_hl"
 .endmacro
 
 .macro get_dis_hl_8_8

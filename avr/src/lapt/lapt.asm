@@ -56,6 +56,10 @@ jmp EX1_ISR		;adresse med mere plads
 ;========== Macro ==========
 ;===========================
 
+.macro get_time_full
+	Error "get_time_full"
+.endmacro
+
 .macro get_time_full_8_8_8		;macro som retunere TCNT1HH, TCNT1H og TCNT1L.
 ;.if @0 = R16, @1, @2
 ;	ERROR  
@@ -79,6 +83,9 @@ TIME_GET_%:
 	pop R16
 .endmacro
 
+.macro get_time_hl
+	Error "get_time_hl"
+.endmacro
 
 .macro get_time_hl_8_8			;macro som retunere TCNT1H og TCNT1L
 	push R16
@@ -91,6 +98,9 @@ TIME_GET_%:
 	pop R16
 .endmacro
 
+.macro get_time_hh
+	Error "get_time_hh"
+.endmacro
 
 .macro get_time_hh_8			;macro som retunere TCNT1HH
 	push R16
