@@ -61,10 +61,20 @@ skip_turn:
 
 ;=====Drive straight=====
 drive_straight:
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 74					;sender J
+	send_bt_byte [R16]			;..
+	ldi R16, 100				;sender d
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	get_dis_hl [R16, R17]		;gemmer ref dis
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
-	;branch if next sekment is straight no_turn
+	;branch if next sekment is straight "no_turn"
 	setspeed [100]				;set speed 100%
 	rjmp b_dis					;udregner bremse længde (retunere: b_dis_h og b_dis_l)
 	;get_dis >= b_dis
@@ -73,6 +83,16 @@ drive_straight:
 	ret							;return
 no_turn:
 	;get_dis >= ss_dis
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 100				;sender d
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	ret							;retunere
 
 
@@ -81,10 +101,29 @@ no_turn:
 
 ;=====Drive turn=====
 drive_turn:
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 74					;sender J
+	send_bt_byte [R16]			;..
+	ldi R16, 100				;sender d
+	send_bt_byte [R16]			;..
+	ldi R16, 116				;sender t
+	send_bt_byte [R16]			;..
+
 	get_dis_hl [R16, R17]		;gemmer ref dis
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
 	rjmp turn_speed				;sætter hastighed til max for sving
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 100				;sender d
+	send_bt_byte [R16]			;..
+	ldi R16, 116				;sender t
+	send_bt_byte [R16]			;..
 
 	ret							;retuner
 
@@ -94,6 +133,16 @@ drive_turn:
 
 ;=====Break distance=====
 b_dis:							; (retunere: b_dis_h og b_dis_l)
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 74					;sender J
+	send_bt_byte [R16]			;..
+	ldi R16, 98					;sender b
+	send_bt_byte [R16]			;..
+	ldi R16, 100				;sender d
+	send_bt_byte [R16]			;..
+
 	ldi R18, 40					;bremselængde = 40 tiks (19,33cm)
 	lds R19, ss_dis_h			;distance til sekment stopper (sekment længde)
 	lds R20, ss_dis_l			;..
@@ -103,6 +152,16 @@ b_dis:							; (retunere: b_dis_h og b_dis_l)
 	;ligger dis_ref til
 	sts b_dis_h, R19			
 	sts b_dis_l, R20
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 98					;sender b
+	send_bt_byte [R16]			;..
+	ldi R16, 100				;sender d
+	send_bt_byte [R16]			;..
+
 	ret							;retunere
 
 
@@ -111,6 +170,16 @@ b_dis:							; (retunere: b_dis_h og b_dis_l)
 
 ;=====Get next sekment=====
 get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 74					;sender J
+	send_bt_byte [R16]			;..
+	ldi R16, 110				;sender n
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	lds R28, sek_adr			;status
 	sts sek_status, R28			;..
 	.set sek_adr = sek_adr + 1	;..
@@ -120,6 +189,16 @@ get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
 	lds R28, sek_adr			;distance l-bite
 	sts ss_dis_l, R28
 	.set sek_adr = sek_adr +1	;..
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 110				;sender n
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	ret							;retunere	
 
 
@@ -128,8 +207,28 @@ get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
 
 ;=====Reset sek addres=====
 reset_sek_adr:
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 74					;sender J
+	send_bt_byte [R16]			;..
+	ldi R16, 114				;sender r
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	lds R16, def_sek_adr		;Resitter sek_adr
 	sts sek_adr, R16			;..
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 114				;sender r
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	ret							;return
 
 
@@ -138,7 +237,27 @@ reset_sek_adr:
 
 ;=====Turn speed=====
 turn_speed:
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 74					;sender J
+	send_bt_byte [R16]			;..
+	ldi R16, 116				;sender t
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	setspeed [20]				;setter max hastighed i sving
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 116				;sender t
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	ret							;return
 
 
@@ -147,7 +266,27 @@ turn_speed:
 
 ;=====Break mode=====
 b_mode:							;maksimale bremsning
+	
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 74					;sender J
+	send_bt_byte [R16]			;..
+	ldi R16, 98					;sender b
+	send_bt_byte [R16]			;..
+	ldi R16, 109				;sender m
+	send_bt_byte [R16]			;..
+
 	;øhhh.. der mangler sku lidt kode..
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 98					;sender b
+	send_bt_byte [R16]			;..
+	ldi R16, 109				;sender m
+	send_bt_byte [R16]			;..
+
 	ret							;return
 
 
@@ -156,6 +295,16 @@ b_mode:							;maksimale bremsning
 
 ;=====Find start punkt=====
 find_sp:
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 74					;sender J
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+	ldi R16, 112				;sender p
+	send_bt_byte [R16]			;..
+
 	ldi R16, 0<<TOV1			;forbyder interrupt ved timer1 overflow
 	out TIMSK, R16				;..
 	setspeed [10]				;sætter langsom hastighed
@@ -168,6 +317,16 @@ line_scan:
 	ldi R16, 1<<TOV1			;tilader interrupt ved timer1 overflow
 	out TIMSK, R16				;.. 
 
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+	ldi R16, 112				;sender p
+	send_bt_byte [R16]			;..
+
+	ret							;retunere
 
 
 
@@ -175,3 +334,36 @@ line_scan:
 ;=========================
 ;========== ISR ==========
 ;=========================
+
+
+;==================================
+;========== Kom-protokol ==========
+;==================================
+
+;	ascii	betydning
+
+;	$		begyndelse på ny tilbagemælding
+
+;	jds		jump to "Drive straight"
+;	rds		return from "Drive straight"
+
+;	jdt		jump to "Drive turn"
+;	rdt		return from "Drive turn"
+
+;	jbd		jump to "Break distance"
+;	rbd		return from "Break distance"
+
+;	jns		jump to "Get next sekment"
+;	rns		return from "Get next sekment"
+
+;	jrs		jump to "Reset sek addres"
+;	rrs		return from "Reset sek addres"
+
+;	jts		jump to "Turn speed"
+;	rts		return from "Turn speed"
+
+;	jbm		jump to "Break mode"
+;	rbm		return from "Break mode"
+
+;	jsp		jump to "Find start punkt"
+;	rsp		return from "Find start punkt"
