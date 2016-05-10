@@ -9,7 +9,7 @@
 .equ g_dr1 = 7 ; dr1:dr0 = 0b10 -> 400 Hz
 .equ gyr_ctrl1_axes = (1<<g_zen)|(1<<g_yen)|(1<<g_xen)
 .equ gyr_ctrl1_bw = (1<<g_bw1)|(0<<g_bw0)
-.equ gyr_ctrl1_dr = (1<<g_dr1)|(0<<g_dr0)
+.equ gyr_ctrl1_dr = (0<<g_dr1)|(0<<g_dr0)
 .equ gyr_ctrl1_val = (1<<g_pd)|gyr_ctrl1_dr|gyr_ctrl1_bw|gyr_ctrl1_axes
 I2C_ID_WRITE [gyr_addr_w, gyr_reg_ctrl1, gyr_ctrl1_val]
 
