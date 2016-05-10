@@ -4,13 +4,16 @@ import {blProgram} from '../actions/bl'
 export default function init(){
 	window.speak = (text) => {
 		let msg = new SpeechSynthesisUtterance()
-		let voice = speechSynthesis.getVoices().filter(voice => {return voice.voiceURI === "Samantha"})[0]
+		let voice = speechSynthesis.getVoices().find(voice => voice.voiceURI === "Samantha")
+		if (!voice) voice = speechSynthesis.getVoices().find(voice => voice.voiceURI === "Google US English")
+		if (!voice) throw "Kan ikke finde nogen af de ønskede stemmer"
 		msg.voice = voice
 		msg.text = text
 		msg.lang = voice.lang
 		speechSynthesis.speak(msg)
 	}
-	speechSynthesis.onvoiceschanged = () => {
+	speechSynthesis.onvoiceschanged = (e) => {
+		speechSynthesis.onvoiceschanged = () => {}
 		window.speak("Welcome master. I am Samantha. Can i help you?")
 	}
 	let commands = {

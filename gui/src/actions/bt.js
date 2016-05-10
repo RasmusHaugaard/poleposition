@@ -69,6 +69,7 @@ export const btConnected = (ConnInfo) => {
 
 export const BT_FAILED_TO_CONNECT = "BT_FAILED_TO_CONNECT"
 export const btFailedToConnect = (error) => {
+	console.log(error)
 	return {
 		type: BT_FAILED_TO_CONNECT,
 		error
