@@ -1,1 +1,7 @@
-.include "src/i2c/tests/i2c_test.asm"
+.include "src/def/m32def.inc"
+.include "src/bt/bt_tr.asm"
+.include "src/lapt/lapt.asm"
+
+main:
+	nop
+	jmp main
