@@ -18,13 +18,16 @@
 .equ b_dis_l = addr				;bremse længde (l-bite)
 .set addr = addr + 1			;..
 
-.equ ss_dis_h = addr			;distance til sekment stopper (h-bite)
+.equ ss_dis_h = addr			;distance til sekment stopper "længde af sekment" (h-bite)
 .set addr = addr + 1			;..
 
-.equ ss_dis_l = addr			;distance til sekment stopper (l-bite)
+.equ ss_dis_l = addr			;distance til sekment stopper "længde af sekment" (l-bite)
 .set addr = addr + 1			;..
 
 .equ sek_status = addr			;status register for sekment
+.set addr = addr + 1			;..
+
+.equ is_ns_turn = addr			;næste sek (svign = 11111111, lige = 00000000)
 .set addr = addr + 1			;..
 
 ;==========================
@@ -38,15 +41,16 @@
 ;========== Main ==========
 ;==========================
 
-	rjmp find_sp				;finder start punkt
+	call find_sp				;finder start punkt
 load_next_sek:					
-	rjmp get_next_sek			;loader næste sekment
-	;Hvis sving, jmp "goto_turn"
-	rjmp drive_straight			;Køre lige stykke
-	rjmp skip_turn				;skipper sving
+	call get_next_sek			;loader næste sekment
+	lds R16, sek_status			;Hvis sving, jmp "goto_turn"
+	sbrs R16, 7					;..
+	rjmp goto_turn				;..
+	call drive_straight			;Køre lige stykke
+	call load_next_sek			;køre rutine igen
 goto_turn:
-	rjmp drive_turn				;køre igennem sving
-skip_turn:
+	call drive_turn				;køre igennem sving
 	rjmp load_next_sek			;køre rutine igen
 	
 	;KØR! MuKØR!!
@@ -74,12 +78,22 @@ drive_straight:
 	get_dis_hl [R16, R17]		;gemmer ref dis
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
-	;branch if next sekment is straight "no_turn"
+	call sek_select				;Tjekker om næste sekment er sving eller lige (;branch if next sekment is straight "no_turn") <---------- skal laves om
 	setspeed [100]				;set speed 100%
-	rjmp b_dis					;udregner bremse længde (retunere: b_dis_h og b_dis_l)
+	call b_dis					;udregner bremse længde (retunere: b_dis_h og b_dis_l)
 	;get_dis >= b_dis
-	rjmp b_mode					;bremser ned til svinget	
-	rjmp turn_speed				;sætter hastighed til max for sving
+	call b_mode					;bremser ned til svinget	
+	setspeed [20]				;sætter hastighed til max for sving
+
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 82					;sender R
+	send_bt_byte [R16]			;..
+	ldi R16, 100				;sender d
+	send_bt_byte [R16]			;..
+	ldi R16, 115				;sender s
+	send_bt_byte [R16]			;..
+
 	ret							;return
 no_turn:
 	;get_dis >= ss_dis
@@ -94,8 +108,6 @@ no_turn:
 	send_bt_byte [R16]			;..
 
 	ret							;retunere
-
-
 
 
 
@@ -114,7 +126,7 @@ drive_turn:
 	get_dis_hl [R16, R17]		;gemmer ref dis
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
-	rjmp turn_speed				;sætter hastighed til max for sving
+	setspeed [20]				;sætter hastighed til max for sving
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -125,7 +137,7 @@ drive_turn:
 	ldi R16, 116				;sender t
 	send_bt_byte [R16]			;..
 
-	ret							;retuner
+	ret						;retuner
 
 
 
@@ -187,8 +199,17 @@ get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
 	sts ss_dis_h, R28			;..
 	.set sek_adr = sek_adr + 1	;..
 	lds R28, sek_adr			;distance l-bite
-	sts ss_dis_l, R28
+	sts ss_dis_l, R28			;..
 	.set sek_adr = sek_adr +1	;..
+	lds R28, sek_adr			;Tjekker om sekment efter er lige
+	sbrs R28, 7					;..
+	rjmp n_sek_l				;hvis lige rjmp "n_sek_l"
+	lds R16, 0b11111111			;hvis sving
+	sts	is_ns_turn, R16			;..
+n_sek_l:
+	lds R16, 0b00000000			;hvis lige
+	sts	is_ns_turn, R16			;..
+
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -313,7 +334,7 @@ line_scan:
 	rjmp line_scan				;scanner igen
 	setspeed [0]				;stopper ved målstreg
 	;evt brems					;tænder elektromagneten
-	rjmp T1_OV_ISR_CLEAR		;clear externt interrupt flag
+	rjmp T1_OV_ISR_CLEAR		;clear externt interrupt flag						<------------------------------------- skal finde anden måde at kalde på, kan ikke bruge rjmp skal bruge call.
 	ldi R16, 1<<TOV1			;tilader interrupt ved timer1 overflow
 	out TIMSK, R16				;.. 
 
