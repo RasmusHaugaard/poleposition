@@ -48,7 +48,7 @@ load_next_sek:
 	sbrs R16, 7					;..
 	rjmp goto_turn				;..
 	call drive_straight			;Køre lige stykke
-	call load_next_sek			;køre rutine igen
+	rjmp load_next_sek			;køre rutine igen
 goto_turn:
 	call drive_turn				;køre igennem sving
 	rjmp load_next_sek			;køre rutine igen
@@ -78,10 +78,14 @@ drive_straight:
 	get_dis_hl [R16, R17]		;gemmer ref dis
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
-	call sek_select				;Tjekker om næste sekment er sving eller lige (;branch if next sekment is straight "no_turn") <---------- skal laves om
 	setspeed [100]				;set speed 100%
+	lds R16, is_ns_turn			;Tjekker om næste sekment er sving eller lige
+	sbrs R16, 7					;skipper hvis sving
+	rjmp no_turn
 	call b_dis					;udregner bremse længde (retunere: b_dis_h og b_dis_l)
-	;get_dis >= b_dis
+
+								;get_dis >= b_dis
+
 	call b_mode					;bremser ned til svinget	
 	setspeed [20]				;sætter hastighed til max for sving
 
