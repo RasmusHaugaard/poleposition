@@ -1,2 +1,16 @@
 *.sublime-project
 *.sublime-workspace
+
+*.fls
+
+*.log
+
+*.toc
+
+*.gz
+
+rapport/rapport.pdf
+
+*.fdb_latexmk
+
+*.aux
