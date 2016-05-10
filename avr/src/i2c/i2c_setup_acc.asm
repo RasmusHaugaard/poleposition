@@ -7,6 +7,8 @@
 .equ a_pd = 6 ;(Power Down Ctrl) 0: power down mode, 1: active mode
 .equ a_dr = 7 ;(Data Rate Selection) 0: 100 Hz output, 1: 400 Hz output
 
-.equ acc_ctrl_val = (1<<a_xen)|(1<<a_yen)|(1<<a_zen)|(1<<a_fs)|(1<<a_pd)|(1<<a_dr)
+.equ acc_ctrl_val = (1<<a_xen)|(1<<a_yen)|(1<<a_zen)|(0<<a_fs)|(1<<a_pd)|(0<<a_dr)
 
 I2C_ID_WRITE [acc_addr_w, acc_reg_ctrl, acc_ctrl_val]
+
+I2C_ID_WRITE [acc_addr_w, 0x21, (0<<4)]
