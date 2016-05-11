@@ -1,9 +1,28 @@
-.equ tr_preserve_z = 1
-.equ tr_preserve_y = 1
-
 .filedef store_byte = R16
 .filedef temp1 = R17
 .filedef tempm = R18
+
+.equ tr_preserve_z = 1
+.equ tr_preserve_y = 1
+
+.equ bt_tr_buf_start = addr
+.equ bt_tr_buf_length = 100
+  .set addr = addr + bt_tr_buf_length - 1
+.equ bt_tr_buf_end = addr
+	.set addr = addr + 1
+.equ bt_tr_store_pointer_L = addr
+  .set addr = addr + 1
+.equ bt_tr_store_pointer_H = addr
+  .set addr = addr + 1
+.equ bt_tr_send_pointer_L = addr
+  .set addr = addr + 1
+.equ bt_tr_send_pointer_H = addr
+  .set addr = addr + 1
+
+.set saved_pc = PC
+.org 0x1C
+  jmp bl_udrei_handler
+.org saved_pc
 
 .macro send_bt_byte
 	call store_bt_to_buf
