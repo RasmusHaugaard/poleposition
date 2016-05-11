@@ -95,9 +95,6 @@ EX1_ISR:					;interrupt(motor tick)
 	sts old_time_l, R19		;..
 	sub R19, R17			;(low bite) Tr�kker "old timer" (R17) fra den nye "nye timer" (R19)
 	sbc R18, R16			;(High bite) Tr�kker "old timer" (R16) fra den nye "nye timer" (R18)
-	send_bt_byte [231]
-	send_bt_byte [R19]		;sender low bite til pc
-	send_bt_byte [R18]		;sender high bite til pc
 	sts dif_time_h, R18		;gemmer forskellen mellem "ny" og "old" timer
 	sts dif_time_l, R19		;..
 
