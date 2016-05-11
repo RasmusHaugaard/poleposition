@@ -75,7 +75,7 @@ jmp lapt_file_end
 .endm
 
 .macro get_time_hl
-	Error "get_time_hl"
+	Error get_time_hl
 .endm
 
 .macro get_time_hl_8_8			;macro som retunere TCNT1H og TCNT1L
@@ -90,7 +90,7 @@ jmp lapt_file_end
 .endm
 
 .macro get_time_hh
-	Error "get_time_hh"
+	Error get_time_hh
 .endm
 
 .macro get_time_hh_8			;macro som retunere TCNT1HH

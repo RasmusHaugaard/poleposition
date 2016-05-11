@@ -1,54 +1,32 @@
-.include "src/def/m32def.inc"
-
-;pladser i SRAM defineres.
-
-;.equ navn = addr
-;.set addr = addr +1
-.set  addr = 0x60
-  .equ  map_data_pointer_l = addr
-.set  addr = addr + 1
-  .equ  map_data_pointer_h = addr
-.set addr = addr + 1
-  .equ  mapping_data_addr = addr
-  .equ  mapping_data_lenght = 200
-.set addr = addr + mapping_data_lenght
-  .equ last_map_adress = addr - 1
+ .include "src/bl/bl.asm"
 
 ;.equ last_point_low
-.def  first_angel_low = R13
-.def  first_angel_high = R14
-.def  last_angel_low = R15
-.def  last_angel_high = R16
-.def  first_point_low = R17
-.def  first_point_high = R18
-.def  last_point_low = R19
-.def  last_point_high = R20
-.def  first_time_value_low = R21
-.def  first_time_value_high = R22
-.def  current_turn_value = R23
+.def  first_angel_low = R9
+.def  first_angel_high = R17
+.def  last_angel_low = R18
+.def  last_angel_high = R19
+.def  first_point_low = R12
+.def  first_point_high = R13
+.def  last_point_low = R14
+.def  last_point_high = R8
+.filedef  first_time_value_low = R21
+.filedef  first_time_value_high = R22
+.def  current_turn_value = R11
 .def  current_status = R24
 .def  first_gyro_value_high = R25
-.def  last_gyro_value_high = R26
-.def  last_time_value_low = R27
-.def  last_time_value_high = R28
-.def  light_status = R29
+.def  last_gyro_value_high = R20
+.def  last_time_value_low = R16
+.def  last_time_value_high = R10
+.def  light_status = R23
 
 
 ;Nogle værdier defineres i starten.
-.equ  left_turn_value_in = 15
-.equ  right_turn_value_in = -15
-.equ  left_turn_value_out = 10
-.equ  right_turn_value_out = -10
-
-.equ  degree180 = 170
-.equ  degree135 = 125
-.equ  degree90 = 80
-.equ  degree45 = 35
-
-.equ  length_value_180 = 140
-.equ  length_value_135 = 105
-.equ  length_value_90 = 85
-.equ  length_value_45 = 40
+.equ  turn_value_in = 20
+.equ  turn_value_out = 5
+.equ  left_turn_value_in = turn_value_in
+.equ  right_turn_value_in = -turn_value_in
+.equ  left_turn_value_out = turn_value_out
+.equ  right_turn_value_out = -turn_value_out
 
 .equ  gyr_addr_w = 0b11010000
 .equ  gyr_addr_r = 0b11010001
@@ -64,38 +42,23 @@
 .equ  status_four_turns  = 0b00110000
 .equ  status_inner_turn  = 0b01000000
 .equ  status_outter_turn = 0b00000000
+.equ  still_turning = 0b01000000
 
 .org 0x00
 rjmp init
 
-.org 0x2a
+.org 0x2A
 init:
   .include "src/i2c/i2c_id_macros.asm"
-  .include "src/setup/stack_pointer.asm"
   .include "src/i2c/i2c_setup.asm"
-  .include "src/util/delay.asm"
   .include "src/i2c/i2c_setup_gyr.asm"
-
-  sts   map_data_pointer_l, low(map_data_start)
-  sts   map_data_pointer_h, high(map_data_start)
-
-.macro store_byte_map_data
-.endm
-
-.macro store_byte_map_data_8
-  lds   ZL, map_data_pointer_l
-  lds   ZH, map_data_pointer_h
-  st    Z+, @0
-
-  sts   map_data_pointer_l, ZL
-  sts   map_data_pointer_h, ZH
-.endm
+  .include "src/lapt/lapt.asm"
+  .include "src/physs/physical_speed.asm"
 
   sbi   DDRA, PORTA0
 
-
-
 check_for_turn:
+  get_time_hl [first_time_value_high, first_time_value_low]
   I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
 
   ldi   light_status, 0b00000000
@@ -104,29 +67,29 @@ check_for_turn:
   next_map_sektion:
 
   cpi   first_gyro_value_high, left_turn_value_in ; Sammenligner den gyro værdi med venstre sving.
-  brge  check_turn_angel ;Hoop hvis venstre sving værdi < gyro.
+  brge  check_turn_angel ;Hoop hvis venstre sving værdi <= gyro.
 
   cpi   first_gyro_value_high, right_turn_value_in
-  brlt  check_turn_angel  ;Hvis gyro =< højre sving værdi, så hop.
+  brlt  check_turn_angel  ;Hvis gyro < højre sving værdi, så hop.
 
   rjmp  check_for_turn
 
-check_turn_angel:
-  get_time_hl[last_time_value_high, last_time_value_low]
-  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, last_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
 
+
+check_turn_angel:
   ldi   light_status, 0b00000001
   out   PORTA, light_status
 
-  push  last_gyro_value_high
-  sub   last_gyro_value_high, first_gyro_value_high
-  pop   first_gyro_value_high
+  get_time_hl [last_time_value_high, last_time_value_low]
+  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, last_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
+
+  mov   first_gyro_value_high, last_gyro_value_high
 
   push  last_time_value_low
   sub   last_time_value_low, first_time_value_low
   pop   first_time_value_low
 
-  mul   last_time_value_low, last_gyro_value_high
+  mulsu last_gyro_value_high, last_time_value_low
   mov   first_angel_low, R0
   mov   first_angel_high, R1
 
@@ -135,14 +98,21 @@ check_turn_angel:
 
 
   cpi   first_gyro_value_high, left_turn_value_out ; Sammenligner den gyro værdi med venstre sving.
-  brlt  startover ;Hoop hvis venstre sving værdi >= gyro.
+  brlt  check_right ;Hoop hvis venstre sving værdi >= gyro.
 
   cpi   first_gyro_value_high, right_turn_value_out
-  brge  startover  ;Hvis gyro > højre sving værdi, så hop.
+  brge  send_byte  ;Hvis gyro > højre sving værdi, så hop.
 
   rjmp  check_turn_angel
 
-startover:
-  send_bt_byte [last_angel_high]
-  
+check_right:
+  cpi   first_gyro_value_high, right_turn_value_out
+  brge  send_byte  ;Hvis gyro > højre sving værdi, så hop.
+  jmp   check_turn_angel
+
+send_byte:
+  send_bt_byte [first_gyro_value_high]
   jmp   next_map_sektion
+
+ERROR:
+rjmp Error
