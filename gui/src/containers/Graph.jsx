@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {LineChart} from 'rd3'
 import Rx from 'rx'
+import AnimFrameObs from '../helpers/animationFrameObserver'
+import fastPlot from 'fast-plot'
 
 class Graph extends Component {
 	constructor(props){
@@ -12,36 +12,39 @@ class Graph extends Component {
 			.debounce(200)
 			.subscribe(() => {
 				this.updateSize()
-				this.forceUpdate()
 			})
 		this.updateSize()
-		this.forceUpdate()
-		this.timerObserver = Rx.Observable
-			.interval(400)
+		this.animFrameObs = new AnimFrameObs()
 			.subscribe(() => {
+				console.log("Rerender anim frame")
 				this.forceUpdate()
 			})
+		this.ctx = this.refs.canvas.getContext("2d")
 	}
 	componentWillUnmount(){
 		this.resizeObserver.dispose()
-		this.timerObserver.dispose()
+		this.animFrameObs.dispose()
 	}
 	updateSize(){
 		let rect = this.refs.container.getClientRects()[0]
-		this.width = rect.width
-		this.height = rect.height - 15
+		this.refs.canvas.width = rect.width
+		this.refs.canvas.height = rect.height - 15
+		this.renderGraph()
+	}
+	renderGraph(){
+		fastPlot(this.ctx, {
+			lines: [
+				{
+					x: [1,2,3,4],
+					y: [1,2,3,4]
+				}
+			]
+		})
 	}
 	render(){
-		let {data} = this.props
 		return (
 			<div ref="container" style={{"overflow":"hidden", "width":"100%", "height":"100%"}}>
-				<LineChart
-				  legend={false}
-				  data={data}
-				  width={this.width}
-				  height={this.height}
-					colors={(a) => {return ["red","green","blue", "orange", "pink", "purple"][a]}}
-				/>
+				<canvas ref="canvas"></canvas>
 			</div>
 		)
 	}
