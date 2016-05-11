@@ -8,7 +8,7 @@ import LeftNavPP from './LeftNavPP.jsx'
 import AppBarPP from './AppBarPP.jsx'
 
 import Terminal from './Terminal.jsx'
-//import Graph from './Graph.jsx'
+import Graph from './Graph.jsx'
 
 import {btConnect} from '../actions/bt'
 import {init as btInit, DEVICE_NAME} from '../services/bluetooth'
@@ -36,7 +36,7 @@ class App extends Component{
 				body = <Terminal />
 				break;
 			case "GRAPH":
-				body = <div></div>//<Graph />
+				body = <Graph />
 				break;
 			default:
 				body = <div>Unknown route, {mainRoute}</div>

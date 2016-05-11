@@ -34,6 +34,27 @@ class ProtocolService {
 	}
 }
 
+const is = test => typeof test !== "undefined"
+
+const toSigned = val => val > 127 ? val - 256 : val
+
+const quickAddToGraph = (name, x, y) => {
+	let lines = window.graph.lines || (window.graph.lines = [])
+	let	line = lines.find(line => line.name === name)
+	if (!line){
+			line = {name}
+			window.graph.lines.push(line)
+	}
+	;(line.x || (line.x = [])).push(x)
+	;(line.y || (line.y = [])).push(y)
+	if (!is(line.xmin) || x < line.xmin) line.xmin = x
+	if (!is(line.xmax) || x > line.xmax) line.xmax = x
+	if (!is(line.ymin) || y < line.ymin) line.ymin = y
+	if (!is(line.ymax) || y > line.ymax) line.ymax = y
+}
+
+window.quickAddToGraph = quickAddToGraph
+
 class Type {
 	constructor(name, byteCount, func){
 		this.name = name
@@ -42,45 +63,8 @@ class Type {
 	}
 }
 
-const toSigned = (val) => {
-	return val > 127 ? val - 256 : val
-}
-
-/*const quickAddToGraph = (name, point) => {
-	let data = window.data.name || (window.data.name = [])
-	data.push(point)
-}*/
-
-
-const quickAddToGraph = (name, point) => {
-	window.store.dispatch(
-		addDataToGraph({name, point})
-	)
-}
-
-
-let idx = 0, idy = 0, idz = 0
-
 const types = {
-	128: new Type("Start", 1, () => {
+	200: new Type("Start", 1, () => {
 		window.speak("Controller restarted.")
-	}),
-	30: new Type("accX", 2, (data) => {
-		quickAddToGraph("accX", {x:idx++, y: toSigned(data[0])})
-	}),
-	31: new Type("accY", 2, (data) => {
-		quickAddToGraph("accY", {x:idy++, y: toSigned(data[0])})
-	}),
-	32: new Type("accZ", 2, (data) => {
-		quickAddToGraph("accZ", {x:idz++, y: toSigned(data[0])})
-	}),
-	40: new Type("gyrX", 2, (data) => {
-		quickAddToGraph("gyrX", {x:idz++, y: toSigned(data[0])})
-	}),
-	41: new Type("gyrY", 2, (data) => {
-		quickAddToGraph("gyrY", {x:idz++, y: toSigned(data[0])})
-	}),
-	42: new Type("gyrZ", 2, (data) => {
-		quickAddToGraph("gyrZ", {x:idz++, y: toSigned(data[0])})
 	})
 }

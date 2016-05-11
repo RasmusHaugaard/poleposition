@@ -2,7 +2,7 @@
   "private": "true",
   "dependencies": {
     "annyang": "2.4.0",
-    "fast-plot": "0.0.4",
+    "fast-plot": "0.0.7",
     "material-ui": "0.15.0-alpha.1",
     "react": "0.14.8",
     "react-dom": "0.14.8",

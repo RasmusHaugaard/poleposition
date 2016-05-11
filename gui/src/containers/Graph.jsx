@@ -3,23 +3,23 @@ import Rx from 'rx'
 import AnimFrameObs from '../helpers/animationFrameObserver'
 import fastPlot from 'fast-plot'
 
+
 class Graph extends Component {
 	constructor(props){
 		super(props)
 	}
 	componentDidMount(){
+		this.ctx = this.refs.canvas.getContext("2d")
 		this.resizeObserver = Rx.Observable.fromEvent(window, 'resize')
 			.debounce(200)
 			.subscribe(() => {
 				this.updateSize()
 			})
 		this.updateSize()
-		this.animFrameObs = new AnimFrameObs()
+		this.animFrameObs = AnimFrameObs()
 			.subscribe(() => {
-				console.log("Rerender anim frame")
-				this.forceUpdate()
+				this.renderGraph()
 			})
-		this.ctx = this.refs.canvas.getContext("2d")
 	}
 	componentWillUnmount(){
 		this.resizeObserver.dispose()
@@ -27,19 +27,15 @@ class Graph extends Component {
 	}
 	updateSize(){
 		let rect = this.refs.container.getClientRects()[0]
-		this.refs.canvas.width = rect.width
-		this.refs.canvas.height = rect.height - 15
+		let width = rect.width
+		let height = rect.height - 15
+		this.refs.canvas.width = width * window.devicePixelRatio
+		this.refs.canvas.height = height * window.devicePixelRatio
+		this.refs.canvas.style.width = width + 'px'
 		this.renderGraph()
 	}
 	renderGraph(){
-		fastPlot(this.ctx, {
-			lines: [
-				{
-					x: [1,2,3,4],
-					y: [1,2,3,4]
-				}
-			]
-		})
+		fastPlot(this.ctx, window.graph)
 	}
 	render(){
 		return (
@@ -53,12 +49,13 @@ class Graph extends Component {
 	}
 }
 
+/*
 const mapStateToProps = (state) => {
 	return {
 		data: state.graph
 	}
 }
-
-Graph = connect(mapStateToProps)(Graph)
+*/
+//Graph = connect(mapStateToProps)(Graph)
 
 export default Graph
