@@ -2,18 +2,6 @@
 .filedef spmcrval = R17
 .filedef temp1 = R18
 
-.equ pf_write_page_code = 250
-.equ pf_erase_page_code = 251
-.equ pf_file_end_code = 252
-.equ pf_reset_code = 253
-
-.equ pf_tr_code_error = 99
-.equ pf_tr_buffer_overflow_error = 101
-.equ pf_tr_grant_permission = 200
-.equ pf_tr_page_written = 201
-.equ pf_tr_page_erased = 202
-.equ pf_tr_resetting = 203
-
 pf_start:
 	rjmp pf_end
 
@@ -40,7 +28,7 @@ pf_loop:
 	cpi temp1, pf_reset_code
 	breq pf_reset
 
-	force_send_bt_byte [pf_tr_code_error]
+	force_send_bt_byte [pf_tr_unknown_set_code]
 pf_reset:
 	force_send_bt_byte [pf_tr_resetting]
 	cli
