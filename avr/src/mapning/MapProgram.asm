@@ -1,33 +1,59 @@
+.include "src/def/m32def.inc"
+
 ;pladser i SRAM defineres.
-.set  mapping_data_addr = addr
-  .equ  mapping_lenght = 200
-.set addr = addr + mapping_lenght
+
+;.equ navn = addr
+;.set addr = addr +1
+.set  addr = 0x60
+  .equ  map_data_pointer_l = addr
+.set  addr = addr + 1
+  .equ  map_data_pointer_h = addr
+.set addr = addr + 1
+  .equ  mapping_data_addr = addr
+  .equ  mapping_data_lenght = 200
+.set addr = addr + mapping_data_lenght
   .equ last_map_adress = addr - 1
 
-;Nogle registere tildeles et navn.
 ;.equ last_point_low
-.def  line_register = R16
+.def  first_angel_low = R13
+.def  first_angel_high = R14
+.def  last_angel_low = R15
+.def  last_angel_high = R16
 .def  first_point_low = R17
 .def  first_point_high = R18
 .def  last_point_low = R19
 .def  last_point_high = R20
-.def  gyro_value_high = R21
-.def  current_turn_value = R22
-.def  next_point_low = R23
-.def  next_point_high = R24
-.def  status_register = R25
-.def  first_time_value_low = R26
-.def  first_time_value_high = R27
-.def  last_time_value_low = R28
-.def  last_time_value_high = R29
-.def  next_gyro_value_high = R30
+.def  first_time_value_low = R21
+.def  first_time_value_high = R22
+.def  current_turn_value = R23
+.def  current_status = R24
+.def  first_gyro_value_high = R25
+.def  last_gyro_value_high = R26
+.def  last_time_value_low = R27
+.def  last_time_value_high = R28
+.def  light_status = R29
+
 
 ;Nogle værdier defineres i starten.
-.equ  line_detected =
 .equ  left_turn_value_in = 15
 .equ  right_turn_value_in = -15
 .equ  left_turn_value_out = 10
 .equ  right_turn_value_out = -10
+
+.equ  degree180 = 170
+.equ  degree135 = 125
+.equ  degree90 = 80
+.equ  degree45 = 35
+
+.equ  length_value_180 = 140
+.equ  length_value_135 = 105
+.equ  length_value_90 = 85
+.equ  length_value_45 = 40
+
+.equ  gyr_addr_w = 0b11010000
+.equ  gyr_addr_r = 0b11010001
+.equ  gyr_sub_zh = 0x2D
+
 .equ  straigh_status     = 0b00000000
 .equ  reset_status       = 0b00000000
 .equ  status_left_turn   = 0b10000000
@@ -39,40 +65,66 @@
 .equ  status_inner_turn  = 0b01000000
 .equ  status_outter_turn = 0b00000000
 
-;Lav kode der tjekker om vi er kørt over startlinjen
-white_line:
-  ldi line_register, line_value ;Værdien skal hentes fra registe
-  cpi
+.org 0x00
+rjmp init
 
-  rjmp white_line
+.org 0x2a
+init:
+  .include "src/i2c/i2c_id_macros.asm"
+  .include "src/setup/stack_pointer.asm"
+  .include "src/i2c/i2c_setup.asm"
+  .include "src/util/delay.asm"
+  .include "src/i2c/i2c_setup_gyr.asm"
 
-;Når startlijnen er set, log data for første punkt.
-start_mapping:
-  get_dis_hl[first_point_high, first_point_low]
+  sts   map_data_pointer_l, low(map_data_start)
+  sts   map_data_pointer_h, high(map_data_start)
 
-;Loop der tester om vi kører ligeud eller er i et sving.
+.macro store_byte_map_data
+.endm
+
+.macro store_byte_map_data_8
+  lds   ZL, map_data_pointer_l
+  lds   ZH, map_data_pointer_h
+  st    Z+, @0
+
+  sts   map_data_pointer_l, ZL
+  sts   map_data_pointer_h, ZH
+.endm
+
+  sbi   DDRA, PORTA0
+
+
+line_detect:
+;kigger efter hvide streg.
+
+
 check_for_turn:
-  I2C_ID_READ [11010000, 0101101, 11010001, gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
+;  get_dis_hl[first_point_high, first_point_low]
+  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
 
-  ldi   current_turn_value, left_turn_value_in
-  cp    current_turn_value, gyro_value_high ; Sammenligner den gyro værdi med venstre sving.
-  brlo  left_turn_is_detected ;Hoop hvis venstre sving værdi < gyro.
+  ldi   light_status, 0b00000000
+  out   PORTA, light_status
 
-  ldi   current_turn_value, right_turn_value_in
-  cp    current_turn_value, gyro_value_high
-  brsh  right_turn_is_detected  ;Hvis gyro =< højre sving værdi, så hop.
+  next_map_sektion:
+
+  cpi   first_gyro_value_high, left_turn_value_in ; Sammenligner den gyro værdi med venstre sving.
+  brge  left_turn_detected ;Hoop hvis venstre sving værdi < gyro.
+
+  cpi   first_gyro_value_high, right_turn_value_in
+  brlt  right_turn_jump  ;Hvis gyro =< højre sving værdi, så hop.
 
   rjmp  check_for_turn
 
-;Hvis vi er i et sving så gør følgende:
-left_turn_is_detected:
-;1. Log den næste værdi for hvor langt vi er kørt, træk dem fra hinanden,
-;og sæt denne værdi ind i vores SRAM.
-  get_dis_hl[last_point_high, last_point_low]
-  get_time_hl[first_time_value_high, first_time_value_low]
-  I2C_ID_READ [11010000, 0101101, 11010001, gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
+right_turn_jump:
+  jmp   right_turn_detected
 
-  sts   mapping_data_addr, straigh_status ;Vi loader første dage ind i SRAM for lige stykke
+left_turn_detected:
+  ;get_dis_hl[last_point_high, last_point_low]
+  ;get_time_hl[first_time_value_high, first_time_value_low]
+  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
+
+  ldi   current_status, straigh_status
+  store_byte_map_data [current_status];Vi loader første dage ind i SRAM for lige stykke
 
   push  last_point_high
   push  last_point_low
@@ -83,21 +135,21 @@ left_turn_is_detected:
   pop   first_point_low
   pop   first_point_high
 
-  sts   mapping_data_addr, last_point_low ; Husk det med adressen
-  sts   mapping_data_addr, last_point_high ;Husk det med adresse
+  store_byte_map_data [last_point_low]
+  store_byte_map_data [last_point_high]
 
-;left status og længde af venstre sving findes:
+  ;left status og længde af venstre sving findes:
   ldi   status_register, reset_status       ;Vi reset status til 0.
   ori   status_register, status_left_turn   ;Vi "or" vores status værdi
-  rjmp  turn_end_detect
+  jmp   check_turn_angel
 
-right_turn_is_detected:
+right_turn_detected:
+  ;get_dis_hl[last_point_high, last_point_low]
+  ;get_time_hl[first_time_value_high, first_time_value_low]
+  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
 
-  get_dis_hl[last_point_high, last_point_low]
-  get_time_hl[first_time_value_high, first_time_value_low]
-  I2C_ID_READ [11010000, 0101101, 11010001, gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
-
-  sts   mapping_data_addr, straigh_status ;Vi loader første dage ind i SRAM for lige stykke
+  ldi   current_status, straigh_status
+  store_byte_map_data [current_status]
 
   push  last_point_high
   push  last_point_low
@@ -108,60 +160,130 @@ right_turn_is_detected:
   pop   first_point_low
   pop   first_point_high
 
-  sts   mapping_data_addr, last_point_low ; Husk det med adressen
-  sts   mapping_data_addr, last_point_high ;Husk det med adresse
+  store_byte_map_data [last_point_low]
+  store_byte_map_data [last_point_high]
 
-;højre status og længde af højre sving findes:
+  ;left status og længde af venstre sving findes:
   ldi   status_register, reset_status       ;Vi reset status til 0.
-  ori   status_register, status_rigth_turn
-  rjmp turn_end_detect
+  ori   status_register, status_left_turn   ;Vi "or" vores status værdi
 
-;3. Når vi kører ud af sving, sæt lastpoint til omdrejningstæller.
-turn_end_detect:
-  get_dis_hl[last_point_high, last_point_low]
-  get_time_hl[last_time_value_high, last_time_value_low]
-  I2C_ID_READ [11010000, 0101101, 11010001, gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
+check_turn_angel:
+;  get_time_hl[last_time_value_high, last_time_value_low]
+  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, last_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
 
-  sub   last_time_value_low, first_time_value_low   ;Finder tiden mellem de to målinger.
-  sbci  last_time_value_high, first_time_value_high ;Finder tiden mellem de to målinger
+  ldi   light_status, 0b00000001
+  out   PORTA, light_status
 
-  sub   next_gyro_value_high, gyro_value_high ;Finder vinkel ændringen.
+  push  last_gyro_value_high
+  sub   last_gyro_value_high, first_gyro_value_high
+  pop   first_gyro_value_high
 
-  mul   next_gyro_value_high,
+  push  last_time_value_low
+  sub   last_time_value_low, first_time_value_low
+  pop   first_time_value_low
 
-  ldi   current_turn_value, left_turn_value_out
-  cp    current_turn_value, gyro_value_high ; Sammenligner den gyro værdi med venstre sving.
-  brlo  turn_ended ;Hoop hvis venstre sving værdi >= gyro.
+  mul   last_time_value_low, last_gyro_value_high
+  mov   first_angel_low, R0
+  mov   first_angel_high, R1
 
-  ldi   current_turn_value, right_turn_value_in
-  cp    current_turn_value, gyro_value_high
-  brlo  turn_ended  ;Hvis gyro > højre sving værdi, så hop.
+  add   last_angel_low, first_angel_low
+  adc   last_angel_high, first_angel_high
 
-  rjmp  turn_end_detect
 
-turn_ended:
-;4. Hvis venstre sving, find ud af hvor langt svinget er. Sammenlign med
-;en værdi for den målte længde af et sving. Gyro bruges til at finde ud af hvor
-;mange grader vi har drejet, og omdrejninger finder længde af svinget.
-  mov   next_point_low, last_point_low
-  mov   next_point_high, last_point_high
+  cpi   first_gyro_value_high, left_turn_value_out ; Sammenligner den gyro værdi med venstre sving.
+  brlt  check_angel_amount ;Hoop hvis venstre sving værdi >= gyro.
+
+  cpi   first_gyro_value_high, right_turn_value_out
+  brge  check_angel_amount  ;Hvis gyro > højre sving værdi, så hop.
+
+  rjmp  check_turn_angel
+
+check_angel_amount:
+  get_dis_hl [last_point_high, last_point_low]
+
+  push  last_point_high
+  push  last_point_low
 
   sub   last_point_low, first_point_low
-  sbci  last_point_high, first_point_high
+  sbc   last_point_high, first_point_high
 
-;4.1 Først finder vi ud af om det er højre eller venstre sving. Hvis venstre,
-;log den status ind, ellers hvis højre log en anden status.
+  pop    first_point_low
+  pop    first_point_high
 
-;4.2 Dernæst køres en stanard kode, som viser hvor meget vi har drejet, inden
-;svinget stopper igen. Denne status smides ind.
+  cpi   last_angel_high, degree180
+  brge  check_turn_length_180   ;Hvis last_angel > 180 grader, så hop
 
-;5. Vi tjekker om vi er i inderste eller yderste bane. Her sammenligner vi
-;længden af svinget, med målte værdier. Hvis vi ved det er 90 graders sving, så
-;skal vi tjekke om det er et langt eller kort 90 graders sving. Herefter log status.
+  cpi   last_angel_high, degree135
+  brge  check_turn_length_135   ;Hvis last_angel > 135 grader, så hop
 
-;Når statusregisteret er færdiget, smid dette ud i SRAM. Herefter træk de to længder
-;fra hinanden og log herefter denne værdi i SRAM.
+  cpi   last_angel_high, degree90
+  brge  check_turn_length_90   ;Hvis last_angel > 90 grader, så hop
 
-;Lav lastpoint om til first point og start forfra.
+  cpi   last_angel_high, degree90
+  brge  check_turn_length_45   ;Hvis last_angel > 90 grader, så hop
+
+  rjmp  ERROR
+
+check_turn_length_180:
+  ori   current_status, status_four_turns
+
+  cpi   last_point_high, length_value_180
+  brge  outter_lane_180
+  ori   current_status, status_inner_turn
+  rjmp  store_data_to_sram
+
+  outter_lane_180:
+    ori   current_status, status_outter_turn
+    rjmp  store_data_to_sram
+
+
+check_turn_length_135:
+  ori   current_status, status_three_turns
+
+  cpi   last_point_high, length_value_135
+  brge  outter_lane_135
+  ori   current_status, status_inner_turn
+  rjmp  store_data_to_sram
+
+  outter_lane_135:
+    ori   current_status, status_outter_turn
+    rjmp  store_data_to_sram
+
+check_turn_length_90:
+  ori   current_status, status_two_turns
+
+  cpi   last_point_high, length_value_90
+  brge  outter_lane_90
+  ori   current_status, status_inner_turn
+  rjmp  store_data_to_sram
+
+  outter_lane_90:
+    ori   current_status, status_outter_turn
+    rjmp  store_data_to_sram
+
+check_trurn_length_45:
+  ori   current_status, status_one_turn
+
+  cpi   last_point_high, length_value_45
+  brge  outter_lane_45
+  ori   current_status, status_inner_turn
+  rjmp  store_data_to_sram
+
+  outter_lane_45:
+    ori   current_status, status_outter_turn
+    rjmp  store_data_to_sram
+
+store_data_to_sram:
+  store_byte_map_data [current_status]
+  store_byte_map_data [last_point_low]
+  store_byte_map_data [last_point_high]
+
+  ldi   last_angel_low, reset_status
+  ldi   last_angel_high, reset_status
+  ldi   current_status, reset_status
+
+  jmp  next_map_sektion
 
 ERROR:
+
+  rjmp  ERROR

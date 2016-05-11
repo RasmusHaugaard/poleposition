@@ -94,12 +94,8 @@ init:
   sbi   DDRA, PORTA0
 
 
-line_detect:
-;kigger efter hvide streg.
-
 
 check_for_turn:
-;  get_dis_hl[first_point_high, first_point_low]
   I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
 
   ldi   light_status, 0b00000000
@@ -108,67 +104,15 @@ check_for_turn:
   next_map_sektion:
 
   cpi   first_gyro_value_high, left_turn_value_in ; Sammenligner den gyro værdi med venstre sving.
-  brge  left_turn_detected ;Hoop hvis venstre sving værdi < gyro.
+  brge  check_turn_angel ;Hoop hvis venstre sving værdi < gyro.
 
   cpi   first_gyro_value_high, right_turn_value_in
-  brlt  right_turn_jump  ;Hvis gyro =< højre sving værdi, så hop.
+  brlt  check_turn_angel  ;Hvis gyro =< højre sving værdi, så hop.
 
   rjmp  check_for_turn
 
-right_turn_jump:
-  jmp   right_turn_detected
-
-left_turn_detected:
-  ;get_dis_hl[last_point_high, last_point_low]
-  ;get_time_hl[first_time_value_high, first_time_value_low]
-  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
-
-  ldi   current_status, straigh_status
-  store_byte_map_data [current_status];Vi loader første dage ind i SRAM for lige stykke
-
-  push  last_point_high
-  push  last_point_low
-
-  sub   last_point_low, first_point_low
-  sbci  last_point_high, first_point_high
-
-  pop   first_point_low
-  pop   first_point_high
-
-  store_byte_map_data [last_point_low]
-  store_byte_map_data [last_point_high]
-
-  ;left status og længde af venstre sving findes:
-  ldi   status_register, reset_status       ;Vi reset status til 0.
-  ori   status_register, status_left_turn   ;Vi "or" vores status værdi
-  jmp   check_turn_angel
-
-right_turn_detected:
-  ;get_dis_hl[last_point_high, last_point_low]
-  ;get_time_hl[first_time_value_high, first_time_value_low]
-  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
-
-  ldi   current_status, straigh_status
-  store_byte_map_data [current_status]
-
-  push  last_point_high
-  push  last_point_low
-
-  sub   last_point_low, first_point_low
-  sbci  last_point_high, first_point_high
-
-  pop   first_point_low
-  pop   first_point_high
-
-  store_byte_map_data [last_point_low]
-  store_byte_map_data [last_point_high]
-
-  ;left status og længde af venstre sving findes:
-  ldi   status_register, reset_status       ;Vi reset status til 0.
-  ori   status_register, status_left_turn   ;Vi "or" vores status værdi
-
 check_turn_angel:
-;  get_time_hl[last_time_value_high, last_time_value_low]
+  get_time_hl[last_time_value_high, last_time_value_low]
   I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, last_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
 
   ldi   light_status, 0b00000001
@@ -191,98 +135,14 @@ check_turn_angel:
 
 
   cpi   first_gyro_value_high, left_turn_value_out ; Sammenligner den gyro værdi med venstre sving.
-  brlt  check_angel_amount ;Hoop hvis venstre sving værdi >= gyro.
+  brlt  startover ;Hoop hvis venstre sving værdi >= gyro.
 
   cpi   first_gyro_value_high, right_turn_value_out
-  brge  check_angel_amount  ;Hvis gyro > højre sving værdi, så hop.
+  brge  startover  ;Hvis gyro > højre sving værdi, så hop.
 
   rjmp  check_turn_angel
 
-check_angel_amount:
-  get_dis_hl [last_point_high, last_point_low]
-
-  push  last_point_high
-  push  last_point_low
-
-  sub   last_point_low, first_point_low
-  sbc   last_point_high, first_point_high
-
-  pop    first_point_low
-  pop    first_point_high
-
-  cpi   last_angel_high, degree180
-  brge  check_turn_length_180   ;Hvis last_angel > 180 grader, så hop
-
-  cpi   last_angel_high, degree135
-  brge  check_turn_length_135   ;Hvis last_angel > 135 grader, så hop
-
-  cpi   last_angel_high, degree90
-  brge  check_turn_length_90   ;Hvis last_angel > 90 grader, så hop
-
-  cpi   last_angel_high, degree90
-  brge  check_turn_length_45   ;Hvis last_angel > 90 grader, så hop
-
-  rjmp  ERROR
-
-check_turn_length_180:
-  ori   current_status, status_four_turns
-
-  cpi   last_point_high, length_value_180
-  brge  outter_lane_180
-  ori   current_status, status_inner_turn
-  rjmp  store_data_to_sram
-
-  outter_lane_180:
-    ori   current_status, status_outter_turn
-    rjmp  store_data_to_sram
-
-
-check_turn_length_135:
-  ori   current_status, status_three_turns
-
-  cpi   last_point_high, length_value_135
-  brge  outter_lane_135
-  ori   current_status, status_inner_turn
-  rjmp  store_data_to_sram
-
-  outter_lane_135:
-    ori   current_status, status_outter_turn
-    rjmp  store_data_to_sram
-
-check_turn_length_90:
-  ori   current_status, status_two_turns
-
-  cpi   last_point_high, length_value_90
-  brge  outter_lane_90
-  ori   current_status, status_inner_turn
-  rjmp  store_data_to_sram
-
-  outter_lane_90:
-    ori   current_status, status_outter_turn
-    rjmp  store_data_to_sram
-
-check_trurn_length_45:
-  ori   current_status, status_one_turn
-
-  cpi   last_point_high, length_value_45
-  brge  outter_lane_45
-  ori   current_status, status_inner_turn
-  rjmp  store_data_to_sram
-
-  outter_lane_45:
-    ori   current_status, status_outter_turn
-    rjmp  store_data_to_sram
-
-store_data_to_sram:
-  store_byte_map_data [current_status]
-  store_byte_map_data [last_point_low]
-  store_byte_map_data [last_point_high]
-
-  ldi   last_angel_low, reset_status
-  ldi   last_angel_high, reset_status
-  ldi   current_status, reset_status
-
-  jmp  next_map_sektion
+startover:
+  send_bt_byte [last_angel_high]
   
-ERROR:
-  rjmp  ERROR
+  jmp   next_map_sektion
