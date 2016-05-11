@@ -153,7 +153,7 @@ lap_finished:
 	pop R18						;..
 	pop R17						;..
 	pop R16						;..
-	ret						;retunere fra ISR
+	ret							;retunere fra ISR
 
 reset_lap_timer:
 	ldi R16, 0x00				;nulstiller 24_bit timer register
