@@ -1,11 +1,11 @@
-import {STATUS, connect, disconnect, send} from '../services/bluetooth'
+import {STATUS, connect, disconnect, send, DEVICE_NAME} from '../services/bluetooth'
 
 export const BT_CLICK = "BT_CLICK"
 export const btClick = (bt) => {
 	return (dispatch) => {
 		switch (bt) {
 			case STATUS.NOTCONNECTED:
-				dispatch(btConnect())
+				dispatch(btConnect(DEVICE_NAME))
 				return;
 			case STATUS.CONNECTED:
 				dispatch(btDisconnect())
@@ -15,10 +15,11 @@ export const btClick = (bt) => {
 }
 
 export const BT_CONNECT = "BT_CONNECT"
-export const btConnect = () => {
+export const btConnect = (deviceName) => {
 	return (dispatch) => {
 		dispatch(btConnecting())
 		connect(
+			deviceName,
 			() => dispatch(btConnected()),
 			errorText => dispatch(btFailedToConnect(errorText))
 		)

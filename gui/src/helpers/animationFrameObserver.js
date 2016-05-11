@@ -8,9 +8,7 @@ export default function(){
 			var requestId,
 					startTime = Date.now(),
 					callback = function (currentTime) {
-							if (typeof requestId === "number") {
-									requestId = request(callback);
-							}
+							if (typeof requestId === "number") requestId = request(callback)
 							observer.onNext(Math.max(0, currentTime - startTime))
 							startTime = currentTime
 					}
