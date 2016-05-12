@@ -11,6 +11,11 @@ Som tidligere nævnt, er det "timer1" som bliver benyttet i dette kodemodul. Ind
 \item Extern interrupt 2 
 \end{enumerate}
 
+\subsubsection{Prescaler}
+En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå på en omgang. Det vil sige at jo lavere prescaler jo større præsition. Problemet ved en lav prescaler er dog, at man mindsker den tid timeren kan tælle, inden den overflower. Timer1 bliver også brugt af andre dele af programmet, til bla. at måle hastighed på motoren, hvilket sidder et forholdsvis stort krav om nøjagtighed. For både at kunne bevare en høj nøjagtighed, men samtidig bevare en lang tælletid, har vi valgt at tildele timer1 et ekstra 8-bit register. Timer1 kan max indeholde værdien 65536(16-bit), hvor derimod med det ekstra 8-bit registre, kan den indeholde værdien 16777216 (24-bit). Hvor vi før var nødsaget til at bruge prescaleren 10
+
+
+
 
 
 * Valg af prescaler (udregninger)\\
