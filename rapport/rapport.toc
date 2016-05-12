@@ -8,5 +8,6 @@
 \contentsline {section}{\numberline {6}Boost converter}{11}
 \contentsline {section}{\numberline {7}Lap timer}{13}
 \contentsline {subsection}{\numberline {7.1}Ops\IeC {\ae }tning af Lap timer}{13}
-\contentsline {subsection}{\numberline {7.2}Kode}{13}
-\contentsline {subsection}{\numberline {7.3}Macro's}{13}
+\contentsline {subsubsection}{\numberline {7.1.1}Prescaler}{13}
+\contentsline {subsection}{\numberline {7.2}Kode}{14}
+\contentsline {subsection}{\numberline {7.3}Macro's}{14}

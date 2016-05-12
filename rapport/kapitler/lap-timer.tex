@@ -1,21 +1,23 @@
 % !TEX root = ../rapport.tex
 \newpage
 \section{Lap timer}
-Formålet med Lap timeren er at have et stykke kode som måler og returnere omgangstiden, for hver omgang bilen køre. Lap timeren er baseret på "timer1" og er derfor den største timer. Lap timeren bliver udover omgangstid, også brugt af andre kode moduler, til at tage tid.
+Formålet med Lap timeren er at have et stykke kode som måler og returnere omgangstiden, for hver omgang bilen køre. Lap timeren er baseret på "timer1" som er den største timer. Lap timeren bliver udover omgangstid, også brugt af andre kode moduler, til at måle tid.
 \subsection{Opsætning af Lap timer}
 Som tidligere nævnt, er det "timer1" som bliver benyttet i dette kodemodul. Inden timer1 kan bruges, skal følgende siddes op:
 \begin{enumerate}
 \item Control register
 \item Nulstille timer/counter register
+\item Global interrupt
 \item Timer1 overflow interrupt
 \item Extern interrupt 2 
 \end{enumerate}
 
 \subsubsection{Prescaler}
-En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå på en omgang. Det vil sige at jo lavere prescaler jo større præsition. Problemet ved en lav prescaler er dog, at man mindsker den tid timeren kan tælle, inden den overflower. Timer1 bliver også brugt af andre dele af programmet, til bla. at måle hastighed på motoren, hvilket sidder et forholdsvis stort krav om nøjagtighed. For både at kunne bevare en høj nøjagtighed, men samtidig bevare en lang tælletid, har vi valgt at tildele timer1 et ekstra 8-bit register. Timer1 kan max indeholde værdien 65536(16-bit), hvor derimod med det ekstra 8-bit registre, kan den indeholde værdien 16777216 (24-bit). Hvor vi før var nødsaget til at bruge prescaleren 10
+En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå at tælle inden den bliver afbrudt igen. Det vil sige at jo lavere prescaler jo større præsition. Problemet ved en lav prescaler er dog, at man mindsker den tid timeren kan tælle, inden den overflower. Timer1 bliver også brugt af andre dele af programmet, til bla. at måle hastighed på motoren, hvilket sidder et forholdsvis stort krav om nøjagtighed. For både at kunne bevare en høj nøjagtighed, men samtidig have en lang tælletid, har vi valgt at tildele timer1 et ekstra 8-bit register. Alene kan timer1 max indeholde decimalværdien 65536(16-bit), hvor derimod med det ekstra 8-bit registre, kan timeren indeholde decimalværdien 16777216 (24-bit).\\
 
+Prescaleren er et vigtigt element i timeren. For at finde den rette prescaler bruges tabel \textbf{Tabel siddes ind her!}
 
-
+Microcontroleren interne clock er sat op til at køre med 16MHz. Som det kan ses i \textbf{Bilag (Lap timer udregninger)}, vil et 16-bit timer register, ved en prescaler på 256, overflow efter ca. 1 sekund. Ved at tildele timeren det ekstra 8-bit register, kan timeren nu køre i ca. 268 sekunder, inden et overflow vil finde sted.
 
 
 * Valg af prescaler (udregninger)\\
@@ -24,6 +26,7 @@ En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå 
 
 
 \subsection{Kode}
+Da timer1 er blevet tildelt et ekstra 8-bits register
 \subsection{Macro's}
 
 
