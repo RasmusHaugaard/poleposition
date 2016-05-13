@@ -6,28 +6,28 @@ Filerne "makefile" og "package.json" samt mappen "scripts" beskriver vores build
 Installer avra og avrdude.  
 Installer node.js (indeholder npm).  
 Åben en terminal ved denne mappe.  
-Installer watch-cli globalt:  
+Installer gulp-cli globalt:  
 ```
-sudo npm i -g watch-cli
+sudo npm i -g gulp-cli
 ```  
 Nu kan man assemble og flashe med usb:  
 ```
-make
+gulp
 ```  
 kun assemble:  
 ```
-make assemble
+gulp assemble
 ```  
 assemble og flashe med usb, når der er filændringer:  
 ```
-make watch
+gulp watch
 ```  
 kun assemble, når der er filændringer:  
 ```
-make watchassemble
+gulp watchassemble
 ```  
 
-## build setup
+## build setup (.gulpfile)
 Kildekoden, "src", gives til preprocessoren.
 Preprocessorens output lægges i en ny mappe "temp" (temporary).
 Assembleren køres så fra mappen "temp".
