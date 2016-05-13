@@ -18,25 +18,24 @@ En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå 
 Hver gang der kommer et impuls fra motor omdrejnings sensoren (\textbf{Indsæt reference motor sensor kapitel})refereres der til dette som et motor "tik".
 \textbf{Prescaleren} er et vigtigt element i timeren. For at finde den rette prescaler bruges tabel \textbf{Tabel link ind her!}.\\\\
 
-\begin{tabular}{ | l | c | r | }
+\begin{tabular}{ | r | l | r | r | }
 	\hline
-	Prescaler 	& $\Delta$t pr. count 	& Counts	\\
+	Prescaler 	& $\Delta$t pr. count 	& Counts pr. "tik"	&	Overflow efter	\\
 	\hline
-	0 			& 	 			&  			\\
+	0 			& 	 	0.0000000625 s	&  		8000.00		&		1.05 s		\\
 	\hline	
-	8 			& 	 			&  			\\
+	8 			& 	 	0.0000005 s		&  		1000.00		&		8.39 s		\\
 	\hline
-	64 			& 	 			&  			\\
+	64 			& 	 	0.000004 s		&  		125.00		&		67.10 s		\\
 	\hline
-	256 		& 	 			&  			\\
+	256 		& 	 	0.000016 s		&  		31.25		&		268.44 s	\\
 	\hline
-	1024 		& 	 			&  			\\
+	1024 		& 	 	0.000064 s		&  		7.81		&		1073.74 s	\\
 	\hline
 \end{tabular}\\\\
-\textsl{\footnotesize *Tabellen viser antal count's timeren tælle, pr motor tik, ved motor hastighed på 1 KHz.}\\
+\textsl{\footnotesize Værdierne i tabellen er baseret på en motor hastighed på 2KHz, Intern clock på 16MHz og 24-bit timer register.}\\
 
 
-Tabellen viser antal count's timeren kan tælle, pr motor tik, ved motor hastighed på 1 KHz. 
 
 Microcontroleren interne clock er sat op til at køre med 16MHz. Som det kan ses i \textbf{Bilag (Lap timer udregninger)}, vil et 16-bit timer register, ved en prescaler på 256, overflow efter ca. 1 sekund. Ved at tildele timeren det ekstra 8-bit register, kan timeren nu køre i ca. 268 sekunder, inden et overflow vil finde sted. 
 

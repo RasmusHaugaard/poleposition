@@ -1,22 +1,13 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2016.5.12)  13 MAY 2016 02:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.5.11)  13 MAY 2016 19:34
 entering extended mode
 **rapport.tex
-(D:\Biblotek\Dokumenter\poleposition\rapport\rapport.tex
-LaTeX2e <2011/06/27>
-Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
-abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
-croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
-lician, german, german-x-2013-05-26, greek, gujarati, hindi, hungarian, iceland
-ic, indonesian, interlingua, irish, italian, kannada, kurmanji, latin, latvian,
- lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerman, n
-german-x-2013-05-26, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
-ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
-an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
-ishmax, welsh, loaded.
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\article.cls"
-Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\size12.clo"
-File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+(rapport.tex
+LaTeX2e <2015/01/01> patch level 2
+Babel <3.9m> and hyphenation patterns for 69 languages loaded.
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size12.clo"
+File: size12.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -30,39 +21,39 @@ File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\generic\babel\babel.sty"
-Package: babel 2008/07/08 v3.8m The Babel package
+("C:\Program Files\MiKTeX 2.9\tex\generic\babel\babel.sty"
+Package: babel 2015/08/03 3.9m The Babel package
 
 *************************************
 * Local config file bblopts.cfg used
 *
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\bblopts.cfg"
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\bblopts.cfg"
 File: bblopts.cfg 2006/07/31 v1.0 MiKTeX 'babel' configuration
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\generic\babel\danish.ldf"
+("C:\Program Files\MiKTeX 2.9\tex\latex\babel-danish\danish.ldf"
 Language: danish 2009/09/19 v1.3r Danish support from the babel system
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\generic\babel\babel.def"
-File: babel.def 2008/07/08 v3.8m Babel common definitions
+("C:\Program Files\MiKTeX 2.9\tex\generic\babel\babel.def"
+File: babel.def 2015/08/03 3.9m Babel common definitions
 \babel@savecnt=\count87
 \U@D=\dimen103
 )
 Package babel Info: Making " an active character on input line 82.
 ))
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\inputenc.sty"
-Package: inputenc 2008/03/30 v1.1d Input encoding file
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\inputenc.sty"
+Package: inputenc 2015/03/17 v1.2c Input encoding file
 \inpenc@prehook=\toks14
 \inpenc@posthook=\toks15
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\utf8.def"
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\utf8.def"
+File: utf8.def 2015/06/27 v1.1n UTF-8 support for inputenc
 Now handling font encoding OML ...
 ... no UTF-8 mapping file for font encoding OML
 Now handling font encoding T1 ...
 ... processing UTF-8 mapping file for font encoding T1
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1enc.dfu"
-File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\t1enc.dfu"
+File: t1enc.dfu 2015/06/27 v1.1n UTF-8 support for inputenc
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
    defining Unicode char U+00AB (decimal 171)
@@ -211,8 +202,8 @@ File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
 Now handling font encoding OT1 ...
 ... processing UTF-8 mapping file for font encoding OT1
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ot1enc.dfu"
-File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\ot1enc.dfu"
+File: ot1enc.dfu 2015/06/27 v1.1n UTF-8 support for inputenc
    defining Unicode char U+00A1 (decimal 161)
    defining Unicode char U+00A3 (decimal 163)
    defining Unicode char U+00B8 (decimal 184)
@@ -242,8 +233,8 @@ File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
 Now handling font encoding OMS ...
 ... processing UTF-8 mapping file for font encoding OMS
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\omsenc.dfu"
-File: omsenc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omsenc.dfu"
+File: omsenc.dfu 2015/06/27 v1.1n UTF-8 support for inputenc
    defining Unicode char U+00A7 (decimal 167)
    defining Unicode char U+00B6 (decimal 182)
    defining Unicode char U+00B7 (decimal 183)
@@ -266,24 +257,24 @@ Now handling font encoding U ...
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
 ))
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
 Package: amsmath 2013/01/14 v2.14 AMS math features
 \@mathmargin=\skip43
 
 For additional information on amsmath, use the `?' option.
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
 Package: amstext 2000/06/29 v2.01
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty"
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty"
 File: amsgen.sty 1999/11/30 v2.0
 \@emptytoks=\toks16
 \ex@=\dimen104
 ))
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
 Package: amsbsy 1999/11/29 v1.2d
 \pmbraise@=\dimen105
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty"
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty"
 Package: amsopn 1999/12/14 v2.01 operator names
 )
 \inf@bad=\count88
@@ -324,52 +315,52 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\pbox\pbox.sty"
+("C:\Program Files\MiKTeX 2.9\tex\latex\pbox\pbox.sty"
 Package: pbox 2011/12/07 v1.2 Dynamic parboxes
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\calc.sty"
-Package: calc 2007/08/22 v4.3 Infix arithmetic (KKT,FJ)
+("C:\Program Files\MiKTeX 2.9\tex\latex\tools\calc.sty"
+Package: calc 2014/10/28 v4.3 Infix arithmetic (KKT,FJ)
 \calc@Acount=\count100
 \calc@Bcount=\count101
 \calc@Adimen=\dimen113
 \calc@Bdimen=\dimen114
 \calc@Askip=\skip46
 \calc@Bskip=\skip47
-LaTeX Info: Redefining \setlength on input line 76.
-LaTeX Info: Redefining \addtolength on input line 77.
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
 \calc@Ccount=\count102
 \calc@Cskip=\skip48
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ifthen.sty"
-Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\ifthen.sty"
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \pb@xlen=\skip49
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
-Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
-Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks21
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
-Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
 File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
-Package graphics Info: Driver file: pdftex.def on input line 91.
+Package graphics Info: Driver file: pdftex.def on input line 94.
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
+("C:\Program Files\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
 Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 )
-("D:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count103
@@ -377,7 +368,7 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen115
 \Gin@req@width=\dimen116
 )
-(D:\Biblotek\Dokumenter\poleposition\rapport\rapport.aux)
+(rapport.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
@@ -390,8 +381,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
-
-("D:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+ ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count104
 \scratchdimen=\dimen117
@@ -404,7 +394,7 @@ LaTeX Font Info:    ... okay on input line 9.
 \MPnumerator=\count108
 \makeMPintoPDFobject=\count109
 \everyMPtoPDFconversion=\toks23
-) (D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/frontpage.tex
+) (kapitler/frontpage.tex
 <kapitler/billeder/sdulogo.png, id=1, 579.66562pt x 236.38312pt>
 File: kapitler/billeder/sdulogo.png Graphic file (type png)
 
@@ -413,42 +403,37 @@ Package pdftex.def Info: kapitler/billeder/sdulogo.png used on input line 5.
 (pdftex.def)             Requested size: 390.0pt x 159.03954pt.
  [1
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <D:/Biblotek/Dokumenter/po
-leposition/rapport/kapitler/billeder/sdulogo.png>]) (D:\Biblotek\Dokumenter\pol
-eposition\rapport\rapport.toc)
+{C:/Users/ninka100/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./kapitl
+er/billeder/sdulogo.png>]) (rapport.toc)
 \tf@toc=\write3
- [1]
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/abstract.tex)
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/indledning.tex [2])
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/problemformulering.tex
+
+[1] (kapitler/abstract.tex) (kapitler/indledning.tex [2])
+(kapitler/problemformulering.tex
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 6.
 
-("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\omscmr.fd"
-File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 6.
 )
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/idegenerering.tex
-[3] <kapitler/billeder/Mindmap1.jpg, id=20, 598.03426pt x 178.86826pt>
+(kapitler/idegenerering.tex [3]
+<kapitler/billeder/Mindmap1.jpg, id=20, 598.03426pt x 178.86826pt>
 File: kapitler/billeder/Mindmap1.jpg Graphic file (type jpg)
 
 <use kapitler/billeder/Mindmap1.jpg>
 Package pdftex.def Info: kapitler/billeder/Mindmap1.jpg used on input line 15.
 (pdftex.def)             Requested size: 390.0pt x 116.64508pt.
- [4 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/Mindmap1.jpg
->]
+ [4 <./kapitler/billeder/Mindmap1.jpg>]
 <kapitler/billeder/Mindmap2.jpg, id=24, 416.15475pt x 287.8755pt>
 File: kapitler/billeder/Mindmap2.jpg Graphic file (type jpg)
 
 <use kapitler/billeder/Mindmap2.jpg>
 Package pdftex.def Info: kapitler/billeder/Mindmap2.jpg used on input line 27.
 (pdftex.def)             Requested size: 312.00119pt x 215.8402pt.
-)
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/fysiske-modifikationer.te
-x [5 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/Mindmap2.jp
-g>]) (D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/i2c-kom.tex [6]
-[7] <kapitler/billeder/i2c-princip.png, id=35, 369.0588pt x 127.677pt>
+) (kapitler/fysiske-modifikationer.tex
+[5 <./kapitler/billeder/Mindmap2.jpg>]) (kapitler/i2c-kom.tex [6] [7]
+<kapitler/billeder/i2c-princip.png, id=35, 369.0588pt x 127.677pt>
 File: kapitler/billeder/i2c-princip.png Graphic file (type png)
 
 <use kapitler/billeder/i2c-princip.png>
@@ -463,10 +448,8 @@ File: kapitler/billeder/i2c-onebyte.png Graphic file (type png)
 Package pdftex.def Info: kapitler/billeder/i2c-onebyte.png used on input line 2
 2.
 (pdftex.def)             Requested size: 390.0pt x 38.45627pt.
- [8 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/i2c-princip.
-png> <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/i2c-onebyte
-.png>] [9])
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/boost-converter.tex
+ [8 <./kapitler/billeder/i2c-princip.png> <./kapitler/billeder/i2c-onebyte.png>
+] [9]) (kapitler/boost-converter.tex
 [10] <kapitler/billeder/BoostConverter.png, id=49, 1055.945pt x 391.4625pt>
 File: kapitler/billeder/BoostConverter.png Graphic file (type png)
 
@@ -474,9 +457,7 @@ File: kapitler/billeder/BoostConverter.png Graphic file (type png)
 Package pdftex.def Info: kapitler/billeder/BoostConverter.png used on input lin
 e 19.
 (pdftex.def)             Requested size: 312.00119pt x 115.6656pt.
- [11 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/BoostConver
-ter.png>])
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/lap-timer.tex [12]
+ [11 <./kapitler/billeder/BoostConverter.png>]) (kapitler/lap-timer.tex [12]
 Underfull \hbox (badness 10000) in paragraph at lines 18--20
 
  []
@@ -497,29 +478,27 @@ Underfull \hbox (badness 10000) in paragraph at lines 21--37
  []
 
 [13])
-Underfull \hbox (badness 10000) in paragraph at lines 55--28
+Underfull \hbox (badness 10000) in paragraph at lines 54--28
 
  []
 
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/konklusion.tex) [14]
-(D:\Biblotek\Dokumenter\poleposition\rapport\rapport.aux) ) 
+(kapitler/konklusion.tex) [14] (rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 2520 strings out of 493921
- 33051 string characters out of 3144855
- 90082 words of memory out of 3000000
- 5751 multiletter control sequences out of 15000+200000
+ 2625 strings out of 493673
+ 32944 string characters out of 3143951
+ 99654 words of memory out of 3000000
+ 5910 multiletter control sequences out of 15000+200000
  10828 words of font info for 38 fonts, out of 3000000 for 9000
- 841 hyphenation exceptions out of 8191
+ 1025 hyphenation exceptions out of 8191
  27i,7n,24p,797b,228s stack positions out of 5000i,500n,10000p,200000b,50000s
-<D:/Program Files (x
-86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><D:/Program Files (x86
-)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><D:/Program Files (x86)
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><D:/Program Files (x86)/M
-iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><D:/Program Files (x86)/MiKT
-eX 2.9/fonts/type1/public/amsfonts/cm/cmsl10.pfb><D:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files (x86)/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on rapport.pdf (15 pages, 276582 bytes).
+<C:/Program Files/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmcsc10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsl1
+0.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C
+:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on rapport.pdf (15 pages, 285426 bytes).
 PDF statistics:
  89 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
