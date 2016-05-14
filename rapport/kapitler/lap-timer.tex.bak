@@ -1,5 +1,6 @@
 % !TEX root = ../rapport.tex
 \newpage
+
 \section{Lap timer}
 Formålet med Lap timeren er at have et stykke kode som måler og returnere omgangstiden, for hver omgang bilen køre. Lap timeren er baseret på "timer1" som er den største timer. Lap timeren bliver udover omgangstid, også brugt af andre kode moduler, til at måle tid.
 \subsection{Opsætning af Lap timer}
@@ -38,12 +39,9 @@ Ved en fysisk test af encoderen, blev den maksimale motor hastighed målt til 2K
 Microcontroleren's interne clock er sat op til at køre med 16MHz. Ved at kaste et blik på tabellen \textbf{Tabel link ind her!}, ses det at en prescaler på 256, giver en lang tælletid og en acceptabel præcision. Umiddelbart ser det ud som om 64 ville være den bedre prescaler.. 
 Men 31 count's pr. motor tik (max hastighed) er acceptabelt præcision, derfor er der ingen grund til at vælge en lavere prescaler. Hver gang timer1 overflower (16-bit), skal et interrupt inkrimentere det ekstra register som timeren fik tildelt. Jo lavere prescaler, jo flere gange bliver programmet afbrudt af interrupt.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{path}
-\caption{Viser }
 
-\end{figure}
+
+
 \subsection{Kode}
 Lap-timer koden består primært af 2 interrupt rutiner. Den første rutine bliver aktiveret når bilen passere målstregen. Når målstregen passeres, sker der 2 ting: 
 

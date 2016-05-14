@@ -1,0 +1,8 @@
+% !TEX root = ../rapport.tex
+\section{Bilag-lap-timer}
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{kapitler/billeder/lapt/lapt-flow.png}
+\caption{Flowchart over første rutine i lap-timer}
+\label{fig:lapt-flow}
+\end{figure}
