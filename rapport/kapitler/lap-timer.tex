@@ -13,42 +13,51 @@ Som tidligere nævnt, er det "timer1" som bliver benyttet i dette kodemodul. Ind
 \end{enumerate}
 
 \subsubsection{Prescaler}
-En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå at tælle inden den bliver afbrudt igen. Det vil sige at jo lavere prescaler jo større præsition. Problemet ved en lav prescaler er dog, at man mindsker den tid timeren kan tælle, inden den overflower. Timer1 bliver også brugt af andre dele af programmet, til bla. at måle hastighed på motoren, hvilket sidder et forholdsvis stort krav om nøjagtighed. For både at kunne bevare en høj nøjagtighed, men samtidig have en lang tælletid, har vi valgt at tildele timer1 et ekstra 8-bit register. Alene kan timer1 max indeholde decimalværdien 65536(16-bit), hvor derimod med det ekstra 8-bit registre, kan timeren indeholde decimalværdien 16777216 (24-bit).
-
-Hver gang der kommer et impuls fra motor omdrejnings sensoren (\textbf{Indsæt reference motor sensor kapitel})refereres der til dette som et motor "tik".
-\textbf{Prescaleren} er et vigtigt element i timeren. For at finde den rette prescaler bruges tabel \textbf{Tabel link ind her!}.\\\\
-
-\begin{tabular}{ | r | l | r | r | }
+En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå at tælle inden den bliver afbrudt igen. Det vil sige at jo lavere prescaler jo større præsition. Problemet ved en lav prescaler er dog, at man mindsker den tid timeren kan tælle, inden den overflower. Timer1 bliver også brugt af andre dele af programmet, til bla. at måle hastighed på motoren, hvilket sidder et forholdsvis stort krav om nøjagtighed. For både at kunne bevare en høj nøjagtighed, men samtidig have en lang tælletid, har vi valgt at tildele timer1 et ekstra 8-bit register. Alene kan timer1 max indeholde decimalværdien 65536(16-bit), hvor derimod med det ekstra 8-bit registre, kan timeren indeholde decimalværdien 16777216 (24-bit).\\
+Hver gang der kommer et impuls fra motor encoderne (\textbf{Indsæt reference motor sensor kapitel})refereres der til dette som et "tik".\\
+For at bestemme den rette prescaler bruges tabellen \textbf{Tabel link ind her!}. Tabellen er baseret på udregningerne fra billag \textbf{Link til bilag med prescaler udregninger} .\\
+\\
+\begin{tabular}{ | r | r | r | r | }
 	\hline
-	Prescaler 	& $\Delta$t pr. count 	& Counts pr. "tik"	&	Overflow efter	\\
+	Prescaler 		& $\Delta$t pr. count 	& Counts pr. "tik"	&	Overflow efter		\\
 	\hline
-	0 			& 	 	0.0000000625 s	&  		8000.00		&		1.05 s		\\
+	0 				& 	 	0.0000000625 s	&  		8000.00		&		1.05 s			\\
 	\hline	
-	8 			& 	 	0.0000005 s		&  		1000.00		&		8.39 s		\\
+	8 				& 	 	0.0000005 s		&  		1000.00		&		8.39 s			\\
 	\hline
-	64 			& 	 	0.000004 s		&  		125.00		&		67.10 s		\\
+	64 				& 	 	0.000004 s		&  		125.00		&		67.10 s			\\
 	\hline
-	256 		& 	 	0.000016 s		&  		31.25		&		268.44 s	\\
+	\textbf{256} 	& \textbf{0.000016 s}	&  	\textbf{31.25}	&	\textbf{268.44 s}	\\
 	\hline
-	1024 		& 	 	0.000064 s		&  		7.81		&		1073.74 s	\\
+	1024 			& 	 	0.000064 s		&  		7.81		&		1073.74 s		\\
 	\hline
 \end{tabular}\\\\
-\textsl{\footnotesize Værdierne i tabellen er baseret på en motor hastighed på 2KHz, Intern clock på 16MHz og 24-bit timer register.}\\
+\textsl{\footnotesize *Værdierne i tabellen er baseret på en motor hastighed på 2KHz, Intern clock på 16MHz og 24-bit timer register.}\\
+\\
+Ved en fysisk test af encoderen, blev den maksimale motor hastighed målt til 2KHz.
+Microcontroleren's interne clock er sat op til at køre med 16MHz. Ved at kaste et blik på tabellen \textbf{Tabel link ind her!}, ses det at en prescaler på 256, giver en lang tælletid og en acceptabel præcision. Umiddelbart ser det ud som om 64 ville være den bedre prescaler.. 
+Men 31 count's pr. motor tik (max hastighed) er acceptabelt præcision, derfor er der ingen grund til at vælge en lavere prescaler. Hver gang timer1 overflower (16-bit), skal et interrupt inkrimentere det ekstra register som timeren fik tildelt. Jo lavere prescaler, jo flere gange bliver programmet afbrudt af interrupt.
 
-
-
-Microcontroleren interne clock er sat op til at køre med 16MHz. Som det kan ses i \textbf{Bilag (Lap timer udregninger)}, vil et 16-bit timer register, ved en prescaler på 256, overflow efter ca. 1 sekund. Ved at tildele timeren det ekstra 8-bit register, kan timeren nu køre i ca. 268 sekunder, inden et overflow vil finde sted. 
-
-
-* Valg af prescaler (udregninger)\\
-	-præcision
-	-maks/min omgangs tider 
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{kapitler/billeder/lapt/lapt-flow.png}
+\caption{Flowchart over første rutine i lap-timer}
+\label{fig:lapt-flow}
+\end{figure}
 
 
 \subsection{Kode}
-Da timer1 er blevet tildelt et ekstra 8-bits register
-\subsection{Macro's}
+Lap-timer koden består primært af 2 interrupt rutiner. Den første rutine bliver aktiveret når bilen passere målstregen. Når målstregen passeres, sker der 2 ting: 
 
+\begin{enumerate}
+\item Timeren stoppes, hvor ved værdien i timer registret + det ekstra register bliver sendt til computeren. Hele dette step bruges under test perioden og bliver derfor "kommenteres ud" ved det endelige løb, da der ikke må kommunikeres med computeren.  
+\item Det 16-bit timer register og det 8-bit ekstra register bliver nulstillet, så timeren er klar til næste omgang.
+\end{enumerate}
+Den anden rutine bliver aktiveret, når timer1 overflower. Denne rutine har til opgave at inkrimentere det ekstra 8-bits register som timeren er blev tildelt. Ved at gøre dette svare det til at timer1 havde været baseret på et 24-bit register.\\
+\\
+Figur \textbf{figur som viser flowshart}
+\subsection{Macro's}
+Der er lavet nogle macro's som kan implementeres i andre kodemoduler, for at gøre brug af timeren let tilgængeligt. Macro'erne returnere henholdsvis: hele timer registret (24-bit), timer1's register (16-bit) eller det ekstra timer register (8-bit). 
 
 	
 * 24-bit register\\
