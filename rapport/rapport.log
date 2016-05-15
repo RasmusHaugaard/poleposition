@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2016.5.12)  15 MAY 2016 02:18
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2016.5.12)  15 MAY 2016 02:40
 entering extended mode
 **rapport.tex
 (D:\Biblotek\Dokumenter\poleposition\rapport\rapport.tex
@@ -377,7 +377,11 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen115
 \Gin@req@width=\dimen116
 )
-(D:\Biblotek\Dokumenter\poleposition\rapport\rapport.aux)
+(D:\Biblotek\Dokumenter\poleposition\rapport\rapport.aux
+
+LaTeX Warning: Label `fig:lap-overflow' multiply defined.
+
+)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
@@ -390,8 +394,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
-
-("D:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+ ("D:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count104
 \scratchdimen=\dimen117
@@ -512,8 +515,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 60--2
  []
 
 [15]) (D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/konklusion.tex)
-(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/bilag-lap-timer.tex
-[16] <kapitler/billeder/lapt/lapt-flow.png, id=72, 405.515pt x 1391.1975pt>
+(D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/bilag-phil.tex [16]
+<kapitler/billeder/lapt/lapt-flow.png, id=72, 405.515pt x 1391.1975pt>
 File: kapitler/billeder/lapt/lapt-flow.png Graphic file (type png)
 
 <use kapitler/billeder/lapt/lapt-flow.png>
@@ -533,18 +536,27 @@ File: kapitler/billeder/lapt/lap-overflow.png Graphic file (type png)
 Package pdftex.def Info: kapitler/billeder/lapt/lap-overflow.png used on input 
 line 17.
 (pdftex.def)             Requested size: 234.00238pt x 397.49037pt.
+
+<kapitler/billeder/physs/physs.png, id=82, 887.315pt x 1752.5475pt>
+File: kapitler/billeder/physs/physs.png Graphic file (type png)
+
+<use kapitler/billeder/physs/physs.png>
+Package pdftex.def Info: kapitler/billeder/physs/physs.png used on input line 2
+6.
+(pdftex.def)             Requested size: 234.00238pt x 462.17657pt.
 ) [19 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/lapt/lap-o
-verflow.png>]
+verflow.png>] [20 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billede
+r/physs/physs.png>]
 (D:\Biblotek\Dokumenter\poleposition\rapport\rapport.aux)
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 2543 strings out of 493921
- 33821 string characters out of 3144855
- 92100 words of memory out of 3000000
- 5765 multiletter control sequences out of 15000+200000
+ 2550 strings out of 493921
+ 34001 string characters out of 3144855
+ 92139 words of memory out of 3000000
+ 5770 multiletter control sequences out of 15000+200000
  10828 words of font info for 38 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  27i,7n,24p,933b,232s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -555,9 +567,9 @@ D:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><D:
 ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsl10.pfb><D:/Prog
 ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Progra
 m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on rapport.pdf (20 pages, 342109 bytes).
+Output written on rapport.pdf (21 pages, 405255 bytes).
 PDF statistics:
- 109 PDF objects out of 1000 (max. 8388607)
+ 114 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

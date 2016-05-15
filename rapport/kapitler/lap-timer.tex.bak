@@ -37,7 +37,7 @@ For at bestemme den rette prescaler bruges tabellen \textbf{Tabel link ind her!}
 \\
 Ved en fysisk test af encoderen, blev den maksimale motor hastighed målt til 2KHz.
 Microcontroleren's interne clock er sat op til at køre med 16MHz. Ved at kaste et blik på tabellen \textbf{Tabel link ind her!}, ses det at en prescaler på 256, giver en lang tælletid og en acceptabel præcision. Umiddelbart ser det ud som om 64 ville være den bedre prescaler.. 
-Men 31 count's pr. motor tik (max hastighed) er acceptabelt præcision, derfor er der ingen grund til at vælge en lavere prescaler. Hver gang timer1 overflower (16-bit), skal et interrupt inkrimentere det ekstra register som timeren fik tildelt. Jo lavere prescaler, jo flere gange bliver programmet afbrudt af interrupt.
+Men 31 count's pr. motor tik (max hastighed) er acceptabelt præcision, derfor er der ingen grund til at vælge en lavere prescaler. Hver gang timer1 overflower (16-bit), skal et interrupt inkrimentere det ekstra register som timeren fik tildelt. Jo lavere prescaler, jo flere gange bliver programmet afbrudt af interrupt. 256 bruges som prescaler.
 
 
 
