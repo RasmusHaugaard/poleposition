@@ -44,13 +44,13 @@
 	call find_sp				;finder start punkt
 load_next_sek:					
 	call get_next_sek			;loader næste sekment
-	lds R16, sek_status			;Hvis sving, jmp "goto_turn"
+	lds R16, sek_status			;Hvis lige, jmp "goto_lige"
 	sbrs R16, 7					;..
-	rjmp goto_turn				;..
-	call drive_straight			;Køre lige stykke
-	rjmp load_next_sek			;køre rutine igen
-goto_turn:
+	rjmp goto_lige				;..
 	call drive_turn				;køre igennem sving
+	rjmp load_next_sek			;køre rutine igen
+goto_lige:
+	call drive_straight			;Køre lige stykke
 	rjmp load_next_sek			;køre rutine igen
 	
 	;KØR! MuKØR!!
@@ -141,7 +141,7 @@ drive_turn:
 	ldi R16, 116				;sender t
 	send_bt_byte [R16]			;..
 
-	ret						;retuner
+	ret							;retuner
 
 
 
@@ -162,7 +162,7 @@ b_dis:							; (retunere: b_dis_h og b_dis_l)
 	ldi R18, 40					;bremselængde = 40 tiks (19,33cm)
 	lds R19, ss_dis_h			;distance til sekment stopper (sekment længde)
 	lds R20, ss_dis_l			;..
-	lds R21, 0					;
+	lds R21, 0					;bruges til subtraktion
 	sub R20, R18				;trækker bremselængde fra referance distance
 	sbc R19, R21				;..
 	;ligger dis_ref til
@@ -210,10 +210,11 @@ get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
 	rjmp n_sek_l				;hvis lige rjmp "n_sek_l"
 	lds R16, 0b11111111			;hvis sving
 	sts	is_ns_turn, R16			;..
+	rjmp ns_skip				;skipper kode for lige stykke
 n_sek_l:
 	lds R16, 0b00000000			;hvis lige
 	sts	is_ns_turn, R16			;..
-
+ns_skip:
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
