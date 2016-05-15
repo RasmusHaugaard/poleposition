@@ -84,10 +84,9 @@ drive_straight:
 	rjmp no_turn
 	call b_dis					;udregner bremse længde (retunere: b_dis_h og b_dis_l)
 
-								;get_dis >= b_dis
-
-	call b_mode					;bremser ned til svinget	
+								;(get_dis >= b_dis) tjekker hvornår der skal bremses.
 	setspeed [20]				;sætter hastighed til max for sving
+						;tænder elektro magnet (PortA pin 1)
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
