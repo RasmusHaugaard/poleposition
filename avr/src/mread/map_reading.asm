@@ -30,6 +30,13 @@
 .equ is_ns_turn = addr			;næste sek (svign = 11111111, lige = 00000000)
 .set addr = addr + 1			;..
 
+in R16, DDRA					;Port A pin 1 siddes som output og tager højde for at nuværendene værdier ikke overskrives
+sbr R16, 0b00000010				;..
+out DDRA, R16					;..
+
+in R16, PORTA					;slukker Pin 1 i port A (elektromagnet)
+cbr R16, 0b00000010				;..
+out PORTA, R16					;..
 ;==========================
 ;========== Macro =========
 ;==========================
@@ -86,7 +93,15 @@ drive_straight:
 
 								;(get_dis >= b_dis) tjekker hvornår der skal bremses.
 	setspeed [20]				;sætter hastighed til max for sving
-						;tænder elektro magnet (PortA pin 1)
+	in R16, PORTA				;tænder Pin 1 i port A (elektromagnet)
+	sbr R16, 0b00000010			;..
+	out PORTA, R16				;..
+	;get_dis >= ss_dis			; Tjekker hvornår der skal bremses
+	in R16, PORTA				;slukker Pin 1 i port A (elektromagnet)
+	cbr R16, 0b00000010			;..
+	out PORTA, R16				;..
+
+
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
