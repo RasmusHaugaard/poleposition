@@ -1,13 +1,24 @@
 .filedef input = R16
 .filedef temp1 = R17
 
-.equ set_code = 85
-.equ set_length = 3
-.equ ping_code = 86
-.equ reprogram_code = 87
-.equ var_code = 255
+.equ bt_rc_buf_start = addr
+.equ bt_rc_buf_length = 10  ; byte buffer til indkommende kommandoer
+  .set addr = addr + bt_rc_buf_length - 1
+.equ bt_rc_buf_end = addr
+  .set addr = addr + 1
+.equ bt_rc_pointer_L = addr
+  .set addr = addr + 1
+.equ bt_rc_pointer_H = addr
+  .set addr = addr + 1
+.equ bt_rc_status = addr ; receive data status
+  .set addr = addr + 1
 
-.equ error_code_bl_undefined_rc_code = 103
+.equ set_length = 3
+
+.set saved_pc = PC
+.org 0x1a
+  jmp bl_rxcie_handler
+.org saved_pc
 
 bt_rc_start:
 	ldi temp1, 0
@@ -15,11 +26,22 @@ bt_rc_start:
 	rcall reset_bt_rc_pointer
 	rjmp bt_rc_end
 
+bl_error_rxcie:
+	force_send_bt_byte [bl_fist_page_empty]
+bl_error_rxcie_loop:
+	rjmp bl_error_rxcie_loop
+
 bl_rxcie_handler:
 	push input
   push temp1
+	lds temp1, SREG
+	push temp1
   push ZL
   push ZH
+
+	sbis UCSRA, RXC ; make sure, we don't end in the handler without interrupt
+	rjmp bl_error_rxcie
+
 	in input, UDR
   lds temp1, bt_rc_status
   cpi temp1, 0
@@ -41,6 +63,8 @@ bl_rxcie_handler:
 rxcie_end:
   pop ZH
   pop ZL
+	pop temp1
+	out SREG, temp1
   pop temp1
   pop input
   reti
@@ -60,13 +84,13 @@ received_ping_code:
 received_reprogram_code:
   jmp bl_reprogram
 error_undefined_rc_code:
-  send_bt_byte [error_code_bl_undefined_rc_code]
+  send_bt_byte [bl_rc_unknown_set_code]
   rjmp rxcie_end
 
 expecting_other_than_first_byte:
   cpi temp1, var_code
   brne expecting_data
-  sts bt_rc_status, input
+  sts bt_rc_status, input ; received the length of the variable command - future bytes will be stored in receive buffer
   rjmp rxcie_end
 expecting_data:
   rcall store_input_in_rc_buffer
@@ -74,7 +98,7 @@ expecting_data:
 	sts bt_rc_status, temp1
   brne rxcie_end
   rcall reset_bt_rc_pointer
-  call app_receive_command_interrupt_vector
+  call 0x2A
   rjmp rxcie_end
 
 store_input_in_rc_buffer:

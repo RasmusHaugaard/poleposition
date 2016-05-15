@@ -1,0 +1,51 @@
+% !TEX root = ../rapport.tex
+\newpage
+
+\section{Bilag-phil}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{kapitler/billeder/lapt/lapt-flow.png}
+\caption{Flowchart over første rutine i lap-timer}
+\label{fig:lapt-flow}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{kapitler/billeder/lapt/lap-overflow.png}
+\caption{Flowchart over overflow rutine i lap-timer}
+\label{fig:lap-overflow}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{kapitler/billeder/physs/physs.png}
+\caption{Flowchart over motor hastighed's kode}
+\label{fig:physs}
+\end{figure}
+
+\subsection{Prescaler udregninger}
+\label{subsec:prescaler_udregninger}
+Formlerne er de samme for de forskellige prescalere, det eneste som ændre sig er prescaler værdien. Som eksempel bliver prescaler værdien 256 brugt. For at beregne tiden mellem hvert clock count bruges følgendene formel:
+
+$$\Delta t = \frac{1}{16000000/prescaler}$$
+$$\Delta t = \frac{1}{16000000/256} = 1.6 \cdot 10^{-5}$$\\
+
+Clock count's pr. puls fra motor encoder, beregnes ved:
+
+$$cpp = \frac{1}{Motor hastighed} / \Delta t$$
+$$cpp = \frac{1}{2000} / 1.6 \cdot 10^{-5} = $$\\
+
+For at kunne beregne hvor lang tid timeren kan være aktiv inden den overflower, skal man først vide hvor mange count's timeren tæller på et sekund. Dette beregnes ved formlen:
+
+$$cps = \frac{1}{\Delta t}$$
+$$cps = \frac{1}{\Delta t} = 62500$$\\
+
+Ved at dividere timer registrets max værdi med antal counts pr. sekund, fås hvor langtid timeren kan køre inden overflow:
+
+$$os = \frac{2^{24}}{cps}$$
+$$os = \frac{2^{24}}{62500} = 268.44$$
