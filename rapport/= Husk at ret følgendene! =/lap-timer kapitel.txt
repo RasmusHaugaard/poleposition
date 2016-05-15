@@ -6,13 +6,5 @@ Følgendene skal rettes/indsættes i lap-timer kapitel (/poleposition/rapport/la
 	|	SUBSEKTION		|			FIND (søg efter)		|						RETTELSE/ERSTAT MED					|
 	=====================================================================================================================
 	=====================================================================================================================
-	|	Prescaler		|	Tabel siddes ind her!			| skal erstattes med link tabel over forskellige prescalere	|
-	=====================================================================================================================
-	|	Prescaler		|	Bilag (Lap timer udregninger)	|	Link til bilag med udregninger til lap timer			|
-	=====================================================================================================================
 	|	Prescaler		|	reference motor sensor kapitel	|	reference til kapitel om motor omdrejnings sensor		|
-	=====================================================================================================================
-	|	Prescaler		|	bilag med prescaler udregninger	|		link til bilag med prescaler udregninger			|
-	=====================================================================================================================
-	|	Prescaler		| 	Tabel siddes ind her!			| skal erstattes med link tabel over forskellige prescalere	|
 	=====================================================================================================================

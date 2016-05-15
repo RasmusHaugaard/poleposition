@@ -14,4 +14,5 @@
 \contentsline {section}{\numberline {8}Motor omdrejninger (kode)}{16}
 \contentsline {subsection}{\numberline {8.1}Kode}{16}
 \contentsline {subsection}{\numberline {8.2}Macro's}{16}
-\contentsline {section}{\numberline {9}Bilag-lap-timer}{17}
+\contentsline {section}{\numberline {9}Bilag-phil}{17}
+\contentsline {subsection}{\numberline {9.1}Prescaler udregninger}{19}

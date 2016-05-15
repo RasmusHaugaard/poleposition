@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2016.5.12)  15 MAY 2016 13:55
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2016.5.12)  15 MAY 2016 16:28
 entering extended mode
 **rapport.tex
 (D:\Biblotek\Dokumenter\poleposition\rapport\rapport.tex
@@ -477,37 +477,37 @@ e 19.
  [11 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/BoostConver
 ter.png>])
 (D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/lap-timer.tex [12]
-Underfull \hbox (badness 10000) in paragraph at lines 18--42
+Underfull \hbox (badness 10000) in paragraph at lines 18--45
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 18--42
+Underfull \hbox (badness 10000) in paragraph at lines 18--45
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 18--42
+Underfull \hbox (badness 10000) in paragraph at lines 18--45
 
  []
 
-[13] [14]
-Underfull \hbox (badness 10000) in paragraph at lines 55--57
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 55--57
-
- []
-
-) (D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/phys.tex
-Underfull \hbox (badness 10000) in paragraph at lines 61--2
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 58--60
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 61--2
+Underfull \hbox (badness 10000) in paragraph at lines 58--60
+
+ []
+
+[14]) (D:\Biblotek\Dokumenter\poleposition\rapport\kapitler/phys.tex
+Underfull \hbox (badness 10000) in paragraph at lines 64--2
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 64--2
 
  []
 
@@ -546,15 +546,30 @@ File: kapitler/billeder/physs/physs.png Graphic file (type png)
 Package pdftex.def Info: kapitler/billeder/physs/physs.png used on input line 2
 6.
 (pdftex.def)             Requested size: 234.00238pt x 462.17657pt.
-) [19 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/lapt/lap-o
-verflow.png>] [20 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billede
-r/physs/physs.png>]
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--37
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--42
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--47
+
+ []
+
+) [19] [20 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/billeder/lapt/
+lap-overflow.png>] [21 <D:/Biblotek/Dokumenter/poleposition/rapport/kapitler/bi
+lleder/physs/physs.png>]
 (D:\Biblotek\Dokumenter\poleposition\rapport\rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 2554 strings out of 493921
- 34049 string characters out of 3144855
- 92118 words of memory out of 3000000
- 5774 multiletter control sequences out of 15000+200000
+ 2556 strings out of 493921
+ 34092 string characters out of 3144855
+ 92142 words of memory out of 3000000
+ 5776 multiletter control sequences out of 15000+200000
  10828 words of font info for 38 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  27i,7n,24p,933b,232s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -563,12 +578,14 @@ Here is how much of TeX's memory you used:
 )/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><D:/Program Files (x86)
 /MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><D:/Program Files (x86)/M
 iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><D:/Program Files (x86)/MiKT
-eX 2.9/fonts/type1/public/amsfonts/cm/cmsl10.pfb><D:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files (x86)/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on rapport.pdf (21 pages, 406647 bytes).
+eX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><D:/Program Files (x86)/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmsl10.pfb><D:/Program Files (x86)/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files (x86)/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmsy8.pfb><D:/Program Files (x86)/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on rapport.pdf (22 pages, 427993 bytes).
 PDF statistics:
- 114 PDF objects out of 1000 (max. 8388607)
+ 125 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

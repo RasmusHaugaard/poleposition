@@ -16,8 +16,8 @@ Som tidligere nævnt, er det "timer1" som bliver benyttet i dette kodemodul. Ind
 
 \subsubsection{Prescaler}
 En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå at tælle inden den bliver afbrudt igen. Det vil sige at jo lavere prescaler jo større præsition. Problemet ved en lav prescaler er dog, at man mindsker den tid timeren kan tælle, inden den overflower. Timer1 bliver også brugt af andre dele af programmet, til bla. at måle hastighed på motoren, hvilket sidder et forholdsvis stort krav om nøjagtighed. For både at kunne bevare en høj nøjagtighed, men samtidig have en lang tælletid, har vi valgt at tildele timer1 et ekstra 8-bit register. Alene kan timer1 max indeholde decimalværdien 65536(16-bit), hvor derimod med det ekstra 8-bit registre, kan timeren indeholde decimalværdien 16777216 (24-bit).\\
-Hver gang der kommer et impuls fra motor encoderne (\textbf{Indsæt reference motor sensor kapitel})refereres der til dette som et "tik".\\
-For at bestemme den rette prescaler bruges tabellen \textbf{Tabel link ind her!}. Tabellen er baseret på udregningerne fra billag \textbf{Link til bilag med prescaler udregninger} .\\
+Hver gang der kommer et impuls fra motor enkoderen (\textbf{Indsæt reference motor sensor kapitel})refereres der til dette som et "tik".\\
+For at bestemme den rette prescaler bruges tabel \ref{tab:lapt}. Tabellen er baseret på udregningerne fra billag \textbf{Link til bilag med prescaler udregninger} .\\
 \\
 \begin{tabular}{ | r | r | r | r | }
 	\hline
@@ -33,11 +33,14 @@ For at bestemme den rette prescaler bruges tabellen \textbf{Tabel link ind her!}
 	\hline
 	1024 			& 	 	0.000064 s		&  		7.81		&		1073.74 s		\\
 	\hline
-\end{tabular}\\\\
-\textsl{\footnotesize *Værdierne i tabellen er baseret på en motor hastighed på 2KHz, Intern clock på 16MHz og 24-bit timer register.}\\
+\end{tabular}
+\label{tab:lapt}
+\\
+\\
+\textsl{\small Tabel \ref{tab:lapt}: Værdierne i tabellen er baseret på en motor hastighed på 2KHz, Intern clock på 16MHz og 24-bit timer register.}\\
 \\
 Ved en fysisk test af encoderen, blev den maksimale motor hastighed målt til 2KHz.
-Microcontroleren's interne clock er sat op til at køre med 16MHz. Ved at kaste et blik på tabellen \textbf{Tabel link ind her!}, ses det at en prescaler på 256, giver en lang tælletid og en acceptabel præcision. Umiddelbart ser det ud som om 64 ville være den bedre prescaler.. 
+Microcontroleren's interne clock er sat op til at køre med 16MHz. Ved at kaste et blik på tabel \ref{tab:lapt} ses det at en prescaler på 256, giver en lang tælletid og en acceptabel præcision. Umiddelbart ser det ud som om 64 ville være den bedre prescaler.. 
 Men 31 count's pr. motor tik (max hastighed) er acceptabelt præcision, derfor er der ingen grund til at vælge en lavere prescaler. Hver gang timer1 overflower (16-bit), skal et interrupt inkrimentere det ekstra register som timeren fik tildelt. Jo lavere prescaler, jo flere gange bliver programmet afbrudt af interrupt. 256 bruges som prescaler.
 
 
