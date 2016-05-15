@@ -18,3 +18,12 @@
 \caption{Flowchart over overflow rutine i lap-timer}
 \label{fig:lap-overflow}
 \end{figure}
+
+\newpage
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{kapitler/billeder/physs/physs.png}
+\caption{Flowchart over motor hastighed's kode}
+\label{fig:physs}
+\end{figure}
