@@ -12,10 +12,10 @@
 .equ dis_ref_l = addr			;distance referance (l-bite)
 .set addr = addr + 1			;..
 
-.equ b_dis_h = addr				;bremse længde (h-bite)
+.equ b_dis_h = addr				;bremse længde (h-bite) "der skal bremses når fet_dis når denne værdi"
 .set addr = addr + 1			;..
 
-.equ b_dis_l = addr				;bremse længde (l-bite)
+.equ b_dis_l = addr				;bremse længde (l-bite) "der skal bremses når fet_dis når denne værdi"
 .set addr = addr + 1			;..
 
 .equ ss_dis_h = addr			;distance til sekment stopper "længde af sekment" (h-bite)
@@ -30,6 +30,12 @@
 .equ is_ns_turn = addr			;næste sek (svign = 11111111, lige = 00000000)
 .set addr = addr + 1			;..
 
+.equ brake_tik = addr			;hvor langt fra et sving, bremsningen skal påbegyndes. [tiks]
+.set addr = addr + 1			;..
+
+.equ mts = addr					;max hastighed i sving
+.set addr = addr + 1			;..
+
 in R16, DDRA					;Port A pin 1 siddes som output og tager højde for at nuværendene værdier ikke overskrives
 sbr R16, 0b00000010				;..
 out DDRA, R16					;..
@@ -37,12 +43,16 @@ out DDRA, R16					;..
 in R16, PORTA					;slukker Pin 1 i port A (elektromagnet)
 cbr R16, 0b00000010				;..
 out PORTA, R16					;..
-;==========================
-;========== Macro =========
-;==========================
 
+;=======================================
+;========== Die Feinabstimmung =========
+;=======================================
 
+ldi R16, 40						;hvor langt fra starten på et sving, bremsningen skal påbegyndes (40 tiks = 19,33cm)
+sts brake_tik, R16				;..
 
+ldi R16, 20						;max turn speed (pwm duty cycle)
+sts mts, R16					;..
 
 ;==========================
 ;========== Main ==========
@@ -63,7 +73,7 @@ goto_lige:
 	;KØR! MuKØR!!
 
 ;===========================
-;========== Jumps ==========
+;========== Calls ==========
 ;===========================
 
 
@@ -85,23 +95,44 @@ drive_straight:
 	get_dis_hl [R16, R17]		;gemmer ref dis
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
+	in R16, PORTA				;slukker elektromagnet (Pin 1 i port A)
+	cbr R16, 0b00000010			;..
+	out PORTA, R16				;..
 	setspeed [100]				;set speed 100%
 	lds R16, is_ns_turn			;Tjekker om næste sekment er sving eller lige
 	sbrs R16, 7					;skipper hvis sving
 	rjmp no_turn
-	call b_dis					;udregner bremse længde (retunere: b_dis_h og b_dis_l)
 
-								;(get_dis >= b_dis) tjekker hvornår der skal bremses.
-	setspeed [20]				;sætter hastighed til max for sving
-	in R16, PORTA				;tænder Pin 1 i port A (elektromagnet)
+	;==neste sekment sving==
+
+	call b_dis					;udregner bremse længde (retunere: b_dis_h og b_dis_l)					
+								;Næste par linjer tjekker hvornår (get_dis >= b_dis) "hvornår der skal bremses".
+	lds R18, b_dis_h			;loader b_dis_h
+	lds R19, b_dis_l			;loafer b_dis_l
+scan_b_time:
+	get_dis_hl [R20, R21]		;henter distance kørt
+	sub R19, R21				;b_dis_l - get_dis_l
+	sbc R18, R20				;b_dis_h - get_dis-h
+	brbs 1, b_dis_pass			;branch hvis z=1 (get_dis == b_dis)
+	brbc 2, scan_b_time			;går videre hvis N=1 "brancher ikke" (get_dis > b_dis)  <----- prøv evt med C flag istedet for N flag.
+b_dis_passed:
+	
+	;==Bremser==
+	setspeed [0]				;stopper motor
+	in R16, PORTA				;tænder elektromagnet (Pin 1 i port A)
 	sbr R16, 0b00000010			;..
 	out PORTA, R16				;..
-	;get_dis >= ss_dis			; Tjekker hvornår der skal bremses
-	in R16, PORTA				;slukker Pin 1 i port A (elektromagnet)
-	cbr R16, 0b00000010			;..
-	out PORTA, R16				;..
 
-
+	;- - - - - - - - - - - - - - Næste par linjer tjekker hvornår (get_dis >= ss_dis) "hvornår sekment slutter".
+	lds R18, ss_dis_h			;loader ss_dis_h
+	lds R19, ss_dis_l			;loafer ss_dis_l
+scan_lss1:
+	get_dis_hl [R20, R21]		;henter distance kørt
+	sub R19, R21				;ss_dis_l - get_dis_l
+	sbc R18, R20				;ss_dis_h - get_dis-h
+	brbs 1, ns_dis_pass1		;branch hvis z=1 (get_dis == ss_dis)
+	brbc 2, scan_lss1			;går videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prøv evt med C flag istedet for N flag.
+ns_dis_pass1
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -113,8 +144,21 @@ drive_straight:
 	send_bt_byte [R16]			;..
 
 	ret							;return
+
+
+	;==neste sekment lige==
 no_turn:
-	;get_dis >= ss_dis
+	
+;- - - - - - - - - - - - - - - - Næste par linjer tjekker hvornår (get_dis >= ss_dis) "hvornår sekment slutter".
+	lds R18, ss_dis_h			;loader ss_dis_h
+	lds R19, ss_dis_l			;loafer ss_dis_l
+scan_lss2:
+	get_dis_hl [R20, R21]		;henter distance kørt
+	sub R19, R21				;ss_dis_l - get_dis_l
+	sbc R18, R20				;ss_dis_h - get_dis-h
+	brbs 1, ns_dis_pass2		;branch hvis z=1 (get_dis == ss_dis)
+	brbc 2, scan_lss2			;går videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prøv evt med C flag istedet for N flag.
+ns_dis_pass2
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -128,8 +172,9 @@ no_turn:
 	ret							;retunere
 
 
-
+;====================
 ;=====Drive turn=====
+;====================
 drive_turn:
 
 	ldi R16, 36					;sender $
@@ -144,7 +189,18 @@ drive_turn:
 	get_dis_hl [R16, R17]		;gemmer ref dis
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
-	setspeed [20]				;sætter hastighed til max for sving
+	lds R16, mts				;sætter hastighed til max for sving
+	setspeed [R16]				
+	;- - - - - - - - - - - - - - - - Næste par linjer tjekker hvornår (get_dis >= ss_dis) "hvornår sekment slutter".
+	lds R18, ss_dis_h			;loader ss_dis_h
+	lds R19, ss_dis_l			;loafer ss_dis_l
+scan_lss3:
+	get_dis_hl [R20, R21]		;henter distance kørt
+	sub R19, R21				;ss_dis_l - get_dis_l
+	sbc R18, R20				;ss_dis_h - get_dis-h
+	brbs 1, ns_dis_pass3		;branch hvis z=1 (get_dis == ss_dis)
+	brbc 2, scan_lss3			;går videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prøv evt med C flag istedet for N flag.
+ns_dis_pass3
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -160,8 +216,9 @@ drive_turn:
 
 
 
-
+;========================
 ;=====Break distance=====
+;========================
 b_dis:							; (retunere: b_dis_h og b_dis_l)
 
 	ldi R16, 36					;sender $
@@ -173,15 +230,20 @@ b_dis:							; (retunere: b_dis_h og b_dis_l)
 	ldi R16, 100				;sender d
 	send_bt_byte [R16]			;..
 
-	ldi R18, 40					;bremselængde = 40 tiks (19,33cm)
+	lds R18, brake_tik			;henter bremselængde [i tiks]
 	lds R19, ss_dis_h			;distance til sekment stopper (sekment længde)
 	lds R20, ss_dis_l			;..
-	lds R21, 0					;bruges til subtraktion
-	sub R20, R18				;trækker bremselængde fra referance distance
-	sbc R19, R21				;..
-	;ligger dis_ref til
-	sts b_dis_h, R19			
-	sts b_dis_l, R20
+	lds R21, dis_ref_h			;distance værdi, da sekmentede startede:
+	lds R22, dis_ref_l			;..
+	ldi R23, 0					;bruges til subtraktion
+
+								;Udføre mattematisk operation "(dis_ref + ss_dis) - brake_tik"
+	add R22, R20				;dis_ref_l + ss_dis_l
+	adc	R21, R19				;dis_ref_h + ss_dis_h
+	sub R20, R18				;trækker brake_tik fra (dis_ref_l + ss_dis_l)
+	sbc R19, R23				;trækker 0 fra (dis_ref_l + ss_dis_l) "for at få cerry med"
+	sts b_dis_h, R19			;gemmer resultat i b_dis_h
+	sts b_dis_l, R20			;gemmer resultat i b_dis_l
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -197,8 +259,9 @@ b_dis:							; (retunere: b_dis_h og b_dis_l)
 
 
 
-
+;==========================
 ;=====Get next sekment=====
+;==========================
 get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
 
 	ldi R16, 36					;sender $
@@ -244,8 +307,9 @@ ns_skip:
 
 
 
-
+;==========================
 ;=====Reset sek addres=====
+;==========================
 reset_sek_adr:
 
 	ldi R16, 36					;sender $
@@ -275,65 +339,9 @@ reset_sek_adr:
 
 
 
-;=====Turn speed=====
-turn_speed:
-
-	ldi R16, 36					;sender $
-	send_bt_byte [R16]			;..
-	ldi R16, 74					;sender J
-	send_bt_byte [R16]			;..
-	ldi R16, 116				;sender t
-	send_bt_byte [R16]			;..
-	ldi R16, 115				;sender s
-	send_bt_byte [R16]			;..
-
-	setspeed [20]				;setter max hastighed i sving
-
-	ldi R16, 36					;sender $
-	send_bt_byte [R16]			;..
-	ldi R16, 82					;sender R
-	send_bt_byte [R16]			;..
-	ldi R16, 116				;sender t
-	send_bt_byte [R16]			;..
-	ldi R16, 115				;sender s
-	send_bt_byte [R16]			;..
-
-	ret							;return
-
-
-
-
-
-;=====Break mode=====
-b_mode:							;maksimale bremsning
-	
-	ldi R16, 36					;sender $
-	send_bt_byte [R16]			;..
-	ldi R16, 74					;sender J
-	send_bt_byte [R16]			;..
-	ldi R16, 98					;sender b
-	send_bt_byte [R16]			;..
-	ldi R16, 109				;sender m
-	send_bt_byte [R16]			;..
-
-	;øhhh.. der mangler sku lidt kode..
-
-	ldi R16, 36					;sender $
-	send_bt_byte [R16]			;..
-	ldi R16, 82					;sender R
-	send_bt_byte [R16]			;..
-	ldi R16, 98					;sender b
-	send_bt_byte [R16]			;..
-	ldi R16, 109				;sender m
-	send_bt_byte [R16]			;..
-
-	ret							;return
-
-
-
-
-
+;==========================
 ;=====Find start punkt=====
+;==========================
 find_sp:
 
 	ldi R16, 36					;sender $
@@ -371,6 +379,23 @@ line_scan:
 
 
 
+
+;=================
+;=====Kontrol=====
+;=================
+k:
+	ldi R16, 36					;sender $
+	send_bt_byte [R16]			;..
+	ldi R16, 75					;sender K
+	send_bt_byte [R16]			;..
+	ldi R16, 80 				;sender P 
+	send_bt_byte [R16]			;..
+ret								;retunere
+
+
+
+
+
 ;=========================
 ;========== ISR ==========
 ;=========================
@@ -399,11 +424,7 @@ line_scan:
 ;	jrs		jump to "Reset sek addres"
 ;	rrs		return from "Reset sek addres"
 
-;	jts		jump to "Turn speed"
-;	rts		return from "Turn speed"
-
-;	jbm		jump to "Break mode"
-;	rbm		return from "Break mode"
-
 ;	jsp		jump to "Find start punkt"
 ;	rsp		return from "Find start punkt"
+
+;	KP		Kontrol Passed
