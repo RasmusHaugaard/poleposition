@@ -361,7 +361,7 @@ line_scan:
 	rjmp line_scan				;scanner igen
 	setspeed [0]				;stopper ved målstreg
 	;evt brems					;tænder elektromagneten
-	rjmp T1_OV_ISR_CLEAR		;clear externt interrupt flag						<------------------------------------- skal finde anden måde at kalde på, kan ikke bruge rjmp skal bruge call.
+	call T1_OV_ISR_CLEAR		;clear externt interrupt flag
 	ldi R16, 1<<TOV1			;tilader interrupt ved timer1 overflow
 	out TIMSK, R16				;.. 
 
