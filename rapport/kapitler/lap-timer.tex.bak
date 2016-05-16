@@ -17,7 +17,7 @@ Som tidligere nævnt, er det "timer1" som bliver benyttet i dette kodemodul. Ind
 \subsubsection{Prescaler}
 En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå at tælle inden den bliver afbrudt igen. Det vil sige at jo lavere prescaler jo større præsition. Problemet ved en lav prescaler er dog, at man mindsker den tid timeren kan tælle, inden den overflower. Timer1 bliver også brugt af andre dele af programmet, til bla. at måle hastighed på motoren, hvilket sidder et forholdsvis stort krav om nøjagtighed. For både at kunne bevare en høj nøjagtighed, men samtidig have en lang tælletid, har vi valgt at tildele timer1 et ekstra 8-bit register. Alene kan timer1 max indeholde decimalværdien 65536(16-bit), hvor derimod med det ekstra 8-bit registre, kan timeren indeholde decimalværdien 16777216 (24-bit).\\
 Hver gang der kommer et impuls fra motor enkoderen (\textbf{Indsæt reference motor sensor kapitel})refereres der til dette som et "tik".\\
-For at bestemme den rette prescaler bruges tabel \ref{tab:lapt}. Tabellen er baseret på udregningerne fra billag \textbf{Link til bilag med prescaler udregninger} .\\
+For at bestemme den rette prescaler bruges tabel \ref{tab:lapt}. Tabellen er baseret på udregningerne fra billag \ref{subsec:prescaler_udregninger}.\\
 \\
 \begin{tabular}{ | r | r | r | r | }
 	\hline

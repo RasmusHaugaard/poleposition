@@ -49,3 +49,22 @@ Ved at dividere timer registrets max værdi med antal counts pr. sekund, fås hv
 
 $$os = \frac{2^{24}}{cps}$$
 $$os = \frac{2^{24}}{62500} = 268.44$$
+
+\subsection{Elektromagnet mosfet beregninger}
+\label{subsec:mosfet}
+Forbruget på elektromagnetne er blevet målt til 1.5A. Inden temperaturen på mosfit'en kan beregnes, findes følgeenden værdier i databpladet for kompunenten(STP40NF20):
+\begin{enumerate}
+\item Max. operating junction temperature ($T_j$) = 150 $^\circ C$
+\item Thermal resistance junction-ambient max ($Rthj_{amb}$) = 62.5 $^\circ C/W$
+\item Static drain-source on resistance max ($R_{DS(on)}$) = 0.045 $\Omega$
+\end{enumerate}
+Først beregnes effekten som afsættes i MOSFIT'en:
+
+$$P = R \cdot I^2$$
+$$P = R_{DS(on)} \cdot I^2$$
+$$P = 0.045 \Omega \cdot 1.5^2 = 0.101 W$$
+
+"Thermal resistance junction-ambient max", fortæller hvor meget temperaturen stiger, alt efter hvor meget effekt der afsættes i kompunenten. Derved kan temperaturen for MOSFIT'en beregnes:
+
+$$(Rthj_{amb} \cdot P) + 25^\circ C$$
+$$(62.5^\circ C/W  \cdot 0.101 W) + 25^\circ C = 31.31 ^\circ C$$

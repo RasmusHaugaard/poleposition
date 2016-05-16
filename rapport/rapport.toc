@@ -16,3 +16,4 @@
 \contentsline {subsection}{\numberline {8.2}Macro's}{16}
 \contentsline {section}{\numberline {9}Bilag-phil}{17}
 \contentsline {subsection}{\numberline {9.1}Prescaler udregninger}{19}
+\contentsline {subsection}{\numberline {9.2}Elektromagnet mosfet beregninger}{22}
