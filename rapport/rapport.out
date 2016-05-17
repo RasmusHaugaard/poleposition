@@ -1,0 +1,20 @@
+\BOOKMARK [1][-]{section.1}{Abstract}{}% 1
+\BOOKMARK [1][-]{section.2}{Indledning}{}% 2
+\BOOKMARK [1][-]{section.3}{Problemformulering}{}% 3
+\BOOKMARK [1][-]{section.4}{Id\351generering}{}% 4
+\BOOKMARK [1][-]{section.5}{Fysiske modifikationer}{}% 5
+\BOOKMARK [2][-]{subsection.5.1}{3D-printet chassis}{section.5}% 6
+\BOOKMARK [1][-]{section.6}{I2C kommunikation}{}% 7
+\BOOKMARK [2][-]{subsection.6.1}{Kommunikationsprotokol}{section.6}% 8
+\BOOKMARK [1][-]{section.7}{Boost converter}{}% 9
+\BOOKMARK [1][-]{section.8}{Lap timer}{}% 10
+\BOOKMARK [2][-]{subsection.8.1}{Ops\346tning af Lap timer}{section.8}% 11
+\BOOKMARK [3][-]{subsubsection.8.1.1}{Prescaler}{subsection.8.1}% 12
+\BOOKMARK [2][-]{subsection.8.2}{Kode}{section.8}% 13
+\BOOKMARK [2][-]{subsection.8.3}{Macro's}{section.8}% 14
+\BOOKMARK [1][-]{section.9}{Motor omdrejninger \(kode\)}{}% 15
+\BOOKMARK [2][-]{subsection.9.1}{Kode}{section.9}% 16
+\BOOKMARK [2][-]{subsection.9.2}{Macro's}{section.9}% 17
+\BOOKMARK [1][-]{section.10}{Bilag-phil}{}% 18
+\BOOKMARK [2][-]{subsection.10.1}{Prescaler udregninger}{section.10}% 19
+\BOOKMARK [2][-]{subsection.10.2}{Elektromagnet mosfet beregninger}{section.10}% 20
