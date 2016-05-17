@@ -1,7 +1,7 @@
 
 Jmp map_slut
 
-	.equ	msek =		;<--------------------------------------- skal have start adresse
+	.equ msek =		;<--------------------------------------- skal have start adresse
 
 						;1 lige sekment (fra start til sving)
 	ldi R1, 0b00000000		;status
