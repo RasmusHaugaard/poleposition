@@ -51,7 +51,7 @@ out PORTA, R16					;..
 ldi R16, 40						;hvor langt fra starten på et sving, bremsningen skal påbegyndes (40 tiks = 19,33cm)
 sts brake_tik, R16				;..
 
-ldi R16, 20						;max turn speed (pwm duty cycle)
+ldi R16, 80						;max turn speed (pwm duty cycle)
 sts mts, R16					;..
 
 ;==========================
