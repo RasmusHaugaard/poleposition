@@ -14,6 +14,7 @@ voiceControlInit()
 
 let store = configureStore()
 window.store = store
+window.graph = {}
 
 render(
 	<Provider store={store}>

@@ -9,19 +9,21 @@
 .def  first_point_high = R13
 .def  last_point_low = R14
 .def  last_point_high = R8
-.filedef  first_time_value_low = R21
-.filedef  first_time_value_high = R22
+.filedef  first_time_value_low = R3
+.filedef  first_time_value_high = R4
 .def  current_turn_value = R11
 .def  current_status = R24
-.def  first_gyro_value_high = R25
-.def  last_gyro_value_high = R20
+.def  first_gyro_value_high = R20
+.def  last_gyro_value_high = R21
 .def  last_time_value_low = R16
 .def  last_time_value_high = R10
+.def  last_angel_hh = R22
+.def  last_angel_hhh = R25
 .def  light_status = R23
 
 
 ;Nogle værdier defineres i starten.
-.equ  turn_value_in = 20
+.equ  turn_value_in = 15
 .equ  turn_value_out = 5
 .equ  left_turn_value_in = turn_value_in
 .equ  right_turn_value_in = -turn_value_in
@@ -49,13 +51,23 @@ rjmp init
 
 .org 0x2A
 init:
+  delays [1]
   .include "src/i2c/i2c_id_macros.asm"
   .include "src/i2c/i2c_setup.asm"
   .include "src/i2c/i2c_setup_gyr.asm"
   .include "src/lapt/lapt.asm"
-  .include "src/physs/physical_speed.asm"
+  .include "src/motor/motor_pwm.asm"
 
   sbi   DDRA, PORTA0
+
+  delays [1]
+
+  ldi   light_status, 0b00000001
+  out   PORTA, light_status
+
+  delays [1]
+
+  setspeed [80]
 
 check_for_turn:
   get_time_hl [first_time_value_high, first_time_value_low]
@@ -64,21 +76,29 @@ check_for_turn:
   ldi   light_status, 0b00000000
   out   PORTA, light_status
 
+
   next_map_sektion:
 
   cpi   first_gyro_value_high, left_turn_value_in ; Sammenligner den gyro værdi med venstre sving.
-  brge  check_turn_angel ;Hoop hvis venstre sving værdi <= gyro.
+  brge  left_turn_detected ;Hoop hvis venstre sving værdi <= gyro.
 
   cpi   first_gyro_value_high, right_turn_value_in
-  brlt  check_turn_angel  ;Hvis gyro < højre sving værdi, så hop.
+  brlt  right_turn_detected  ;Hvis gyro < højre sving værdi, så hop.
 
   rjmp  check_for_turn
 
+  left_turn_detected:
+  ldi   current_status, status_left_turn
+  rjmp  check_turn_angel
 
+  right_turn_detected:
+  ldi   current_status, status_rigth_turn
 
 check_turn_angel:
   ldi   light_status, 0b00000001
   out   PORTA, light_status
+
+check_turn_angel_agian:
 
   get_time_hl [last_time_value_high, last_time_value_low]
   I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, last_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
@@ -95,24 +115,39 @@ check_turn_angel:
 
   add   last_angel_low, first_angel_low
   adc   last_angel_high, first_angel_high
+  brcc  skip_inc
+  inc   last_angel_hh
+  cpi   last_angel_hh, 255
+  breq  done
+  rjmp  skip_inc
+done:
+  inc   last_angel_hhh
+  ldi   last_angel_hh, 0
 
+skip_inc:
+
+  cpi   current_status, status_rigth_turn
+  breq  right_check
 
   cpi   first_gyro_value_high, left_turn_value_out ; Sammenligner den gyro værdi med venstre sving.
-  brlt  check_right ;Hoop hvis venstre sving værdi >= gyro.
+  brlt  send_byte ;Hoop hvis venstre sving værdi >= gyro.
 
+  rjmp check_turn_angel_agian
+
+right_check:
   cpi   first_gyro_value_high, right_turn_value_out
   brge  send_byte  ;Hvis gyro > højre sving værdi, så hop.
 
-  rjmp  check_turn_angel
-
-check_right:
-  cpi   first_gyro_value_high, right_turn_value_out
-  brge  send_byte  ;Hvis gyro > højre sving værdi, så hop.
-  jmp   check_turn_angel
+  rjmp  check_turn_angel_agian
 
 send_byte:
-  send_bt_byte [first_gyro_value_high]
+  send_bt_byte [last_angel_hhh]
+  ldi   last_angel_hhh, 0
+  ldi   last_angel_hh, 0
+  delayms [10]
   jmp   next_map_sektion
 
 ERROR:
+  ldi   light_status, 0b00000001
+  out   PORTA, light_status
 rjmp Error

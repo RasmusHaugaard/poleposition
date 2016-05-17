@@ -11,7 +11,7 @@ import Terminal from './Terminal.jsx'
 import Graph from './Graph.jsx'
 
 import {btConnect} from '../actions/bt'
-import {init as btInit} from '../services/bluetooth'
+import {init as btInit, DEVICE_NAME} from '../services/bluetooth'
 import {init as protocolInit} from '../services/protocol'
 
 class App extends Component{
@@ -71,7 +71,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		btConnect: () => {
-			dispatch(btConnect())
+			dispatch(btConnect(DEVICE_NAME))
 		}
 	}
 }

@@ -1,7 +1,8 @@
 import {STATUS as BL_STATUS} from '../actions/bl'
 import {tmReceived} from '../actions/terminal'
+import {btConnect} from '../actions/bt'
 
-const DEVICE_NAME = "RNBT-BCAC"
+export const DEVICE_NAME = "RNBT-BCAC"
 const BITRATE = 115200
 
 export const STATUS = {
@@ -21,6 +22,16 @@ export const init = () => {
 		if (window.connId !== info.connId) return;
 		store.dispatch(btDisconnected())
 	})
+
+	window.btDevices = () => {
+		chrome.serial.getDevices(devs => console.log(devs.map(dev => dev.path)))
+	}
+
+	window.btConnect = path => {
+		window.store.dispatch(
+			btConnect(path)
+		)
+	}
 }
 
 const receiveData = (buf) => {
@@ -52,22 +63,23 @@ const receiveByte = (byte) => {
 	}
 }
 
-export const connect = (success, error) => {
+export const connect = (_deviceName, success, error) => {
+	let deviceName = _deviceName || DEVICE_NAME
 	window.connId = null
 	chrome.serial.getDevices((devs) => {
 		let dev = devs.filter((dev) => {
-			return dev.path.indexOf(DEVICE_NAME) !== -1
+			return dev.path.indexOf(deviceName) !== -1
 		})[0];
 		if (!dev) {
 			error(
-				"No such available device: " + DEVICE_NAME +
+				"No such available device: " + deviceName +
 				". Make sure you have connected manually at least once."
 			)
 		}else{
 			chrome.serial.connect(dev.path, {bitrate: BITRATE}, (ConnInfo) => {
 				if (!ConnInfo) {
 					error(
-						"Failed to connec: " + DEVICE_NAME +
+						"Failed to connec: " + deviceName +
 						", with path: " + dev.path + ". Make sure bluetooth is on."
 					)
 				}else{

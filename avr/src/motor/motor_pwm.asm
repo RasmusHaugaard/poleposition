@@ -14,6 +14,7 @@ out OCR2, R16
 
 
 .macro setspeed
+ERROR skal kaldes med argument
 .endm
 
 .macro	setspeed_8	;tager adresse til gpr
