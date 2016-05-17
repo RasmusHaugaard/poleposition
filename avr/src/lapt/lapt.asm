@@ -2,8 +2,6 @@
 ;========== Initalisering ==========
 ;===================================
 
-.include "stack_pointer.asm"
-
 ;=====Timer1 (16-bit Lab_timer)=====
 ;=TCCR1A(control)=
 ldi R16, 0x00	;ligger værdien 0 i R16

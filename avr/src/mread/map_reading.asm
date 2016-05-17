@@ -1,7 +1,7 @@
 ;===================================
 ;========== Initalisering ==========
 ;===================================
-.equ def_sek_adr =				;første sekment adresse						<---------------------------------- find adresse til første sekment
+.equ def_sek_adr =	mapping_data_addr			;første sekment adresse						<---------------------------------- find adresse til første sekment
 
 .equ sek_adr = addr				;nuværendene sekment adresse
 .set addr = addr + 1			;..

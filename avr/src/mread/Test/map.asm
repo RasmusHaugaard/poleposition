@@ -1,5 +1,8 @@
 
-	.equ msek =	def_sek_adr	;<--------------------------------------- skal have start adresse
+	.equ mapping_data_addr = addr
+	.set addr = addr + 200
+
+	.set msek =	mapping_data_addr	;<--------------------------------------- skal have start adresse
 
 						;1 lige sekment (fra start til sving)
 	ldi R1, 0b00000000		;status
