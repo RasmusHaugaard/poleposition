@@ -7,4 +7,6 @@ rapport.pdf
 rapport.synctex.gz
 rapport.tex.bak
 rapport.toc
+rapport.fdb_latexmk
+rapport.fls
 *.tex.bak

@@ -1,0 +1,17 @@
+% !TEX root = ../rapport.tex
+\subsection{Bootloader}
+Programmerstikket til mikroprocessoren er ikke nem at tilgå, når bilen er fuldt monteret. For at kunne iterere hurtigt og undgå at skulle skille og samle bilen ad hele tiden, blev der udviklet en bootloader.
+
+\subsubsection{Protokol}
+Bootloaderen styrer bluetoothkommunikationen og indeholder en overordnet kommunikationsprotokol.
+Den første byte, bootloaderen modtager, afgør, hvordan bootloaderen skal håndtere de næstkommende bytes.
+85: Set. 85 Gemmes som den første byte i inputbufferen. De to næstkommende gemmes også, før der hoppes til kommando interruptet.
+87: Ping. Bootloaderen sender 87 tilbage med det samme.
+
+For at undgå at skulle opdatere bootloaderen, hvis der blev implementeret andre kommandoer i applikationsprotokollen, blev der implementeret en variabel kommando, 86.
+Den næstkommende byte beskriver længden, n, af kommandoen. De derefter næstkommende, n, bytes gemmes i inputbufferen, før der hoppes til kommando interruptet.
+Bemærk:
+[85, X, X] og [86, 3, 85, X, X] er ekvivalænte.
+[87] er ping kommandoen til bootloaderen. [86, 1, 87] er en kommando [87] til applikationen.
+
+Når bootloaderen mener, der er en hel kommando (liste af bytes) klar til applikationen, hoppes til 0x2A, en udvidelse af interrupt vektor tabellen.
