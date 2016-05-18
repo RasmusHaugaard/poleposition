@@ -3,10 +3,17 @@
 .org 0x00
 rjmp init
 
-.org 0x2a
+.org 0x2A
+rjmp app_command_int_handler
+
 init:
 	.include "src/lapt/lapt.asm"
 	.include "src/physs/physical_speed.asm"
+	.include "src/motor/motor_pwm.asm"
 
 main:
 	rjmp main
+
+app_command_int_handler:
+	setspeed [120]
+	ret
