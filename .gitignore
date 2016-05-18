@@ -17,4 +17,8 @@ rapport/rapport.pdf
 *.aux
 =======
 *.DS_Store
+<<<<<<< HEAD
 >>>>>>> gui_graph
+=======
+*.log
+>>>>>>> master

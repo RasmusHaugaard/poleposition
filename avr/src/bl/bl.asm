@@ -1,13 +1,12 @@
+.set addr = 0x60  ; her starter sram - hvor vi kan gemme data under kørslen
+
 .include "src/def/m32def.inc"
-.include "src/def/data.inc"
-.include "src/def/protocol.inc"
+.include "src/def/protocol_tr.inc"
+.include "src/def/protocol_rc.inc"
 
 .equ bootload_start = LARGEBOOTSTART
-
 .org bootload_start
 	rjmp boot_init
-.org bootload_start + 0x1A
-	rjmp pf_bl_rxcie_handler
 .org bootload_start + 0x2A
 boot_init:
 	.include "src/setup/stack_pointer.asm"
