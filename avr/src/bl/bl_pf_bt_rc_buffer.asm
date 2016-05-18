@@ -11,6 +11,11 @@
 .equ bl_rc_buf_end_addr = RAMEND - 200 ;Masser af plads, men gør plads til stack pointeren..
 ; NB: Der kan reelt kun være bufferSize - 1 i bufferen pga. den måde, der tjekkes, om der er ny data i bufferen.
 
+.set saved_pc = PC
+.org bootload_start + 0x1A
+	rjmp pf_bl_rxcie_handler
+.org saved_pc
+
 bl_rc_buf_start:
 	rcall init_bl_rc_buf_pointers
 	jmp bl_rc_buf_end

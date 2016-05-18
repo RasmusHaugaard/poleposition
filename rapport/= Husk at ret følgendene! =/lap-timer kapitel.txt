@@ -1,0 +1,10 @@
+!! VIGTIG !!
+
+Følgendene skal rettes/indsættes i lap-timer kapitel (/poleposition/rapport/lap-timer.tex)
+
+
+	|	SUBSEKTION		|			FIND (søg efter)		|						RETTELSE/ERSTAT MED					|
+	=====================================================================================================================
+	=====================================================================================================================
+	|	Prescaler		|	reference motor sensor kapitel	|	reference til kapitel om motor omdrejnings sensor		|
+	=====================================================================================================================

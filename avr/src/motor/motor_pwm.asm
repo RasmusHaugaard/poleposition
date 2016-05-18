@@ -7,11 +7,10 @@ ldi R16, DDRD
 ori R16, (1<<PD7)
 out DDRD, R16
 		;Fast PWM------------     PWM active high  PWM clk = clk / 1024 = 16k
-ldi R16, (1<<WGM21) | (1<<WGM20) | (1<<COM21) | (1<<CS22) | (1<<CS20)
+ldi R16, (1<<WGM21) | (1<<WGM20) | (1<<COM21) | (1<<CS22) | (0<<CS20)
 out TCCR2, R16
 ldi R16, 0
 out OCR2, R16
-
 
 .macro setspeed
 .endm

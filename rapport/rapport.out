@@ -1,0 +1,30 @@
+\BOOKMARK [1][-]{section.1}{Abstract}{}% 1
+\BOOKMARK [1][-]{section.2}{Indledning}{}% 2
+\BOOKMARK [1][-]{section.3}{Problemformulering}{}% 3
+\BOOKMARK [1][-]{section.4}{Id\351generering}{}% 4
+\BOOKMARK [1][-]{section.5}{Udviklingsmilj\370}{}% 5
+\BOOKMARK [2][-]{subsection.5.1}{Fildeling}{section.5}% 6
+\BOOKMARK [2][-]{subsection.5.2}{Filedef}{section.5}% 7
+\BOOKMARK [2][-]{subsection.5.3}{Build setup}{section.5}% 8
+\BOOKMARK [1][-]{section.6}{Bootloader}{}% 9
+\BOOKMARK [2][-]{subsection.6.1}{Bluetooth}{section.6}% 10
+\BOOKMARK [3][-]{subsubsection.6.1.1}{Baudrate}{subsection.6.1}% 11
+\BOOKMARK [3][-]{subsubsection.6.1.2}{Output Buffer}{subsection.6.1}% 12
+\BOOKMARK [2][-]{subsection.6.2}{Protokol}{section.6}% 13
+\BOOKMARK [1][-]{section.7}{Fysiske modifikationer}{}% 14
+\BOOKMARK [2][-]{subsection.7.1}{3D-printet chassis}{section.7}% 15
+\BOOKMARK [1][-]{section.8}{I2C kommunikation}{}% 16
+\BOOKMARK [2][-]{subsection.8.1}{Kommunikationsprotokol}{section.8}% 17
+\BOOKMARK [1][-]{section.9}{Boost converter}{}% 18
+\BOOKMARK [1][-]{section.10}{Lap timer}{}% 19
+\BOOKMARK [2][-]{subsection.10.1}{Ops\346tning af Lap timer}{section.10}% 20
+\BOOKMARK [3][-]{subsubsection.10.1.1}{Prescaler}{subsection.10.1}% 21
+\BOOKMARK [2][-]{subsection.10.2}{Kode}{section.10}% 22
+\BOOKMARK [2][-]{subsection.10.3}{Macro's}{section.10}% 23
+\BOOKMARK [1][-]{section.11}{Motor omdrejninger \(kode\)}{}% 24
+\BOOKMARK [2][-]{subsection.11.1}{Kode}{section.11}% 25
+\BOOKMARK [2][-]{subsection.11.2}{Macro's}{section.11}% 26
+\BOOKMARK [1][-]{section.12}{Map read}{}% 27
+\BOOKMARK [1][-]{section.13}{Bilag-phil}{}% 28
+\BOOKMARK [2][-]{subsection.13.1}{Prescaler udregninger}{section.13}% 29
+\BOOKMARK [2][-]{subsection.13.2}{Elektromagnet mosfet beregninger}{section.13}% 30

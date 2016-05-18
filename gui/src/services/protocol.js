@@ -34,6 +34,27 @@ class ProtocolService {
 	}
 }
 
+const is = test => typeof test !== "undefined"
+
+const toSigned = val => val > 127 ? val - 256 : val
+
+const quickAddToGraph = (name, x, y) => {
+	let lines = window.graph.lines || (window.graph.lines = [])
+	let	line = lines.find(line => line.name === name)
+	if (!line){
+			line = {name}
+			window.graph.lines.push(line)
+	}
+	;(line.x || (line.x = [])).push(x)
+	;(line.y || (line.y = [])).push(y)
+	if (!is(line.xmin) || x < line.xmin) line.xmin = x
+	if (!is(line.xmax) || x > line.xmax) line.xmax = x
+	if (!is(line.ymin) || y < line.ymin) line.ymin = y
+	if (!is(line.ymax) || y > line.ymax) line.ymax = y
+}
+
+window.quickAddToGraph = quickAddToGraph
+
 class Type {
 	constructor(name, byteCount, func){
 		this.name = name
@@ -42,45 +63,53 @@ class Type {
 	}
 }
 
-const toSigned = (val) => {
-	return val > 127 ? val - 256 : val
-}
-
-/*const quickAddToGraph = (name, point) => {
-	let data = window.data.name || (window.data.name = [])
-	data.push(point)
-}*/
-
-
-const quickAddToGraph = (name, point) => {
-	window.store.dispatch(
-		addDataToGraph({name, point})
-	)
-}
-
-
-let idx = 0, idy = 0, idz = 0
-
 const types = {
-	128: new Type("Start", 1, () => {
+	200: new Type("Start", 1, () => {
 		window.speak("Controller restarted.")
-	}),
-	30: new Type("accX", 2, (data) => {
-		quickAddToGraph("accX", {x:idx++, y: toSigned(data[0])})
-	}),
-	31: new Type("accY", 2, (data) => {
-		quickAddToGraph("accY", {x:idy++, y: toSigned(data[0])})
-	}),
-	32: new Type("accZ", 2, (data) => {
-		quickAddToGraph("accZ", {x:idz++, y: toSigned(data[0])})
-	}),
-	40: new Type("gyrX", 2, (data) => {
-		quickAddToGraph("gyrX", {x:idz++, y: toSigned(data[0])})
-	}),
-	41: new Type("gyrY", 2, (data) => {
-		quickAddToGraph("gyrY", {x:idz++, y: toSigned(data[0])})
-	}),
-	42: new Type("gyrZ", 2, (data) => {
-		quickAddToGraph("gyrZ", {x:idz++, y: toSigned(data[0])})
 	})
+}
+
+function save(graph){
+	//if (!graph.lines && !graph.xGridLines) return
+
+	window.folderEntry.getDirectory('data', {create:true}, directoryEntry => {
+		directoryEntry.getFile(
+			(new Date()).toString() + ".csv",
+			{create:true, exclusive: true},
+			fileEntry => {
+				fileEntry.createWriter(fileWriter => {
+					window.fileWriter = fileWriter
+					let file = []
+					if (graph.lines){
+						let lines = graph.lines
+						lines.forEach(line => {
+							file.push(line.name + "_x,")
+							file.push(line.name + "_y,")
+						})
+						file.push("\n")
+						let rowCounts = lines.map(line => Math.min(line.x.length, line.y.length))
+						let maxRowCount = rowCounts.reduce((prev, val) => Math.max(prev, val))
+						for (var row = 0; row < maxRowCount; row++){
+							lines.forEach((line, i) => {
+								if (rowCounts[i] >= row){
+									file.push(line.x[row] + ",")
+									file.push(line.y[row] + ",")
+								}else{
+									file.push(",,")
+								}
+							})
+							file.push("\n")
+						}
+					}
+					fileWriter.onwriteend = () => console.log("write complete")
+					fileWriter.onerror = e => console.log("write failed:" + e.toString())
+					fileWriter.write(new Blob(file))
+				})
+			}
+		)
+	})
+}
+
+window.saveGraph = () => {
+	save(window.graph)
 }

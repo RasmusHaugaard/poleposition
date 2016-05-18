@@ -1,0 +1,71 @@
+\documentclass[11pt]{article}
+\usepackage[top=3cm, bottom=3cm, left=3.5cm, right=2.5cm]{geometry}
+\linespread{1.5}
+
+\usepackage[danish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{pbox}
+
+\usepackage{relsize}
+\usepackage[electronic]{ifsym}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor={black},citecolor={blue!50!black},urlcolor={blue!80!black},pdfusetitle=true]{hyperref}
+\usepackage{mathptmx}
+\usepackage{listings}
+\usepackage{mdframed}
+\bibliographystyle{plainurl}
+
+%\newenvironment{mdquote}
+%{\color[gray]{.4} \noindent \textbar \indent}
+%{\ignorespacesafterend}
+
+\newmdenv[
+  topline=false,
+  bottomline=false,
+	rightline=false,
+	linewidth=2pt,
+	linecolor=gray,
+	fontcolor=gray,
+  skipabove=\topsep,
+  skipbelow=\topsep
+]{mdquote}
+
+\begin{document}
+
+\input{kapitler/frontpage.tex}
+
+\tableofcontents
+
+\newpage
+
+\input{kapitler/abstract.tex}
+
+\input{kapitler/indledning.tex}
+\input{kapitler/problemformulering.tex}
+
+
+\input{kapitler/idegenerering.tex}
+\input{kapitler/udviklingsmiljoe.tex}
+\input{kapitler/fysiske-modifikationer.tex}
+\input{kapitler/i2c-kom.tex}
+\input{kapitler/boost-converter.tex}
+\input{kapitler/lap-timer.tex}
+\input{kapitler/phys.tex}
+\input{kapitler/konklusion.tex}
+\input{kapitler/mread.tex}
+
+
+\input{kapitler/bilag-phil.tex}
+
+\end{document}

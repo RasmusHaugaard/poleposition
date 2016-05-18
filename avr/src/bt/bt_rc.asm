@@ -1,7 +1,24 @@
 .filedef input = R16
 .filedef temp1 = R17
 
+.equ bt_rc_buf_start = addr
+.equ bt_rc_buf_length = 10  ; byte buffer til indkommende kommandoer
+  .set addr = addr + bt_rc_buf_length - 1
+.equ bt_rc_buf_end = addr
+  .set addr = addr + 1
+.equ bt_rc_pointer_L = addr
+  .set addr = addr + 1
+.equ bt_rc_pointer_H = addr
+  .set addr = addr + 1
+.equ bt_rc_status = addr ; receive data status
+  .set addr = addr + 1
+
 .equ set_length = 3
+
+.set saved_pc = PC
+.org 0x1a
+  jmp bl_rxcie_handler
+.org saved_pc
 
 bt_rc_start:
 	ldi temp1, 0
@@ -10,7 +27,7 @@ bt_rc_start:
 	rjmp bt_rc_end
 
 bl_error_rxcie:
-	force_send_bt_byte [bl_fist_page_empty]
+	force_send_bt_byte [bl_first_page_empty]
 bl_error_rxcie_loop:
 	rjmp bl_error_rxcie_loop
 

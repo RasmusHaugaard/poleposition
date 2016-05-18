@@ -1,14 +1,66 @@
 % !TEX root = ../rapport.tex
 \newpage
-\section{Lap timer}
-Formålet med Lap timeren er at have et stykke kode som måler og returnere omgangstiden, for hver omgang bilen køre. Lap timeren er baseret på "timer1" og er derfor den største timer. Lap timeren bliver udover omgangstid, også brugt af andre kode moduler, til at tage tid.
-\subsection{Opsætning af Lap timer}
-Som tidligere nævnt, så er det "timer1" som bliver brugt i dette kodemodul 
-\subsection{Kode}
-\subsection{Macro's}
 
-* Valg af prescaler (udregninger)\\
-	-præcision
-	-maks/min omgangs tider 
-	
-* 24-bit register\\
+\section{Lap timer}
+\label{lapt}
+Formålet med Lap timeren er at have et stykke kode som måler og returnere omgangstiden, for hver omgang bilen køre. Lap timeren er baseret på "timer1" som er den største timer. Lap timeren bliver udover omgangstid, også brugt af andre kode moduler, til at måle tid.
+\subsection{Opsætning af Lap timer}
+Som tidligere nævnt, er det "timer1" som bliver benyttet i dette kodemodul. Inden timer1 kan bruges, skal følgende siddes op:
+\begin{enumerate}
+\item Control register
+\item Nulstille timer/counter register
+\item Global interrupt
+\item Timer1 overflow interrupt
+\item Extern interrupt 2
+\end{enumerate}
+
+\subsubsection{Prescaler}
+En stor del af timerens precsitionen afhænger af hvor mange counts den kan nå at tælle inden den bliver afbrudt igen. Det vil sige at jo lavere prescaler jo større præsition. Problemet ved en lav prescaler er dog, at man mindsker den tid timeren kan tælle, inden den overflower. Timer1 bliver også brugt af andre dele af programmet, til bla. at måle hastighed på motoren, hvilket sidder et forholdsvis stort krav om nøjagtighed. For både at kunne bevare en høj nøjagtighed, men samtidig have en lang tælletid, har vi valgt at tildele timer1 et ekstra 8-bit register. Alene kan timer1 max indeholde decimalværdien 65536(16-bit), hvor derimod med det ekstra 8-bit registre, kan timeren indeholde decimalværdien 16777216 (24-bit).\\
+Hver gang der kommer et impuls fra motor enkoderen (\textbf{Indsæt reference motor sensor kapitel})refereres der til dette som et "tik".\\
+For at bestemme den rette prescaler bruges tabel \ref{tab:lapt}. Tabellen er baseret på udregningerne fra billag \ref{subsec:prescaler_udregninger}.\\
+\\
+\begin{tabular}{ | r | r | r | r | }
+	\hline
+	Prescaler 		& $\Delta$t pr. count 	& Counts pr. "tik"	&	Overflow efter		\\
+	\hline
+	0 				& 	 	0.0000000625 s	&  		8000.00		&		1.05 s			\\
+	\hline
+	8 				& 	 	0.0000005 s		&  		1000.00		&		8.39 s			\\
+	\hline
+	64 				& 	 	0.000004 s		&  		125.00		&		67.10 s			\\
+	\hline
+	\textbf{256} 	& \textbf{0.000016 s}	&  	\textbf{31.25}	&	\textbf{268.44 s}	\\
+	\hline
+	1024 			& 	 	0.000064 s		&  		7.81		&		1073.74 s		\\
+	\hline
+\end{tabular}
+\label{tab:lapt}
+\\
+\\
+\textsl{\small Tabel \ref{tab:lapt}: Værdierne i tabellen er baseret på en motor hastighed på 2KHz, Intern clock på 16MHz og 24-bit timer register.}\\
+\\
+Ved en fysisk test af encoderen, blev den maksimale motor hastighed målt til 2KHz.
+Microcontroleren's interne clock er sat op til at køre med 16MHz. Ved at kaste et blik på tabel \ref{tab:lapt} ses det at en prescaler på 256, giver en lang tælletid og en acceptabel præcision. Umiddelbart ser det ud som om 64 ville være den bedre prescaler..
+Men 31 count's pr. motor tik (max hastighed) er acceptabelt præcision, derfor er der ingen grund til at vælge en lavere prescaler. Hver gang timer1 overflower (16-bit), skal et interrupt inkrimentere det ekstra register som timeren fik tildelt. Jo lavere prescaler, jo flere gange bliver programmet afbrudt af interrupt. 256 bruges som prescaler.
+
+
+
+
+\subsection{Kode}
+Lap-timer koden består primært af 2 interrupt rutiner. Den første rutine bliver aktiveret når bilen passere målstregen. Når målstregen passeres, sker der 4 ting: (Figur nr. \ref{fig:lapt-flow} fra bilag viser et flowchart over den første interrupt rutine.)
+
+\begin{enumerate}
+\item Pushe værdierne fra general purpose registrene, samt status registret ind i stakpointeren
+\item Timeren stoppes, hvor ved værdien i timer registret + det ekstra register bliver sendt til computeren. Hele dette step bruges under test perioden og bliver derfor "kommenteres ud" ved det endelige løb, da der ikke må kommunikeres med computeren.
+\item Det 16-bit timer register og det 8-bit ekstra register bliver nulstillet, så timeren er klar til næste omgang.
+\item Inden der returneres popes de oprindelige værdier tilhørende status register og generalpurpurs registrene.
+\end{enumerate}
+Figur nr. \ref{fig:lapt-flow} fra bilag viser et flowchart over den første interrupt rutine.\\
+\\
+
+Den anden rutine bliver aktiveret, når timer1 overflower. Denne rutine har til opgave at inkrimentere det ekstra 8-bits register som timeren er blev tildelt. Ved at gøre dette svare det til at timer1 havde været baseret på et 24-bit register. Figur nr. \ref{fig:lap-overflow} fra bilag viser et flowchart over rutinen\\ Igen starter rutinen med at pushe værdierne fra general purpose registrene, samt status registret ind i stakpointeren. Det ekstra timer register TCNT1HH loades, inkimenteres og ligges tilbage i sram igen. Herefter clears overflow flaget. Normalt bliver dette flag automatisk clear'et når man returnere fra et interrupt, men Denne rutine er lavet på den måde at andre kodemoduler som ikke interrupt's kan kalde overflow rutinen. Igen inden der returneres popes de oprindelige værdier tilhørende status register og generalpurpurs registrene.
+
+\subsection{Macro's}
+Hvis andre kodemoduler skal måle en tid, bruger de også timer1. Tiden måles ved at gemme timer1's værdi ved et given tidspunkt og så senere sammenligne men en ny værdi fra timer1. Forskellen mellem de to timer værdier, repræsentere den tis som er gået imellem de to "måle" tidspunkter.
+Der er lavet nogle macro's som kan implementeres i andre kodemoduler, for at gøre brug af timeren let tilgængeligt. Macro'erne returnere henholdsvis: hele timer registret (24-bit), timer1's register (16-bit) eller det ekstra timer register (8-bit). \\
+\\
