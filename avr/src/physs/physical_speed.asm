@@ -1,9 +1,15 @@
 ;===================================
 ;========== Initalisering ==========
 ;===================================
-.equ old_time_h = addr			;gamle timer værdi (high bite)
+
+.set saved_pc = PC
+.org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)
+jmp EX1_ISR		;adresse med mere plads
+.org saved_pc
+
+.equ old_time_h = addr			;gamle timer vï¿½rdi (high bite)
 .set addr = addr + 1			;..
-.equ old_time_l = addr			;gamle timer værdi (low bite)
+.equ old_time_l = addr			;gamle timer vï¿½rdi (low bite)
 .set addr = addr + 1			;..
 .equ dif_time_h = addr			;sidste hastighed (high bite)
 .set addr = addr + 1			;..
@@ -14,14 +20,29 @@
 .equ dis_tik_h = addr			;Register som inkrimenters for hver motor tik (high bite)
 .set addr = addr + 1			;..
 
-ldi 0, R16						;nulstiller sidste timer værdi (high and low)
-sts last_time_h, R16			;..
-sts last_time_l, R16			;..
-sts distance_tek, R16			;nulstiller distance register
+ldi R16, 0						;nulstiller sidste timer vï¿½rdi (high and low)
+sts old_time_h, R16			;..
+sts old_time_l, R16			;..
+sts dis_tik_h, R16			;nulstiller distance register
+sts dis_tik_l, R16
 
+cli
+;=== extern interrupt 1 ==
+ldi R16, 1<<INT1	;tilader interrupt ved externt trigger 1 (Port D, pin 3)
+out GICR, R16		;..
+ldi R16, (1<<ISC10) | (1<<ISC11)	;opsï¿½tter til at trigge ved puls stigning
+out	MCUCR, R16		;..
+sei
+
+
+rjmp physs_file_end
 ;===========================
 ;========== Macro ==========
 ;===========================
+
+.macro	phys_speed
+	Error "phys_speed"
+.endm
 
 .macro phys_speed_8_8		;Retunere tid mellem motor tiks
 	push R16
@@ -36,7 +57,11 @@ sts distance_tek, R16			;nulstiller distance register
 	pop R16
 	out SREG, R16
 	pop R16
-.endmacro
+.endm
+
+.macro	get_dis_hl
+	Error "get_dis_hl"
+.endm
 
 .macro get_dis_hl_8_8
 	push R16
@@ -51,7 +76,7 @@ sts distance_tek, R16			;nulstiller distance register
 	pop R16
 	out SREG, R16
 	pop R16
-.endmacro
+.endm
 
 ;=========================
 ;========== ISR ==========
@@ -66,23 +91,21 @@ EX1_ISR:					;interrupt(motor tick)
 	get_time_hl [R18, R19]	;kopier "nye timer" til R18 og R19
 	lds R16, old_time_h		;koper "old timer" fra adresse til R16 og R17
 	lds R17, old_time_l		;..
-	sts old_time_h, R18		;kopier "nye timer" ind i "old time" (som referance ved næste interrupt)
+	sts old_time_h, R18		;kopier "nye timer" ind i "old time" (som referance ved nï¿½ste interrupt)
 	sts old_time_l, R19		;..
-	sub R19, R17			;(low bite) Trækker "old timer" (R17) fra den nye "nye timer" (R19)
-	sbc R18, R16			;(High bite) Trækker "old timer" (R16) fra den nye "nye timer" (R18)
-	send_bt_byte [R19]		;sender low bite til pc
-	send_bt_byte [R18]		;sender high bite til pc
+	sub R19, R17			;(low bite) Trï¿½kker "old timer" (R17) fra den nye "nye timer" (R19)
+	sbc R18, R16			;(High bite) Trï¿½kker "old timer" (R16) fra den nye "nye timer" (R18)
 	sts dif_time_h, R18		;gemmer forskellen mellem "ny" og "old" timer
 	sts dif_time_l, R19		;..
 
 	lds R16, dis_tik_l		;kopier "dis_tek_l" til R16
 	inc R16					;R16++ (inkrimentere)
+	sts dis_tik_l, R16
 	brvc dis_no_overflow	;hvis forige overflowed, skal "dis_tek_h" inkrimenteres (branch if overflow cleared	)
 	lds R17, dis_tik_h		;kopier "dis_tek_h" til R17
 	inc R17					;R17++ (inkrimentere)
 	sts dis_tik_h, R17		;kopier R17 ind i "dis_tik_h"
 dis_no_overflow:
-	sts distance_tek, R16	;Kopier R16 ind i "distance_tek"
 	pop R16
 	out SREG, R16
 	pop R18
@@ -90,6 +113,4 @@ dis_no_overflow:
 	pop R16
 	reti					;retunere fra interrupt
 
-;===========================
-;========== Noter ==========
-;===========================
+physs_file_end:
