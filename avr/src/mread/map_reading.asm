@@ -119,6 +119,11 @@ b_dis_passed:
 	
 	;==Bremser==
 	setspeed [0]				;stopper motor
+
+	;sbi DDRA, PORTA1			;tænder elektromagnet (Pin 1 i port A)  <--------------------------------------------------------tjek om virker
+	;nop							;..
+	;sbi PORTA, PORTA1			;..
+
 	in R16, PORTA				;tænder elektromagnet (Pin 1 i port A)
 	sbr R16, 0b00000010			;..
 	out PORTA, R16				;..
