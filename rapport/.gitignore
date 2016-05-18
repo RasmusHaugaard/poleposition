@@ -1,0 +1,13 @@
+rapport.aux
+rapport.bbl
+rapport.blg
+rapport.dvi
+rapport.log
+rapport.pdf
+rapport.synctex.gz
+rapport.tex.bak
+rapport.toc
+rapport.fdb_latexmk
+rapport.fls
+rapport.out
+*.tex.bak

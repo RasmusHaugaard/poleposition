@@ -17,14 +17,14 @@ Hvilket burde være mere end rigeligt til at drive motoren langt hurtigere end m
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\linewidth]{kapitler/billeder/BoostConverter.png}
-    \caption{SKRIV TEKST HER}
+    \caption{Skematisk tegning af en boost-converter}
     \label{fig:boostconvert}
 \end{figure}
 
-På ovenstående figur ses et forsimplet kredsløb af en boost converter. Ideén er at når switchen S, sluttes bliver der en magnetisk kraft opladet i spolen L. Når switchen bliver brudt vil kraften fra spolen oplade kondensatoren, men da strømmen i en spole ikke kan ændres momentant vil der også løbe strøm fra spændingskilden igennem spolen og derved vil der opnås en højere spænding over kondensatoren C.
+På figur \ref{fig:boostconvert} ses et forsimplet kredsløb af en boost converter. Ideén er at når switchen S, sluttes bliver der en magnetisk kraft opladet i spolen L. Når switchen bliver brudt vil kraften fra spolen oplade kondensatoren, men da strømmen i en spole ikke kan ændres momentant vil der også løbe strøm fra spændingskilden igennem spolen og derved vil der opnås en højere spænding over kondensatoren C.
 
 Da dette kredsløb gerne skulle være selvkørende bruges der ikke en switch, men en MOSFET som skal aktiveres af et højfrevent signal. Det er vigtig at frekvensen er så høj at spolen ikke når at gå i mætning, som vil sige at det ikke når det punkt hvor virker som en kortslutning, da kredsløbet så vile være en direkte kortslutning fra vores spændingskilde til ground.
 
 Det er vigtigt at udvælge de rigtige komponenter til dette kredsløb da det er et højfrekvent kredsløb hvor der løber store strømme. En schottky-diode benyttes da den kan switche ved langt højere frekvenser end en almindelig diode og har et lavere spændingstab henover den og dermed får vi større effektivitet. Kondensator skal have så stor kapitans som mulig(selvfølglig inden for rimelighedens grænser) og kunne tåle høje spændinger hen over den. MOSFET'en som bliver brugt som switch skal kunne switche hurtigt og kunne klare at der løber stor strøm igennem den uden at blive alt for varm.
 
-En af de problemer ved at bygge en boost converter som fast skal kunne levere 30V er at an på motorens hastighed ændre motorens indre modstand sig, og derved ændrer spændingenen sig også. Det er derfor nødvendigt at have en form for feedback der fortæller frekvensgenratoren om den skal øge eller sinke frekvensen for at outputtet bliver som forventet. Der findes IC-kredse der gør dette automatisk, men da vi ikke kan stå indefor hvordan de IC-kredse virker valgte vi ikke at bruge dem i vores bil, og derved mente vi at bygge boost converteren ville blive en for stor udfordring i forhold til den tid vi havde til projektet.
+En af de problemer ved at bygge en boost converter som fast skal kunne levere 30V er an på motorens hastighed ændre motorens indre modstand sig, og derved ændrer spændingenen sig også. Det er derfor nødvendigt at have en form for feedback der fortæller frekvensgeneratoren om den skal øge eller sinke frekvensen for at outputtet bliver som forventet. Der findes IC-kredse der gør dette automatisk, men da gruppen ikke kan stå indefor hvordan de IC-kredse virker er der blevet valgt ikke at bruge dem i  bilen, og derved ville det blive for stor en udfordring at bygge boost converteren i forhold til den tid der var til projektet.
