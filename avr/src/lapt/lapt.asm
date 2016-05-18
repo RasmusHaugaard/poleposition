@@ -129,6 +129,7 @@ T1_OV_ISR_CLEAR:
 
 EX2_ISR:						;Interrupt(kommer over lap-stregen)
 	rcall lap_finished
+	rcall reset_sek_adr			;Nulstiller sekmenter til map-read
 	reti
 
 lap_finished:
