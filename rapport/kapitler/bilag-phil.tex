@@ -3,31 +3,31 @@
 
 \section{Bilag-phil}
 
-\begin{figure}
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.4\textwidth]{kapitler/billeder/lapt/lapt-flow.png}
+\includegraphics[width=0.3\textwidth]{kapitler/billeder/lapt/lapt-flow.png}
 \caption{Flowchart over første rutine i lap-timer}
 \label{fig:lapt-flow}
 \end{figure}
 
 \newpage
-
-\begin{figure}
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.6\textwidth]{kapitler/billeder/lapt/lap-overflow.png}
+\includegraphics[width=0.5\textwidth]{kapitler/billeder/lapt/lap-overflow.png}
 \caption{Flowchart over overflow rutine i lap-timer}
 \label{fig:lap-overflow}
 \end{figure}
 
 \newpage
-
-\begin{figure}
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.6\textwidth]{kapitler/billeder/physs/physs.png}
+\includegraphics[width=0.5\textwidth]{kapitler/billeder/physs/physs.png}
 \caption{Flowchart over motor hastighed's kode}
 \label{fig:physs}
 \end{figure}
 
+
+\newpage
 \subsection{Prescaler udregninger}
 \label{subsec:prescaler_udregninger}
 Formlerne er de samme for de forskellige prescalere, det eneste som ændre sig er prescaler værdien. Som eksempel bliver prescaler værdien 256 brugt. For at beregne tiden mellem hvert clock count bruges følgendene formel:
@@ -50,6 +50,9 @@ Ved at dividere timer registrets max værdi med antal counts pr. sekund, fås hv
 $$os = \frac{2^{24}}{cps}$$
 $$os = \frac{2^{24}}{62500} = 268.44$$
 
+
+
+\newpage
 \subsection{Elektromagnet mosfet beregninger}
 \label{subsec:mosfet}
 Forbruget på elektromagnetne er blevet målt til 1.5A. Inden temperaturen på mosfit'en kan beregnes, findes følgeenden værdier i databpladet for kompunenten(STP40NF20):

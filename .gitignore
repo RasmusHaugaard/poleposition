@@ -2,9 +2,7 @@
 *.sublime-workspace
 *.DS_Store
 *.log
-
 *.aux
-
 *.fdb_latexmk
 
 *.fls
