@@ -9,4 +9,5 @@ rapport.tex.bak
 rapport.toc
 rapport.fdb_latexmk
 rapport.fls
+rapport.out
 *.tex.bak
