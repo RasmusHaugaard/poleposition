@@ -1,8 +1,12 @@
-;Set codes:
+;Bootloader commands:
 .equ set_code = 85
 .equ var_code = 86
 .equ ping_code = 87
 .equ reprogram_code = 88
+
+;set codes:
+.equ set_speed_code = 0x10
+.equ set_stop_code = 0x11
 
 ;program_flash
 .equ pf_write_page_code = 89
