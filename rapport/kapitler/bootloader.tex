@@ -5,33 +5,58 @@ Programmerstikket til mikroprocessoren er ikke nem at tilgå, når bilen er fuld
 \subsection{Bluetooth}
 For at sikre, der kan skabes kontakt med bootloaderen, styrer bootloaderen bluetoothkommunikationen.
 \subsubsection{Baudrate}
-En række stresstests blev udført for at finde den hurtigste, stabile baudrate mellem mikrocontrollerens og bluetoothmodulet. Dataflowet er primært fra mikrocontrollerens til pc. Stresstestene er opbygget derefter.
-En enkelt byte med værdien, x, sendes til mikrocontrollerens, hvorefter mikrocontrollerens sender x kb tilbage.
+En række stresstests blev udført for at finde den hurtigste, stabile baudrate mellem mikrocontrolleren og bluetoothmodulet. Dataflowet er primært fra mikrocontrolleren til pc. Stresstestene er opbygget derefter.
+En enkelt byte med værdien, x, sendes til mikrocontrolleren, hvorefter mikrocontrolleren sender x kb tilbage.
 Se ``avr/src/bt/tests/replykb.asm''.
-Forskellige baudrates blev stresstestet ved 250 kB. Den højeste af disse, der ikke havde datatab, var 38 kbps. Disse tests blev udført uden parity bit, med én stop bit og med 8 databits. Det er også denne opsætning der antages fremadrettet. Se eventuelt ``avr/src/bt/bt\_setup.asm''. Det vil sige 9 bits i alt per overført byte. Det giver en teoretisk overførselshastighed på $38 kbps / 9 bpB \simeq 4.2 kB/s$ Der kunne have været eksperimenteret med parity bits og flere stopbits ved højere baudrates, men der var ikke umiddelbart behov for hurtigere overførselshastigheder.
+Forskellige baudrates blev stresstestet ved 250 kB. Den højeste af disse, der ikke havde datatab, var 38 kbps. Disse tests blev udført uden parity bit, med én stop bit og med 8 databits. Det er også denne opsætning der antages fremadrettet. Se eventuelt ``avr/src/bt/bt\_setup.asm''. Det vil sige 9 bits i alt per overført byte. Det giver en teoretisk overførselshastighed på $38 kbps / 9 bpB \simeq 4.2 kB/s$. Der kunne have været eksperimenteret med parity bits og flere stopbits ved højere baudrates, men der var ikke umiddelbart behov for hurtigere overførselshastigheder.
 \subsubsection{Output Buffer}
 Med en clockfrekvens på 16 MHz går der $16*10^6 / 4.2*10^3 \simeq 3810$ cycles mellem, der kan sende bytes. Hvis man ønsker at sende $x$ bytes synkront, skal programmet i alt vente $(x-1)*3810$ cycles. For at udnytte disse cycles i stedet for at vente, implementeres en buffer i sram.
 Se ``avr/src/bt/bt\_tr.asm''.
-Bufferen består af en byte liste med en fast længde allokeret i sram samt to pointers, der også er allokeret i sram. Listen indeholder de bytes, der ønskes sendt, samt den frie plads i bufferen. Bytes i det frie område kan være bytes, der allerede er sendt, eller bytes, der endnu ikke er blevet skrevet over siden mikrocontrollerens sidste reset. En store pointer peger på den byte i listen, der blev tilføjet sidst. En send pointer peger på den byte i listen, der blev sendt sidst.
+Bufferen består af en byte liste med en fast længde allokeret i sram samt to pointers, en store (gem/tilføj) pointer og en send pointer, der også er allokeret i sram. Listen indeholder de bytes, der ønskes sendt, samt den frie plads i bufferen. Bytes i det frie område kan være bytes, der allerede er sendt, eller bytes, der endnu ikke er blevet skrevet over siden mikrocontrollerens sidste reset. Store pointeren peger på den byte i listen, der blev tilføjet sidst. Send pointeren peger på den byte i listen, der blev sendt sidst.
 I initialiseringen af bufferen sættes de to pointere til at pege på den samme byte i listen.
-Når der ønskes en byte sendt, inkrementeres store pointeren, og byten skrives til den adresse i listen store pointeren repræsenterer. Interrupt enableren for når UART data registeret er tomt sættes højt, så bufferen bliver informeret, når der kan sendes en byte.
-Når der kan sendes en byte, og der er bytes i bufferen, der endnu ikke er sendt (store pointeren og send pointeren har ikke samme værdi), inkrementeres send pointeren, og den byte, send pointeren peger på sendes.
+Når der ønskes en byte sendt, inkrementeres store pointeren, og byten skrives til den adresse i listen, store pointeren repræsenterer. Interrupt enableren, for når UART data registeret er tomt (UDRIE), sættes højt, så bufferen bliver informeret via interrupt handleren, når der kan sendes en byte.
+Når interrupt routinen kaldes (der kan sendes en byte), og der er bytes i bufferen, der endnu ikke er sendt, inkrementeres send pointeren, og den byte, send pointeren peger på sendes. Hvis store pointeren og send pointeren har samme værdi, er buferen tom, send pointeren inkrementeres ikke, og UDRIE sættes lavt.
 
 Hvis en af pointerne, efter at blive inkrementeret, peger på byten lige efter listens sidste byte, sættes pointeren til den første byte i listen.
 Hvis store pointeren, efter at blive inkrementeret og eventuelt rykket til den første byte i listen, peger på samme adresse som send pointeren, er der overflow i bufferen. Det håndteres på nuværende tidspunkt ikke.
+
 TODO: Der skal et billede ind her
 
 \subsection{Protokol}
-Bootloaderen styrer bluetoothkommunikationen og indeholder en overordnet kommunikationsprotokol.
-Den første byte, initial byte, bootloaderen modtager, afgør, hvordan bootloaderen skal håndtere de næstkommende bytes.
-85: Set. 85 gemmes som den første byte i inputbufferen. De to næstkommende bytes gemmes også, før der hoppes til kommando interruptet. Herefter forventer bootloaderen en ny initial byte.
-87: Ping. Bootloaderen sender 87 tilbage med det samme. Herefter forventer bootloaderen en ny initial byte.
+Bootloaderen styrer bluetoothkommunikationen og indeholder en overordnet indkommende kommunikationsprotokol.
+Se eventuelt ``src/avr/bt/bt\_rc''.
+Når bootloaderen starter, forventer den at modtage en bootloader kommando.
 
-For at undgå at skulle opdatere bootloaderen, hvis der blev implementeret andre kommandoer i applikationsprotokollen, blev der implementeret en variabel kommando med initial byte: 86.
-Den næstkommende byte beskriver længden, n, af kommandoen. De derefter næstkommende, n, bytes gemmes i inputbufferen, før der hoppes til kommando interruptet.
-Bemærk:
-[85, X, X] og [86, 3, 85, X, X] er ekvivalente.
-[87] er ping kommandoen til bootloaderen. [86, 1, 87] er en kommando [87] til applikationen.
+TODO: applikation command interrupt!
+
+\begin{table}
+	\caption{bootloader kommandoer}
+	\label{tab:blcommand}
+	\centering
+
+	\begin{tabular}{|l|l|p{13cm}|}
+		\hline
+		\textbf{Navn} & \textbf{Værdi} & \textbf{Handling} \\
+		\hline
+		Set & 85 & Applikationskommando. Værdien 85 samt de to næstkommende bytes gemmes i inputbufferen, hvorefter der jumpes til applikations kommando interruptet.\\
+		\hline
+		Var & 86 & For at undgå at skulle opdatere bootloaderen, hvis der blev implementeret andre kommandoer i applikationsprotokollen, blev denne kommando implementeret. Den næstkommende byte beskriver længden, n, af applikationskommandoen. De derefter næstkommende, n, bytes gemmes i inputbufferen, før der jumpes til applikations kommando interruptet.\\
+		\hline
+		Ping & 87 & Værdien 87 lægges i output bufferen.\\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\begin{mdquote}
+	Bemærk:
+
+	[85, X, X] og [86, 3, 85, X, X] er ekvivalente.
+
+	[87] er ping kommandoen til bootloaderen. [86, 1, 87] er en kommando [87] til applikationen.
+\end{mdquote}
+
+
 
 Længden er kun variabel for bootloaderen. Der gives ingen information til applikationen om længden af kommandoen.
 

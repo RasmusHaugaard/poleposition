@@ -27,7 +27,7 @@ bt_rc_start:
 	rjmp bt_rc_end
 
 bl_error_rxcie:
-	force_send_bt_byte [bl_fist_page_empty]
+	force_send_bt_byte [bl_first_page_empty]
 bl_error_rxcie_loop:
 	rjmp bl_error_rxcie_loop
 
