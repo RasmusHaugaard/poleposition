@@ -33,11 +33,16 @@ rjmp init
 .org 0x2A
 init:
 
-sbi   DDRD, PORTD7
-nop
-sbi   PORTD, PORTD7
+  .include "src/motor/motor_pwm.asm"
 
+sbi  DDRA, PORTA1
+nop
+cbi  PORTA, PORTA1
 
 main:
+
+  setspeed [180]
+
+  delays [2]
 
   rjmp main

@@ -1,1 +1,1 @@
-.include "src/motor/tests/motor_test.asm"
+.include "src/mapning/pwm_test.asm"

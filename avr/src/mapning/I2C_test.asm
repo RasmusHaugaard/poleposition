@@ -2,8 +2,8 @@
 
 
 .def  first_gyro_value_high = R20
-.def  reg_check = R21
-.def  light_status = R22
+.filedef reg_check = R21
+.filedef light_status = R22
 
 
 ;Nogle værdier defineres i starten.
@@ -30,7 +30,7 @@
 .equ  status_four_turns  = 0b00110000
 .equ  status_inner_turn  = 0b01000000
 .equ  status_outter_turn = 0b00000000
-.equ  still_turning = 0b01000000
+.equ  still_turning      = 0b01000000
 
 .org 0x00
 rjmp init
@@ -40,11 +40,9 @@ init:
   delays [1]
   .include "src/i2c/i2c_id_macros.asm"
   .include "src/i2c/i2c_setup.asm"
+  delays [1]
   .include "src/i2c/i2c_setup_gyr.asm"
   .include "src/lapt/lapt.asm"
-;  .include "src/motor/motor_pwm.asm"
-
-delays [1]
 
 sbi   DDRA, PORTA0
 nop
@@ -62,19 +60,14 @@ delays [1]
 check_for_turn:
 
   I2C_ID_READ [gyr_addr_w, gyr_reg_ctrl1, gyr_addr_r, reg_check] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
-  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high]
+  I2C_ID_READ [gyr_addr_w, gyr_sub_xh, gyr_addr_r, first_gyro_value_high]
 
-  ldi   light_status, 0b00000000
-  out   PORTA, light_status
   delayms [100]
 
   cpi   reg_check, gyr_ctrl1_val
   brne  ERROR
 
   send_bt_byte [first_gyro_value_high]
-
-  ldi   light_status, 0b00000001
-  out   PORTA, light_status
 
   delayms [100]
 
