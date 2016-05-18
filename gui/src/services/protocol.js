@@ -68,3 +68,48 @@ const types = {
 		window.speak("Controller restarted.")
 	})
 }
+
+function save(graph){
+	//if (!graph.lines && !graph.xGridLines) return
+
+	window.folderEntry.getDirectory('data', {create:true}, directoryEntry => {
+		directoryEntry.getFile(
+			(new Date()).toString() + ".csv",
+			{create:true, exclusive: true},
+			fileEntry => {
+				fileEntry.createWriter(fileWriter => {
+					window.fileWriter = fileWriter
+					let file = []
+					if (graph.lines){
+						let lines = graph.lines
+						lines.forEach(line => {
+							file.push(line.name + "_x,")
+							file.push(line.name + "_y,")
+						})
+						file.push("\n")
+						let rowCounts = lines.map(line => Math.min(line.x.length, line.y.length))
+						let maxRowCount = rowCounts.reduce((prev, val) => Math.max(prev, val))
+						for (var row = 0; row < maxRowCount; row++){
+							lines.forEach((line, i) => {
+								if (rowCounts[i] >= row){
+									file.push(line.x[row] + ",")
+									file.push(line.y[row] + ",")
+								}else{
+									file.push(",,")
+								}
+							})
+							file.push("\n")
+						}
+					}
+					fileWriter.onwriteend = () => console.log("write complete")
+					fileWriter.onerror = e => console.log("write failed:" + e.toString())
+					fileWriter.write(new Blob(file))
+				})
+			}
+		)
+	})
+}
+
+window.saveGraph = () => {
+	save(window.graph)
+}
