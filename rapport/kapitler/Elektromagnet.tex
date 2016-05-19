@@ -1,64 +1,92 @@
 % !TEX root = ../rapport.tex
 
 \subsection{Elektromagnet}
+\label{Elektromagnet}
 ?Fysisk analyse af bilen i sving, ide princip. Bilen drejer hvilke krafter påvirker denne. Kraften på mængden øverst i bilen større end kraften på ting tætte ved banen. Tegning af bil kraft moment osv. Enten præcis antal Newton eller så mange newton tilgængelig.?
 
 Elektromagneten er først og fremmest begrænset af bilens dimensioner. I vores tilfælde har vi lavet et fri rum på bredden 1.90cm x længden 1.73cm x højden 1.37cm = 4,50 cm3. 
 Det betyder at elektromagnetens kerne med spole max må bliver 1.2 cm høj, 1.5cm bred (1.5  bred banen 1.1 ) og 1.5 cm lang ( volumen 2.7 cm3). (Emagnet højde + ben = 1.4 cm)
 
-Med en kerne med et volumen på 0.3 cm^3 (Indskrevne cirkel af en firkant på 0.3cm*0.3 cm ) giver det os resterne 2.4 cm^3 til spolen.
+Med en kerne med et volumen på 0.3 $cm^3$ (Indskrevne cirkel af en firkant på $0.3cm \cdot 0.3 cm$ ) giver det os resterne 2.4 $cm^3$ til spolen.
 Det giver os et estimat for hvor mange vindinger N, vi kan havde med en ledning med tværsnitsareal Aw, med en spole med gennemsnit radius på r som er 0.45 cm. (*Gennemsnit omkreds da omkredsen stiger linært i takt med der kommer viklinger. 0.3cm for kernen, spole slutter ved 0.6cm det giver gns på 0.45 cm….. *Givet at viklingerne ligger helt tæt. )
 
 
 \begin{equation}
-Vol_m_a_x =\pi\cdot r\cdot2 \cdot A_w \cdot N \\
-N= (Vol_m_a_x)/(r*pi*2*aw)
+Vol_{max} =\pi \cdot r \cdot 2 \cdot A_w \cdot N 
+\end{equation}
+\begin{equation}
+N= \frac{Vol_{max}}{r \cdot pi \cdot 2 \cdot aw}
 \end{equation}
 
-Det er vigtigt at vælge en ledning med et  A_w der kan holde til at man sender den mængde ampere igennem den uden at lakeringen begynder at smelte, eller det omkring liggende PLA chassis bliver blødt (Bilens steel). 
+Det er vigtigt at vælge en ledning med et $A_{w}$ der kan holde til at man sender den mængde ampere igennem den uden at lakeringen begynder at smelte, eller det omkring liggende PLA chassis bliver blødt (Bilens steel). 
 Hvis man kigger på anbefalingerne for hvad max strømmen i en kobber ledning og dens isolation er, kan man se for 1 A anbefaledes ledning med en diameter på 0.28 mm. Det er dog en anbefaling for længere vedvarende brug, hvor vi kun skal bruge vores i små korte perioder.
 
-http://www.powerstream.com/Wire_Size.htm 
+$http://www.powerstream.com/Wire_Size.htm $
 
 Vi fandt at vi kunne bruge en 0.20 mm kobbertråd, uden at lakering smeltede eller PLA chassis blev blødt. Hvor hvis vi gik ned i størrelse begyndte magneten at blive for varm til vi var trygge ved at havde den i bilen.
 Teoretisk skulle vi så kunne lave en magnet med følgende antal vindinger:
 
-N=(Vol_m_a_x)/(r*pi*2*aw)  ?indsæt værdier?? = x
+\begin{equation}
+N=\frac{Vol_{max}}{r \cdot pi \cdot 2 \cdot aw}  ?indsæt værdier?? = x
+\end{equation}
+
 
 Men da vi ikke kan ligge vindingerne helt tætte og ikke har en helt rund kerne har det i praksis kun været muligt for os at lave 600 vindinger.
 Vi brugte en ”spole maskine” – tjek hvad den hedder med Jan. For at lave vindingerne. Vi fandt dog ud af at alene på de 100 viklinger kunne man lave 1.5 gange flere viklinger ved at gøre det i hånden, dog tog det også væsentlig længere tid.
 Den kraft elektromagneten vil kunne trække bilen ned med kan estimeres ved først at kigge på den magnetiske energi der vil blive opladt i DeltaV matriale med  en ”konstant”?er stål  og evt jern dette?? permabiliteten my. 
 
-W_m=B^2/2μ ΔV
+\begin{equation}
+W_m =\frac{B^2}{2 \mu} \Delta V
+\end{equation}
+
 
 Hvis vi integrere energi densiteten over volumen af hele det magnetiske kredsløb og antager at B-feltet bliver holdt konstant igennem tværsnits arealet A på elektromagneten, medføre det at:
+\begin{equation}
+\Phi=B*A
+\end{equation}
+\begin{equation}
+B=\frac{\Phi}{A} 
+\end{equation}
 
-Φ=B*A→
-B=Φ/A
 
-I praktisk vil dette ikke være helt sandt da der vil opstå nogle hvirvel strømme mm. TJEK OP!! Hvilke. Husk vi antager at μ_0 konstant, og Phi konstant.  Men i vores tilfælde kan vi forstille os at fluxen løber igennem kredsløbet som vand ville i et rør.
+I praktisk vil dette ikke være helt sandt da der vil opstå nogle hvirvel strømme mm. TJEK OP!! Hvilke. Husk vi antager at $\mu_0$ konstant, og Phi konstant.  Men i vores tilfælde kan vi forstille os at fluxen løber igennem kredsløbet som vand ville i et rør.
 
-W_m = 1/2 Integrer(B^2) dv/μ = 1/2 Φ^2 integerer(1/(A^2*μ)) dV
+\begin{equation}
+W_m = \frac{1}{2} \int B^2 \frac{dv}{\mu}  = \frac{1}{2} \Phi^2 \int \frac{1}{A^2 \cdot \mu} dV
+\end{equation}
 
-Det gælder for et magnetisk kredsløb at den resulterende flux Φ er givet ved:
+Det gælder for et magnetisk kredsløb at den resulterende flux $\Phi$ er givet ved:
 
-Φ=μH*A  ca.≅ NI/R_m ca. ≅NI/(l/Aμ_0)
+\begin{equation}
+\Phi=\mu H \cdot A  \semequ \frac{NI}{R_m} \semequ  \frac{NI}{\frac{1}{A\mu_0}}
+\end{equation}
 
-N*I er ampere vindinger, Rm er reluktansen, μ er permeabiliteten og l længden af kredsløbet. Det medføre at vi kan skrive energien som.
+$N \cdot I$ er ampere vindinger, Rm er reluktansen, $ \mu $ er permeabiliteten og l længden af kredsløbet. Det medføre at vi kan skrive energien som.
+\begin{equation}
+W_m = (NI)^2/(Rm)^2 Integrer (dl/(A \cdot \mu_0))
+\end{equation}
 
-W_m = (NI)^2/(Rm)^2 Integrer (dl/(A*μ_0))
 
 Energi balancen i vores kredsløb er.
-mekanisk arbejde+ magnetisk energi(Tjek opladt energi)=Elektrisk energi*tid
-F dx+dW_m=iv dt
+$mekanisk arbejde+ magnetisk energi(Tjek opladt energi)=Elektrisk energi \cdot tid$
+
+\begin{equation}
+F dx + dW_m = iv dt
+\end{equation}
+
 
 Givet at vi holder en konstant strøm i spolen vil den elektrisk energi skrive som.
 
-iv=IN dΦ/dt=(NI)^2  d(1/R_m )/dt  
+\begin{equation}
+iv=IN d\Phi /dt=(NI)^2  d(1/R_m )/dt
+\end{equation}
+  
 
-sammensat Lining x og y får vi
+Sammensat ligning x og y får vi
 
+\begin{equation}
 F dx+(NI)^2/2  d (1/R_m )  =(NI)^2  d(1/R_m )
+\end{equation}
 
 Sidste del tjekkes med jan
 
