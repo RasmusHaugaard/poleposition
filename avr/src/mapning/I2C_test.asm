@@ -20,8 +20,11 @@ init:
   .include "src/i2c/i2c_id_macros.asm"
   .include "src/i2c/i2c_setup.asm"
   .include "src/i2c/i2c_setup_gyr.asm"
-  delays [1]
+  .include "src/motor/motor_pwm.asm"
 
+  delays [2]
+
+  setspeed [180]
 
 main:
   I2C_ID_READ [gyr_addr_w, gyr_sub_xh, gyr_addr_r, first_gyro_value_high]
@@ -30,3 +33,6 @@ main:
   send_bt_byte [first_gyro_value_high]
 
   rjmp main
+
+ERROR:
+  rjmp ERROR
