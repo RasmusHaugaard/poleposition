@@ -5,7 +5,7 @@
 .set saved_pc = PC
 
 .org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)	"streg måler"
-jmp EX2_ISR		;adresse med mere plads
+jmp EX1_ISR		;adresse med mere plads
 
 .org 0x12		;adresse for timer1 overflow (interrupt vektor table)
 jmp T1_OV_ISR	;adresse med mere plads
@@ -25,11 +25,14 @@ out TCNT1L, R16	;nulstiller timer1 low bite
 ;=====ISR Initalisering=====
 sei					;tilader global interrupt
 
-;=== extern interrupt 2 ==
-ldi R16, 1<<INT2	;tillader externt interrupt 2 (Port B, pin 2)
+
+cli
+;=== extern interrupt 1 ==
+ldi R16, 1<<INT1	;tilader interrupt ved externt trigger 1 (Port D, pin 3)
 out GICR, R16		;..
-ldi R16, 1<<ISC2	;Ops�ttes til at trigge ved puls stigning
-out MCUCSR, R16		;..
+ldi R16, (1<<ISC10) | (1<<ISC11)	;ops�tter til at trigge ved puls stigning
+out	MCUCR, R16		;..
+sei
 
 ;=== Timer1 overflow interrupt ===
 ldi R16, 1<<TOV1	;tilader interrupt ved timer1 overflow
@@ -75,7 +78,7 @@ jmp lapt_file_end
 .endm
 
 .macro get_time_hl
-	Error get_time_hl
+	Error "get_time_hl"
 .endm
 
 .macro get_time_hl_8_8			;macro som retunere TCNT1H og TCNT1L
@@ -90,7 +93,7 @@ jmp lapt_file_end
 .endm
 
 .macro get_time_hh
-	Error get_time_hh
+	Error "get_time_hh"
 .endm
 
 .macro get_time_hh_8			;macro som retunere TCNT1HH
@@ -128,32 +131,8 @@ T1_OV_ISR_CLEAR:
 	ret							;retunere
 
 
-EX2_ISR:						;Interrupt(kommer over lap-stregen)
+EX1_ISR:						;Interrupt(kommer over lap-stregen)
 	rcall lap_finished
-
-;<------------------------------------------------------Flytte adresse pointer til start
-	ldi R16, 36					;sender $
-	send_bt_byte [R16]			;..
-	ldi R16, 74					;sender J
-	send_bt_byte [R16]			;..
-	ldi R16, 114				;sender r
-	send_bt_byte [R16]			;..
-	ldi R16, 115				;sender s
-	send_bt_byte [R16]			;..
-
-	lds R16, def_sek_adr		;Resitter sek_adr
-	sts sek_adr, R16			;..
-
-	ldi R16, 36					;sender $
-	send_bt_byte [R16]			;..
-	ldi R16, 82					;sender R
-	send_bt_byte [R16]			;..
-	ldi R16, 114				;sender r
-	send_bt_byte [R16]			;..
-	ldi R16, 115				;sender s
-	send_bt_byte [R16]			;..
-;<------------------------------------------------------Flytte adresse pointer til start
-
 ;	rcall reset_sek_adr			;resetter sekment adresse for mread
 	reti
 
@@ -168,10 +147,10 @@ lap_finished:
 	in R18, TCNT1L				;ligger low bite fra timer i R18
 	in R17, TCNT1H				;ligger high bite fra timer i R17
 	lds R16, TCNT1HH			;ligger High High bite fra TCNT1HH i R16
-;	send_bt_byte [255]
-;	send_bt_byte [R16]			;send R16, R17, R18 til computer (24_bit register)
-;	send_bt_byte [R17]			;..
-;	send_bt_byte [R18]			;..
+	send_bt_byte [255]
+	send_bt_byte [R16]			;send R16, R17, R18 til computer (24_bit register)
+	send_bt_byte [R17]			;..
+	send_bt_byte [R18]			;..
 	rcall reset_lap_timer
 	pop R16						;reset registre til oprindelige v�rdi
 	out SREG, R16				;..

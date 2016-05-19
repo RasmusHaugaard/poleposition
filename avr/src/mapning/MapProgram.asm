@@ -71,7 +71,7 @@ delays [1]
 ;.endm
 
   delays [2]
-  setspeed [180]
+  setspeed [0]
 
   cbi   DDRB, PORTB3
   nop

@@ -14,20 +14,30 @@ init:
 	.include "src/motor/motor_pwm.asm"
 
 	sbi DDRA, PORTA1
+	nop
 	sbi DDRA, PORTA0
+	nop
 	cbi PORTA, PORTA1
+	nop
 	cbi PORTA, PORTA0
+	nop
+	sbi DDRB, PORTB3
+	nop
+	cbi DDRB, PORTB3
+
 
 	setspeed [0]
 
 main:
-	sts R20, dif_time_h
+	ldi R20, 255
 	send_bt_byte [R20]
-	sts R20, dif_time_l
+	lds R20, dif_time_h
+	send_bt_byte [R20]
+	lds R20, dif_time_l
+
 	send_bt_byte [R20]
 
-	delayms [250]
-	delayms [250]
+	delays [1]
 	rjmp main
 
 app_command_int_handler:
