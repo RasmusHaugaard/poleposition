@@ -1,7 +1,7 @@
 % !TEX root = ../rapport.tex
 \subsection{Bootloader}
-Programmerstikket til mikroprocessoren er ikke nem at tilgå, når bilen er fuldt monteret. For at kunne iterere hurtigt og undgå at skulle skille bilen ad og samle bilen hele tiden, blev der udviklet en bootloader med en flasher, så mikrokontrolleren kunne flashes via bluetooth.
-Mikrokontrollerens flashhukommelse er opdelt i to sektioner. Applikations sektionen og bootloader sektionen. Mikrokontrolleren er blevet fuset således, reset interrupt vektoren er flyttet til starten af bootloadersektionen, så bootloaderen initialiseres, når mikrocontrolleren starter og genstarter.
+Programmerstikket til mikroprocessoren er ikke nem at tilgå, når bilen er fuldt monteret. For at kunne iterere hurtigt og undgå at skulle skille bilen ad og samle bilen hele tiden, blev der udviklet en bootloader med en flasher, så mikrocontrolleren kunne flashes via bluetooth.
+Mikrocontrollerens flashhukommelse er opdelt i to sektioner. Applikations sektionen og bootloader sektionen. Mikrocontrolleren er blevet fuset således, reset interrupt vektoren er flyttet til starten af bootloadersektionen, så bootloaderen initialiseres, når mikrocontrolleren starter og genstarter.
 
 \subsubsection{Bluetooth}
 For at sikre, der kan skabes kontakt med bootloaderen, styrer bootloaderen bluetoothkommunikationen.
@@ -74,9 +74,9 @@ Bemærk: [85, X, X] og [86, 3, 85, X, X] er ækvivalente. [87] er ping kommandoe
 \end{mdquote}
 
 \subsubsection{Flasher}
-For at kunne uploade et program til mikrokontrollerens flashhukommelse, implementeres en flasher i bootloaderen.
+For at kunne uploade et program til mikrocontrollerens flashhukommelse, implementeres en flasher i bootloaderen.
 Se eventuelt \mbox{``avr/src/bl/program\_flash.asm''}
-Mikrokontrollerens flashhukommelse er opdelt i 256 pages af 64 words (128 bytes). Flashhukommelsen skal ændres en page af gangen.
+Mikrocontrollerens flashhukommelse er opdelt i 256 pages af 64 words (128 bytes). Flashhukommelsen skal ændres en page af gangen.
 Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende flash kommandoer:
 \begin{table}[H]
 	\caption{bootloader flash kommandoer}
@@ -90,7 +90,7 @@ Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende f
 		\hline
 		Erase page & 90 & De næstkommende 2 bytes bruges som pointer til den page, der skal slettes.\\
 		\hline
-		Reset & 91 & Mikrokontrolleren resetter.\\
+		Reset & 91 & Mikrocontrolleren resetter.\\
 		\hline
 	\end{tabular}
 \end{table}
