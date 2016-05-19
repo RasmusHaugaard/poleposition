@@ -22,9 +22,6 @@ pf_loop:
 	cpi temp1, pf_write_page_code
 	breq pf_write_page_handler
 
-	cpi temp1, pf_file_end_code
-	breq pf_file_end_handler
-
 	cpi temp1, pf_reset_code
 	breq pf_reset
 
@@ -42,10 +39,6 @@ pf_erase_page_handler:
 	rcall pf_erase_page_z
 	force_send_bt_byte [pf_tr_page_erased]
 	rjmp pf_loop
-
-pf_file_end_handler:
-	delays [1]
-	soft_reset
 
 pf_write_page_handler:
 	ldi counter, PAGESIZE	;load amount of words, that is to be written

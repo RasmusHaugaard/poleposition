@@ -12,8 +12,7 @@ const APP_PAGECOUNT = 224
 const REPROGRAM_CODE = 88
 const pf_write_page_code = 89
 const pf_erase_page_code = 90
-const pf_file_end_code = 91
-const RESET_CODE = 92
+const RESET_CODE = 91
 
 const BUFFERSIZE = 1000
 if (BUFFERSIZE < 3 + PAGESIZEB) throw("BUFFERSIZE skal være minimum 3 + PAGESIZEB!!!")

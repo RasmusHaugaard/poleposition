@@ -16,5 +16,4 @@
 ;program_flash
 .equ pf_write_page_code = 89
 .equ pf_erase_page_code = 90
-.equ pf_file_end_code = 91
-.equ pf_reset_code = 92
+.equ pf_reset_code = 91
