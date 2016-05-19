@@ -3,6 +3,7 @@
 ;===================================
 
 .set saved_pc = PC
+
 .org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)
 jmp EX1_ISR		;adresse med mere plads
 .org saved_pc
@@ -97,6 +98,9 @@ EX1_ISR:					;interrupt(motor tick)
 	sbc R18, R16			;(High bite) Tr�kker "old timer" (R16) fra den nye "nye timer" (R18)
 	sts dif_time_h, R18		;gemmer forskellen mellem "ny" og "old" timer
 	sts dif_time_l, R19		;..
+
+	send_bt_byte [R18]
+	send_bt_byte [R19]
 
 	lds R16, dis_tik_l		;kopier "dis_tek_l" til R16
 	inc R16					;R16++ (inkrimentere)

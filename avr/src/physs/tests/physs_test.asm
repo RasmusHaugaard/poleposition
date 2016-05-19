@@ -14,8 +14,9 @@ init:
 	.include "src/motor/motor_pwm.asm"
 
 	sbi DDRA, PORTA1
-	nop
+	sbi DDRA, PORTA0
 	cbi PORTA, PORTA1
+	cbi PORTA, PORTA0
 
 	setspeed [0]
 
@@ -26,6 +27,14 @@ app_command_int_handler:
 	lds temp, bt_rc_buf_start
 	cpi temp, set_code
 	breq bt_set
+	cpi temp, get_code
+	breq bt_get
+	ret
+
+bt_get:
+	lds temp, bt_rc_buf_start + 1
+	cpi temp, get_speed_code
+	breq bt_get_speed
 	ret
 
 bt_set:
@@ -34,6 +43,8 @@ bt_set:
 	breq bt_set_speed
 	cpi temp, set_stop_code
 	breq bt_set_stop
+	cpi temp, set_reset_lapt_code
+	breq bt_set_reset_lapt
 	ret
 
 bt_set_speed:
@@ -48,6 +59,17 @@ full_speed:
 	setspeed [200]
 	ret
 
+bt_get_speed:
+	lds temp, dif_time_h
+	send_bt_byte [temp]
+	lds temp, dif_time_l
+	send_bt_byte [temp]
+	ret
+
 bt_set_stop:
 	setspeed [0]
+	ret
+
+bt_set_reset_lapt:
+	rcall reset_lap_timer
 	ret
