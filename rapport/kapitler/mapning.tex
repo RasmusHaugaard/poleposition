@@ -1,0 +1,32 @@
+% !TEX root = ../rapport.tex
+\newpage
+\section{Kortlægning af bane}
+Den bedste omgangstid afhænger af mange elektriske komponenter, som bindes sammen af software.
+Denne software skal ud fra disse analoge og digital komponenter kunne analysere banen, og ud fra dette
+kortlægge banen. Byggestenen til opbygning af denne kortlægning, kan ses på figur \ref{fig:mapflow}.
+
+\begin{wrapfigure}{r}{0.35\textwidth}
+  \vspace{-10pt}
+  \begin{center}
+      \includegraphics[width=0.25\textwidth]{kapitler/billeder/mapflow.png}
+    \end{center}
+    \vspace{-10pt}
+    \caption{Viser grundstenene af koden til kortlægning af banen.}
+    \label{fig:mapflow}
+\end{wrapfigure}
+
+Som der ses på figur \ref{fig:mapflow}, er pincippet bygget meget simpelt op, og kan beskrives ved følgende punkter:
+
+\begin{itemize}
+\item Venter på interrupt fra hvid-streg sensor (Tiltøj til flowchart)
+\item Når den hvide streg er registeret, gemmen den omdrejningstælleren.
+\item Herefter køres et loop, som bruger gyroskopet til at tjekke om der drejes.
+\item Hvis vi drejer, gemmes omdrejningstæller og længden af det lige stykke regnes.
+\item Status for et lige stykke, samt længden af stykket gemmes i SRAM.
+\item Nyt loop tjekker om svinget er slut. Hvis sving er slut, gemmes omdrejnignstæller.
+\item Status for sving, samt længde af sving gemmes i SRAM, og koden starter forfra.
+\item Ved næste hvid-streg interrupt stoppes kortlægningen.
+\end{itemize}
+
+Når koden er færdig, vil alle sving og lige stykker være defineret i SRAM og koden vil blive behandlet
+af et seperat program.

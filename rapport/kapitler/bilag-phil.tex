@@ -30,17 +30,17 @@
 \newpage
 \subsection{Prescaler udregninger}
 \label{subsec:prescaler_udregninger}
-Formlerne er de samme for de forskellige prescalere, det eneste som ændre sig er prescaler værdien. Som eksempel bliver prescaler værdien 256 brugt. For at beregne tiden mellem hvert clock count bruges følgendene formel:
+Formlerne er de samme for de forskellige prescalere, det eneste som ændre sig er prescaler værdien. Som eksempel bliver prescaler værdien 256 brugt. For at beregne tiden mellem hvert clock count, tages den reciprokke af 16MHz. Men da der også skal tages højde for prescaleren, divideres de 16MHz først med 256. Formlen er som følgeenden:
 
 $$\Delta t = \frac{1}{16000000/prescaler}$$
 $$\Delta t = \frac{1}{16000000/256} = 1.6 \cdot 10^{-5}$$\\
 
-Clock count's pr. puls fra motor encoder, beregnes ved:
+Clock count's pr. puls fra motor encoder, beregnes ved at tage den reciprokke af motorens hastighed og dividere med tiden mellem hvert clock count:
 
 $$cpp = \frac{1}{Motor hastighed} / \Delta t$$
 $$cpp = \frac{1}{2000} / 1.6 \cdot 10^{-5} = 31.25$$\\
 
-For at kunne beregne hvor lang tid timeren kan være aktiv inden den overflower, skal man først vide hvor mange count's timeren tæller på et sekund. Dette beregnes ved formlen:
+For at kunne beregne hvor lang tid timeren kan være aktiv inden den overflower, skal man først vide hvor mange count's timeren tæller pr. et sekund, dette  beregnes ved formlen:
 
 $$cps = \frac{1}{\Delta t}$$
 $$cps = \frac{1}{\Delta t} = 62500$$\\
