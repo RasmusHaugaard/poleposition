@@ -55,6 +55,7 @@ delays [1]
   .include "src/i2c/i2c_setup.asm"
   .include "src/i2c/i2c_setup_gyr.asm"
   .include "src/motor/motor_pwm.asm"
+  .include "src/elemag/elemag_pwm.asm"
 ;  .include "src/lapt/lapt.asm"
 ;  .include "src/physs/physical_speed.asm"
 
@@ -73,14 +74,6 @@ delays [1]
 ;  sts   map_data_pointer_l, ZL
 ;  sts   map_data_pointer_h, ZH
 ;.endm
-
-  delays [2]
-  setspeed [0]
-
-  cbi   DDRB, PORTB3
-  nop
-  cbi   DDRA, PORTA1
-
 main:
 ;  get_dis_hl [first_point_high, first_point_low]
 
