@@ -1,5 +1,6 @@
 .include "src/bl/bl.asm"
 
+
 ;pladser i SRAM defineres.
 
 
@@ -45,8 +46,11 @@
 rjmp init
 
 .org 0x2A
+rjmp app_command_handler
+
 init:
 delays [1]
+
   .include "src/i2c/i2c_id_macros.asm"
   .include "src/i2c/i2c_setup.asm"
   .include "src/i2c/i2c_setup_gyr.asm"
@@ -181,3 +185,7 @@ turn_ended:
 ERROR:
 
   rjmp  ERROR
+
+app_command_handler:
+  .include "src/motor/motor_bt_app_command.asm"
+  reti
