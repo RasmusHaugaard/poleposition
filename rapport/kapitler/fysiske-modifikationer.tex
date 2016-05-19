@@ -2,13 +2,36 @@
 
 \subsection{Fysiske modifikationer}
 
-For at minimere vægten af bilen er alt unødvendigt plastik blevet fjernet fra bilen.
+For at minimere vægten af bilen er alt unødvendigt plastik blevet fjernet fra bilen. Grunden til dette kan beskrives vha. Newtons 2. lov. Bilen bevæger sig fremad med en kraft F, og bilen har en masse m. 
+\begin{equation}
+F=m \cdot a
+\end{equation}
+\begin{equation}
+a = \frac{F}{m}
+\end{equation}
+Accelerationen a, stiger derved jo mindre massen af bilen er. 
 
 Downforce er ekstremt brugbart i sving da det hjælper med at holde bilen på banen ved højere fart. Downforce er mindre brugbart på lige strækninger da bilen let bliver på banen og downforce faktisk vil sænke bilens acceleration og topfart. Derfor indføres der justerbar downforce med elektromagneten. I det 3D-printet chassis er der en indbygget holder til elektromagneten. Elektromagnet er placeret bagerst for at give kontra til den permamagnet der i forvejen sidder i bilen. Permamagneten er placeret foran og tæt på splitten for at trække splitten ned i banen. For uddybning af elektromagneten se sektion \ref{Elektromagnet}.
 
 \subsubsection{3D-printet chassis}
 
-For at kunne hurtigt gennem sving kræver det et lavt tyngdepunkt i bilen, jo lavere tyngdepunktet er jo hurtigere kan bilen klare at køre gennem et sving uden at kæntre. Ved at fjerne affjedringen optimeres tyngdepunktet også da karrosseriet er i sin laveste tilstand hele tiden, og ikke kun når fjedrene er trykket sammen.
+For at kunne hurtigt gennem sving kræver det et lavt tyngdepunkt i bilen, jo lavere tyngdepunktet er jo hurtigere kan bilen klare at køre gennem et sving uden at kæntre. Dette fænomen kan ses på figur \ref{fig:bilsving} nedenfor.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\linewidth]{kapitler/billeder/bilsving.png}
+    \caption{Skitse af bilen i et venstresving med to forskellige tyngdepunkter}
+    \label{fig:bilsving}
+\end{figure}
+På bil 1 er tyngdepunktet (den blå prik) lavt og derved har den en kortere arm (den grønne streg) fra tyngdepunktet til omdrejningspunktet (den røde prik). Omdrejningsmomentet(den lilla pil) kan beskrives som:
+\begin{equation}
+\tau = F \cdot L
+\end{equation}
+Hvor $\tau$ er omdrejningsmomentet, L er armen (den grønne streg) og F er kraften der påvirker den (den sorte pil). Der antages at der skal det samme omdrejningsmoment ($\tau$) til at bilen kæntre.
+\begin{equation}
+F = \frac{\tau}{L}
+\end{equation}
+Derved kan det ses at når armen, L, bliver større skal der mindre kraft F til bilen kæntre. 
+Ved at fjerne affjedringen optimeres tyngdepunktet også da karrosseriet er i sin laveste tilstand hele tiden, og ikke kun når fjedrene er trykket sammen.
 
 Det udleveret chassis på racerbilen er meget vakkelvornt, og kan vrides let. For at optimere dette er der blevet 3D-printet et nyt forstærket chassis. Det chassis er stærkere end det gamle og giver lettere plads til at montere sensorer og aktuatore i bilen. Det nye chassis er tegnet i AutoDesk Inventor og derefter 3D-printet med Makerbot. 3D-printet er printet i flere dele og derefter samlet med skruer. En fordel ved at printet er i flere dele er hvis én del går i stykker skal man ikke printe det hele igen. 3D-tegningen ses på figur \ref{fig:3Dtegning} nedenfor.
 
