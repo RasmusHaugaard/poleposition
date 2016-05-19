@@ -8,11 +8,11 @@ For at sikre, der kan skabes kontakt med bootloaderen, styrer bootloaderen bluet
 \paragraph{Baudrate}
 En række stresstests blev udført for at finde den hurtigste, stabile baudrate mellem mikrocontrolleren og bluetoothmodulet. Dataflowet er primært fra mikrocontrolleren til pc. Stresstestene er opbygget derefter.
 En enkelt byte med værdien, x, sendes til mikrocontrolleren, hvorefter mikrocontrolleren sender x kb tilbage.
-Se ``avr/src/bt/tests/replykb.asm''.
-Forskellige baudrates blev stresstestet ved 250 kB. Den højeste af disse, der ikke havde datatab, var 38 kbps. Disse tests blev udført uden parity bit, med én stop bit og med 8 databits. Det er også denne opsætning der antages fremadrettet. Se eventuelt ``avr/src/bt/bt\_setup.asm''. Det vil sige 9 bits i alt per overført byte. Det giver en teoretisk overførselshastighed på $38 kbps / 9 bpB \simeq 4.2 kB/s$. Der kunne have været eksperimenteret med parity bits og flere stopbits ved højere baudrates, men der var ikke umiddelbart behov for hurtigere overførselshastigheder.
+Se eventuelt \mbox{``avr/src/bt/tests/replykb.asm''}.
+Forskellige baudrates blev stresstestet ved 250 kB. Den højeste af disse, der ikke havde datatab, var 38 kbps. Disse tests blev udført uden parity bit, med én stop bit og med 8 databits. Det er også denne opsætning der antages fremadrettet. Se eventuelt \mbox{``avr/src/bt/bt\_setup.asm''}. Det vil sige 9 bits i alt per overført byte. Det giver en teoretisk overførselshastighed på $38 kbps / 9 bpB \simeq 4.2 kB/s$. Der kunne have været eksperimenteret med parity bits og flere stopbits ved højere baudrates, men der var ikke umiddelbart behov for hurtigere overførselshastigheder.
 \paragraph{Output Buffer}
 Med en clockfrekvens på 16 MHz går der $16*10^6 / 4.2*10^3 \simeq 3810$ cycles mellem, der kan sende bytes. Hvis man ønsker at sende $x$ bytes synkront, skal programmet i alt vente $(x-1)*3810$ cycles. For at udnytte disse cycles i stedet for at vente, implementeres en buffer i sram.
-Se ``avr/src/bt/bt\_tr.asm''.
+Se eventuelt \mbox{``avr/src/bt/bt\_tr.asm''}.
 Bufferen består af en byte liste med en fast længde allokeret i sram samt to pointers, en store (gem/tilføj) pointer og en send pointer, der også er allokeret i sram. Listen indeholder de bytes, der ønskes sendt, samt den frie plads i bufferen. Bytes i det frie område kan være bytes, der allerede er sendt, eller bytes, der endnu ikke er blevet skrevet over siden mikrocontrollerens sidste reset. Store pointeren peger på den byte i listen, der blev tilføjet sidst. Send pointeren peger på den byte i listen, der blev sendt sidst.
 I initialiseringen af bufferen sættes de to pointere til at pege på den samme byte i listen.
 Når der ønskes en byte sendt, inkrementeres store pointeren, og byten skrives til den adresse i listen, store pointeren repræsenterer. Interrupt enableren, for når UART data registeret er tomt (UDRIE), sættes højt, så bufferen bliver informeret via interrupt handleren, når der kan sendes en byte.
@@ -25,7 +25,7 @@ TODO: Der skal et billede ind her
 
 \subsubsection{Protokol}
 Bootloaderen styrer bluetoothkommunikationen og indeholder en overordnet indkommende kommunikationsprotokol.
-Se eventuelt ``src/avr/bt/bt\_rc''.
+Se eventuelt \mbox{``src/avr/bt/bt\_rc''}.
 Når bootloaderen starter, forventer den at modtage en bootloader kommando.
 To bootloader kommandoer er isoleret til bootloaderen. Resten af applikationen vil ikke blive påvirket af disse.
 
@@ -46,7 +46,7 @@ To bootloader kommandoer er isoleret til bootloaderen. Resten af applikationen v
 \end{table}
 
 Tre bootloader kommandoer kan bruges til at kommunikere med applikationen igennem en udvidelse af interrupt vektor tabellen.
-Når en af nedestående bootloader kommandoer, samt tilhørende bytes, er modtaget, jumpes der til 0x2A. Da det gøres inde i et interrupt, vil kommando interrupt handleren skulle returnere med instruktionen $reti$, ligesom ved et normalt interrupt. Applikationens kommando interrupt handler kan læse kommandoen i en input buffer, bootloaderen fylder op fra bufferens start adresse.
+Når en af nedestående bootloader kommandoer, samt tilhørende bytes, er modtaget, jumpes der til 0x2A. Da det gøres inde i et interrupt, vil kommando interrupt handleren skulle returnere med instruktionen $reti$, ligesom ved et normalt interrupt. Applikationens kommando interrupt handler kan læse kommandoen i en input buffer, i sram, bootloaderen fylder op fra bufferens start adresse.
 
 \begin{table}[H]
 	\caption{bootloader kommandoer}
@@ -75,9 +75,9 @@ Bemærk: [85, X, X] og [86, 3, 85, X, X] er ækvivalente. [87] er ping kommandoe
 
 \subsubsection{Flasher}
 For at kunne uploade et program til mikrokontrollerens flashhukommelse, implementeres en flasher i bootloaderen.
-Se eventuelt ``avr/src/bl/program\_flash.asm''
+Se eventuelt \mbox{``avr/src/bl/program\_flash.asm''}
 Mikrokontrollerens flashhukommelse er opdelt i 256 pages af 64 words (128 bytes). Flashhukommelsen skal ændres en page af gangen.
-Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende kommandoer:
+Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende flash kommandoer:
 \begin{table}[H]
 	\caption{bootloader flash kommandoer}
 	\label{tab:blflashcommands}
@@ -95,5 +95,5 @@ Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende k
 	\end{tabular}
 \end{table}
 \paragraph{Optimering af flash tid}
-At slette eller skrive en side kan tage et par millisekunder. Hvis interrupts er disablet, og der ventes et par millisekunder, før næste byte modtages, kan der gå data tabt. For at undgå dette, kunne man sende acknowledge bytes retur til pc'en. Responsetiden, tur retur, over bluetooth er på et par hundrede millisekunder. Hvis man ville ændre alle 256 pages, ville det give et betydeligt overhead.
-For at undgå dette, implementeres en inputbuffer, sammenlignelig med bluetooth output bufferen (TODO: reference). Se eventuelt ``avr/src/bl/bl\_pf\_bt\_rc\_buffer.asm''. Interrupt vektor tabellen flyttes til bootloader sektionen og alle interrupts disables pånær UART interrupts, der håndteres af flasheren. Hvis flasherprogrammet på pc'en er bekendt med bootloaderens inputbuffers størrelse, kan det undgås, bufferen overflower.
+At slette eller skrive en side kan tage flere millisekunder. Hvis interrupts er disablet, og der ventes millisekunder, før næste byte modtages, kan der gå data tabt. For at undgå dette, kunne man sende acknowledge bytes retur til pc'en. Responsetiden, tur retur, over bluetooth er på et par hundrede millisekunder. Hvis man ville ændre alle 256 pages, ville det give et betydeligt overhead.
+For at undgå dette, implementeres en inputbuffer, sammenlignelig med bluetooth output bufferen (TODO: reference). Se eventuelt \mbox{``avr/src/bl/bl\_pf\_bt\_rc\_buffer.asm''}. Interrupt vektor tabellen flyttes til bootloader sektionen og alle interrupts disables pånær UART receive complete interruptet, der håndteres af flasheren. Hvis flasherprogrammet på pc'en er bekendt med bootloaderens inputbuffers størrelse, kan det undgås, bufferen overflower.
