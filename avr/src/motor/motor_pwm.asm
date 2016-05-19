@@ -10,7 +10,7 @@ ldi temp, DDRD
 ori temp, (1<<PD7)
 out DDRD, temp
 		;PWM - Phase Correct------------  clear on match ------  pwm clock
-ldi temp, (0<<WGM21) | (1<<WGM20) | (1<<COM21) | (0<<COM20) | (0<<CS22) | (0<<CS21) | (0<<CS20)
+ldi temp, (0<<WGM21) | (1<<WGM20) | (1<<COM21) | (0<<COM20) | (0<<CS22) | (0<<CS21) | (1<<CS20)
 out TCCR2, temp
 ldi temp, 0
 out OCR2, temp
