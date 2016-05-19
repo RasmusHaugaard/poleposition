@@ -26,10 +26,28 @@ TODO: Der skal et billede ind her
 Bootloaderen styrer bluetoothkommunikationen og indeholder en overordnet indkommende kommunikationsprotokol.
 Se eventuelt ``src/avr/bt/bt\_rc''.
 Når bootloaderen starter, forventer den at modtage en bootloader kommando.
+To bootloader kommandoer er isoleret til bootloaderen. Resten af applikationen vil ikke blive påvirket af disse.
 
-TODO: applikation command interrupt!
+\begin{table}[H]
+	\caption{bootloader kommandoer - isoleret til bootloaderen}
+	\label{tab:blcommand}
+	\centering
 
-\begin{table}
+	\begin{tabular}{|l|l|p{13cm}|}
+		\hline
+		\textbf{Navn} & \textbf{Værdi} & \textbf{Handling} \\
+		\hline
+		Ping & 87 & Værdien 87 tilføjes til bluetooth output bufferen.\\
+		\hline
+		Flash & 88 & Bootloaderen går i flash mode. Se (TODO: reference til flash afsnit)
+		\hline
+	\end{tabular}
+\end{table}
+
+Tre bootloader kommandoer forwardes til applikationen igennem en udvidelse af interrupt vektor tabellen.
+Når en af nedestående bootloader kommandoer samt tilhørende bytes er modtaget jumpes der til 0x2A. Da det gøres inde i et interrupt, vil kommando interrupt handleren skulle returnere med reti, ligesom ved resten af interrupt vektor tabellen.
+
+\begin{table}[H]
 	\caption{bootloader kommandoer}
 	\label{tab:blcommand}
 	\centering
@@ -41,8 +59,6 @@ TODO: applikation command interrupt!
 		Set & 85 & Applikationskommando. Værdien 85 samt de to næstkommende bytes gemmes i inputbufferen, hvorefter der jumpes til applikations kommando interruptet.\\
 		\hline
 		Var & 86 & For at undgå at skulle opdatere bootloaderen, hvis der blev implementeret andre kommandoer i applikationsprotokollen, blev denne kommando implementeret. Den næstkommende byte beskriver længden, n, af applikationskommandoen. De derefter næstkommende, n, bytes gemmes i inputbufferen, før der jumpes til applikations kommando interruptet.\\
-		\hline
-		Ping & 87 & Værdien 87 lægges i output bufferen.\\
 		\hline
 	\end{tabular}
 \end{table}
