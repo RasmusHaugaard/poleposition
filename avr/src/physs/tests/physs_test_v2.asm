@@ -21,9 +21,9 @@ init:
 	setspeed [0]
 
 main:
-	sts, R20 dif_time_h
+	sts R20, dif_time_h
 	send_bt_byte [R20]
-	sts, R20 dif_time_l
+	sts R20, dif_time_l
 	send_bt_byte [R20]
 
 	delayms [250]
