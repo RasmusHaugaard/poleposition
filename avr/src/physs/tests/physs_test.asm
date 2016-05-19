@@ -47,16 +47,23 @@ bt_set:
 	breq bt_set_reset_lapt
 	reti
 
-bt_set_speed:
+bt_set_speed: ;val => 2*val + Math.floor(val/2) + Math.floor(val/16)
 	lds temp, bt_rc_buf_start + 2
 	mov temp1, temp
-	subi temp1, 100
+	subi temp1, 101
 	brvs full_speed
-	lsl temp
+	mov temp1, temp
+	add temp, temp1
+	lsr temp1 ;temp/2
+	add temp, temp1
+	lsr temp1 ;temp/4
+	lsr temp1 ;temp/8
+	lsr temp1 ;temp/16
+	add temp, temp1
 	setspeed [temp]
 	reti
 full_speed:
-	setspeed [200]
+	setspeed [255]
 	reti
 
 bt_get_speed:
