@@ -47,8 +47,6 @@ rjmp init
 .org 0x2A
 init:
 delays [1]
-
-  .include "src/setup/stack_pointer.asm"
   .include "src/i2c/i2c_id_macros.asm"
   .include "src/i2c/i2c_setup.asm"
   .include "src/i2c/i2c_setup_gyr.asm"
@@ -73,7 +71,7 @@ delays [1]
 ;.endm
 
   delays [2]
-  setspeed [150]
+  setspeed [180]
 
   cbi   DDRB, PORTB3
   nop

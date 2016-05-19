@@ -21,11 +21,6 @@
 	jmp bl_rxcie_handler
 .org saved_pc
 
-.set saved_pc = PC
-.org 0x1a
-  jmp bl_rxcie_handler
-.org saved_pc
-
 bt_rc_start:
 	ldi temp1, 0
 	sts bt_rc_status, temp1
