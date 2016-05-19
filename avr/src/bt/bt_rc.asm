@@ -84,7 +84,7 @@ received_set_code:
 	rjmp rxcie_end
 received_get_code:
 	rcall store_input_in_rc_buffer
-	ldi temp1, set_length - 1
+	ldi temp1, get_length - 1
 	sts bt_rc_status, temp1
 	rjmp rxcie_end
 received_ping_code:
@@ -108,7 +108,13 @@ expecting_data:
 	brne rxcie_end
 	rcall reset_bt_rc_pointer
 	call 0x2A
-	rjmp rxcie_end
+	pop ZH
+	pop ZL
+	pop temp1
+	out SREG, temp1
+	pop temp1
+	pop input
+	jmp 0x2A
 
 store_input_in_rc_buffer:
 	lds ZL, bt_rc_pointer_L

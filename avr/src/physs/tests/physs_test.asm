@@ -29,13 +29,13 @@ app_command_int_handler:
 	breq bt_set
 	cpi temp, get_code
 	breq bt_get
-	ret
+	reti
 
 bt_get:
 	lds temp, bt_rc_buf_start + 1
 	cpi temp, get_speed_code
 	breq bt_get_speed
-	ret
+	reti
 
 bt_set:
 	lds temp, bt_rc_buf_start + 1
@@ -45,7 +45,7 @@ bt_set:
 	breq bt_set_stop
 	cpi temp, set_reset_lapt_code
 	breq bt_set_reset_lapt
-	ret
+	reti
 
 bt_set_speed:
 	lds temp, bt_rc_buf_start + 2
@@ -54,22 +54,22 @@ bt_set_speed:
 	brvs full_speed
 	lsl temp
 	setspeed [temp]
-	ret
+	reti
 full_speed:
 	setspeed [200]
-	ret
+	reti
 
 bt_get_speed:
 	lds temp, dif_time_h
 	send_bt_byte [temp]
 	lds temp, dif_time_l
 	send_bt_byte [temp]
-	ret
+	reti
 
 bt_set_stop:
 	setspeed [0]
-	ret
+	reti
 
 bt_set_reset_lapt:
 	rcall reset_lap_timer
-	ret
+	reti
