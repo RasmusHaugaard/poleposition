@@ -1,1 +1,1 @@
-.include "src/i2c/tests/i2c_test.asm"
+.include "src/physs/tests/physs_test.asm"
