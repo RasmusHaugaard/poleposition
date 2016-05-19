@@ -24,12 +24,12 @@ init:
 
   delays [2]
 
-  setspeed [180]
+  setspeed [50]
 
 main:
   I2C_ID_READ [gyr_addr_w, gyr_sub_xh, gyr_addr_r, first_gyro_value_high]
 
-  delayms [10]
+  delayms [40]
   send_bt_byte [first_gyro_value_high]
 
   rjmp main
