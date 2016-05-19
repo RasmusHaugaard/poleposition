@@ -3,17 +3,26 @@
 ;Den sammenligner timer2(TCNT2) og OCR2.
 ;Vi kan så styre dutycycle med OCR2.
 ;Eks. out OCR2, 255/4 for 25% dutycycle
-ldi R16, DDRD
-ori R16, (1<<PD7)
-out DDRD, R16
+.filedef temp = R16
+
+push temp
+ldi temp, DDRD
+ori temp, (1<<PD7)
+out DDRD, temp
 		;PWM - Phase Correct------------  clear on match ------  pwm clock
-ldi R16, (0<<WGM21) | (1<<WGM20) | (1<<COM21) | (0<<COM20) | (1<<CS22) | (0<<CS21) | (1<<CS20)
-out TCCR2, R16
-ldi R16, 0
-out OCR2, R16
+ldi temp, (0<<WGM21) | (1<<WGM20) | (1<<COM21) | (0<<COM20) | (0<<CS22) | (0<<CS21) | (0<<CS20)
+out TCCR2, temp
+ldi temp, 0
+out OCR2, temp
+
+;sæt relæ pin til at være output, lav
+sbi DDRA, PORTA0
+nop
+cbi PORTA, PORTA0
+pop temp
 
 .macro setspeed
-ERROR skal kaldes med argument
+ERROR: Skal kaldes med argument
 .endm
 
 .macro	setspeed_8	;tager adresse til gpr
@@ -21,8 +30,8 @@ ERROR skal kaldes med argument
 .endm
 
 .macro	setspeed_i	;tager konstant
-	push R16
-	ldi R16, @0
-	out OCR2, R16
-	pop R16
+	push temp
+	ldi temp, @0
+	out OCR2, temp
+	pop temp
 .endm

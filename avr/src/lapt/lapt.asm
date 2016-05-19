@@ -130,30 +130,6 @@ T1_OV_ISR_CLEAR:
 
 EX2_ISR:						;Interrupt(kommer over lap-stregen)
 	rcall lap_finished
-
-;<------------------------------------------------------Flytte adresse pointer til start
-	ldi R16, 36					;sender $
-	send_bt_byte [R16]			;..
-	ldi R16, 74					;sender J
-	send_bt_byte [R16]			;..
-	ldi R16, 114				;sender r
-	send_bt_byte [R16]			;..
-	ldi R16, 115				;sender s
-	send_bt_byte [R16]			;..
-
-	lds R16, def_sek_adr		;Resitter sek_adr
-	sts sek_adr, R16			;..
-
-	ldi R16, 36					;sender $
-	send_bt_byte [R16]			;..
-	ldi R16, 82					;sender R
-	send_bt_byte [R16]			;..
-	ldi R16, 114				;sender r
-	send_bt_byte [R16]			;..
-	ldi R16, 115				;sender s
-	send_bt_byte [R16]			;..
-;<------------------------------------------------------Flytte adresse pointer til start
-
 ;	rcall reset_sek_adr			;resetter sekment adresse for mread
 	reti
 
