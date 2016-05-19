@@ -1,6 +1,7 @@
 % !TEX root = ../rapport.tex
 \section{Bootloader}
-Programmerstikket til mikroprocessoren er ikke nem at tilgå, når bilen er fuldt monteret. For at kunne iterere hurtigt og undgå at skulle skille bilen ad og samle bilen hele tiden, blev der udviklet en bootloader.
+Programmerstikket til mikroprocessoren er ikke nem at tilgå, når bilen er fuldt monteret. For at kunne iterere hurtigt og undgå at skulle skille bilen ad og samle bilen hele tiden, blev der udviklet en bootloader med en flasher, så mikrokontrolleren kunne flashes via bluetooth.
+Mikrokontrollerens flashhukommelse er opdelt i to sektioner. Applikations sektionen og bootloader sektionen. Mikrokontrolleren er blevet fuset således, reset interrupt vektoren er flyttet til starten af bootloadersektionen, så bootloaderen initialiseres, når mikrokontrolleren starter og restarter.
 
 \subsection{Bluetooth}
 For at sikre, der kan skabes kontakt med bootloaderen, styrer bootloaderen bluetoothkommunikationen.
@@ -30,50 +31,69 @@ To bootloader kommandoer er isoleret til bootloaderen. Resten af applikationen v
 
 \begin{table}[H]
 	\caption{bootloader kommandoer - isoleret til bootloaderen}
-	\label{tab:blcommand}
+	\label{tab:blappcommands}
 	\centering
 
 	\begin{tabular}{|l|l|p{13cm}|}
 		\hline
 		\textbf{Navn} & \textbf{Værdi} & \textbf{Handling} \\
 		\hline
-		Ping & 87 & Værdien 87 tilføjes til bluetooth output bufferen.\\
+		Ping & 87 & Værdien 87 tilføjes til bluetooth output bufferen. Bootloaderen forventer herefter en ny bootloader kommando.\\
 		\hline
-		Flash & 88 & Bootloaderen går i flash mode. Se (TODO: reference til flash afsnit)
+		Flash & 88 & Bootloaderen går i flash mode. Se (TODO: reference til flash afsnit) \\
 		\hline
 	\end{tabular}
 \end{table}
 
-Tre bootloader kommandoer forwardes til applikationen igennem en udvidelse af interrupt vektor tabellen.
-Når en af nedestående bootloader kommandoer samt tilhørende bytes er modtaget jumpes der til 0x2A. Da det gøres inde i et interrupt, vil kommando interrupt handleren skulle returnere med reti, ligesom ved resten af interrupt vektor tabellen.
+Tre bootloader kommandoer kan bruges til at kommunikere med applikationen igennem en udvidelse af interrupt vektor tabellen.
+Når en af nedestående bootloader kommandoer, samt tilhørende bytes, er modtaget, jumpes der til 0x2A. Da det gøres inde i et interrupt, vil kommando interrupt handleren skulle returnere med instruktionen $reti$, ligesom ved et normalt interrupt. Applikationens kommando interrupt handler kan læse kommandoen i en input buffer, bootloaderen fylder op fra bufferens start adresse.
 
 \begin{table}[H]
 	\caption{bootloader kommandoer}
-	\label{tab:blcommand}
+	\label{tab:blblcommands}
 	\centering
 
 	\begin{tabular}{|l|l|p{13cm}|}
 		\hline
 		\textbf{Navn} & \textbf{Værdi} & \textbf{Handling} \\
 		\hline
-		Set & 85 & Applikationskommando. Værdien 85 samt de to næstkommende bytes gemmes i inputbufferen, hvorefter der jumpes til applikations kommando interruptet.\\
+		Set & 85 & Værdien 85 samt de to næstkommende bytes gemmes i inputbufferen.\\
 		\hline
-		Var & 86 & For at undgå at skulle opdatere bootloaderen, hvis der blev implementeret andre kommandoer i applikationsprotokollen, blev denne kommando implementeret. Den næstkommende byte beskriver længden, n, af applikationskommandoen. De derefter næstkommende, n, bytes gemmes i inputbufferen, før der jumpes til applikations kommando interruptet.\\
+		Get & 170 & Værdien 170 samt de to næstkommende bytes gemmes i inputbufferen.\\
+		\hline
+		Var & 86 & For at undgå at skulle opdatere bootloaderen, hvis der blev implementeret andre kommandoer i applikationsprotokollen, blev denne kommando implementeret. Den næstkommende byte beskriver længden, n, af applikationskommandoen. De derefter næstkommende, n, bytes gemmes i inputbufferen.\\
 		\hline
 	\end{tabular}
 \end{table}
 
-
 \begin{mdquote}
-	Bemærk:
-
-	[85, X, X] og [86, 3, 85, X, X] er ekvivalente.
-
-	[87] er ping kommandoen til bootloaderen. [86, 1, 87] er en kommando [87] til applikationen.
+	Bemærk: Der gives ingen information til applikationen om længden af kommandoen. Applikationen skal ud fra indholdet af inputbufferen kunne afgøre, hvor meget, den skal bruge.
+\end{mdquote}
+\begin{mdquote}
+Bemærk: [85, X, X] og [86, 3, 85, X, X] er ekvivalente. [87] er ping kommandoen til bootloaderen. [86, 1, 87] er en kommando [87] til applikationen.
 \end{mdquote}
 
-
-
-Længden er kun variabel for bootloaderen. Der gives ingen information til applikationen om længden af kommandoen.
-
-Når der er en hel kommando (liste af bytes) klar til applikationen, hoppes til 0x2A, en udvidelse af interrupt vektor tabellen.
+\subsection{Flasher}
+For at kunne uploade et program til mikrokontrollerens flashhukommelse, implementeres en flasher i bootloaderen.
+Se eventuelt ``avr/src/bl/program\_flash.asm''
+Mikrokontrollerens flashhukommelse er opdelt i 256 pages af 64 words (128 bytes). Flashhukommelsen skal ændres en page af gangen.
+Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende kommandoer:
+\begin{table}[H]
+	\caption{bootloader flash kommandoer}
+	\label{tab:blflashcommands}
+	\centering
+	\begin{tabular}{|l|l|p{13cm}|}
+		\hline
+		\textbf{Navn} & \textbf{Værdi} & \textbf{Handling} \\
+		\hline
+		Write page & 89 & De næstkommende 2 bytes bruges som pointer til den page, der skal skrives. De herefter næstkommende 128 bytes skrives til pagen.\\
+		\hline
+		Erase page & 90 & De næstkommende 2 bytes bruges som pointer til den page, der skal slettes.\\
+		\hline
+		Reset & 91 & Mikrokontrolleren resetter.\\
+		\hline
+	\end{tabular}
+\end{table}
+\subsubsection{Optimering af flash tid}
+At slette eller skrive en side kan tage et par millisekunder. Hvis interrupts er disablet, og der ventes et par millisekunder, før næste byte modtages, kan der gå data tabt. For at undgå dette, kunne man sende acknowledge bytes retur til pc'en. Responsetiden, tur retur, over bluetooth er på et par hundrede millisekunder. Hvis man ville ændre alle 256 pages, ville det give et betydeligt overhead.
+For at undgå dette, implementeres en inputbuffer, sammenlignelig med bluetooth output bufferen (TODO: reference). Se eventuelt ``avr/src/bl/bl\_pf\_bt\_rc\_buffer.asm''. Interrupt vektor tabellen flyttes til bootloader sektionen og alle interrupts disables pånær UART interrupts, der håndteres af flasheren. Hvis flasherprogrammet på pc'en er bekendt med bootloaderens inputbuffers størrelse, kan det undgås, bufferen overflower.
