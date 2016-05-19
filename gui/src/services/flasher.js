@@ -3,6 +3,7 @@ import {blSuccess, blError} from '../actions/bl'
 import {send as btSend} from './bluetooth'
 
 const DEBUG = false
+const ERASE_EMPTY_PAGES = false
 
 const PAGESIZE = 64
 const PAGESIZEB = PAGESIZE * 2
@@ -96,8 +97,10 @@ class Flasher {
 		let page = this.pages[this.pageIndex]
 		let bytesLeftInBuffer = BUFFERSIZE - this.bytesInBuffer
 		if (typeof page === 'undefined'){
-			if(bytesLeftInBuffer < ERASE_PAGE_BYTE_COUNT) return
-			this.erasePage(this.pageIndex)
+			if(ERASE_EMPTY_PAGES){
+				if(bytesLeftInBuffer < ERASE_PAGE_BYTE_COUNT) return
+				this.erasePage(this.pageIndex)
+			}
 		}else{
 			if(bytesLeftInBuffer < WRITE_PAGE_BYTE_COUNT) return
 			this.writePage(this.pageIndex, page)
