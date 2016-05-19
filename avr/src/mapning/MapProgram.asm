@@ -44,7 +44,7 @@
 .org 0x00
 rjmp init
 
-.org 0x2a
+.org 0x2A
 init:
 delays [1]
 
