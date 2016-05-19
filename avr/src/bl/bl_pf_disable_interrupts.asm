@@ -7,9 +7,11 @@ andi temp, low(~((1<<RXCIE)|(1<<UDRIE)|(1<<TXCIE)))
 out UCSRB, temp
 
 ;eksterne interrupts
-cbi GICR, INT0
-cbi GICR, INT1
-cbi GICR, INT2
+in temp, GICR
+andi temp, low(~((1<<INT0)|(1<<INT1)|(1<<INT2)))
+out GICR, temp
 
 ;timer 1 overflow
-cbi TIMSK, TOV1
+in temp, TIMSK
+andi temp, low(~(1<<TOV1))
+out TIMSK, temp
