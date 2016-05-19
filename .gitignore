@@ -1,24 +1,4 @@
 *.sublime-project
 *.sublime-workspace
-<<<<<<< HEAD
-
-*.fls
-
-*.log
-
-*.toc
-
-*.gz
-
-rapport/rapport.pdf
-
-*.fdb_latexmk
-
-*.aux
-=======
 *.DS_Store
-<<<<<<< HEAD
->>>>>>> gui_graph
-=======
 *.log
->>>>>>> master

@@ -73,8 +73,11 @@ delays [1]
 ;.endm
 
   delays [2]
-  setspeed [50]
+  setspeed [150]
 
+  cbi   DDRB, PORTB3
+  nop
+  cbi   DDRA, PORTA1
 
 main:
 ;  get_dis_hl [first_point_high, first_point_low]
@@ -83,8 +86,6 @@ check_for_turn:
   I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high] ;@0 = SLA+W, @1 = SUB, @2 = SLA+R, 8 = Gyro_data
 
   next_map_sektion:
-
-  cpi   current_status, left_turn_value_out
 
   cpi   first_gyro_value_high, left_turn_value_in ; Sammenligner den gyro værdi med venstre sving.
   brge  left_turn_detected ;Hoop hvis venstre sving værdi < gyro.
@@ -129,27 +130,35 @@ turn_detected:
 ;  ori   status_register, status_left_turn   ;Vi "or" vores status værdi
 
 
-check_for_turn_ended:
-  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high]
 
+check_for_turn_ended:
   cpi   current_status, status_rigth_turn
-  breq  check_right
+  breq  right_jump
 
   cpi   current_status, status_left_turn
   breq  check_left
 
   rjmp  check_for_turn_ended
 
-  check_left:
-  cpi   first_gyro_value_high, left_turn_value_out ; Sammenligner den gyro værdi med venstre sving.
-  brlt  turn_ended ;Hoop hvis venstre sving værdi < gyro.
+right_jump:
+  rjmp check_right
 
+  check_left:
+  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high]
+  cpi   first_gyro_value_high, left_turn_value_out ; Sammenligner den gyro værdi med venstre sving.
+  brlt  turn_ended_jump ;Hoop hvis venstre sving værdi < gyro.
+
+  rjmp check_left
+
+turn_ended_jump:
+  rjmp  turn_ended
 
   check_right:
+  I2C_ID_READ [gyr_addr_w, gyr_sub_zh, gyr_addr_r, first_gyro_value_high]
   cpi   first_gyro_value_high, right_turn_value_out
   brge  turn_ended  ;Hvis gyro =< højre sving værdi, så hop.
 
-  rjmp check_for_turn_ended
+  rjmp check_right
 
 turn_ended:
 ;  get_dis_hl [last_point_high, last_point_low]
@@ -165,7 +174,6 @@ turn_ended:
 
 ;  store_byte_map_data [current_status]
   send_bt_byte [current_status]
-  delayms [10]
 ;  store_byte_map_data [last_point_low]
 ;  store_byte_map_data [last_point_high]
 ;  send_bt_byte [last_point_high]

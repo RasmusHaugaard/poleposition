@@ -1,0 +1,26 @@
+% !TEX root = ../rapport.tex
+\section{Udviklingsmiljø}
+
+En stor del af opgaven ligger i at programmere microkontrolleren. Der er derfor lagt en del energi i at optimere gruppens udviklingsmiljø.
+
+Fem personer har skulle skrive moduler i assembly-kode, der skulle virke med andre moduler, samt testprogrammer, der inkluderede disse moduler. Disse testprogrammer skulle flashes ned på microkontrolleren.
+
+\subsection{Fildeling}
+Det var nødvendigt, gruppens medlemmer kunne dele kode med hinanden. Dropbox og Github blev overvejet.
+Dropbox forsøger at holde gruppens medlemmers filer synkroniseret, hurtigst muligt.
+Det gør det nemt og hurtigt at arbejde med.
+Github (Git) tilbyder et online arkiv med versionsstyring, man aktivt skal hente fra og uploade til.
+
+Grundet et ønske om, man kunne isolere sig fra ændringer i perioder og teste egen kode uden risiko for, ændringer fra andre medlemmer medfulgte fejl, samt sikkerheden i versionsstyringen, blev Github valgt til at hoste al kode samt rapporten.
+Dropbox blev valgt til at hoste diverse filer som datablade, test videoer, billeder, 3D filer med mere.
+
+\subsection{.filedef}
+Assembleren avra har direktivet \mbox{``.def''} til at tildele registre navne. For eksempel, \mbox{``.def temp = R16''}.
+For at kunne skrive moduler, der var så uafhængige af hinanden som muligt og kunne tildele registre navne begrænset af konteksten af modulet, blev der skrevet en preprocessor med et nyt direktiv, \mbox{``.filedef''}. For eksempel, \mbox{``.filedef temp = R16''}. Til forskel for \mbox{``.def''} vil \mbox{``.filedef''} som navnet antyder kun gælde i den fil, definitionen eksisterer. Preprocessoren er skrevet i Node.js og køres før assembleren i build setuppet.
+
+\begin{mdquote}
+	Note: Node.js er en cross-platform server-side JavaScript runtime. Node.js' ``package ecosystem, npm, is the largest ecosystem of open source libraries in the world'' TODO: kilde.
+\end{mdquote}
+
+\subsection{Build setup}
+For nemt at kunne builde på både osx, linux og windows er build setuppet skrevet i Node.js.

@@ -3,8 +3,10 @@
 ;===================================
 
 .set saved_pc = PC
-.org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)
+
+.org 0x06		;adresse for extern interrupt 2 (Port B, pin 2) "motor encoder"
 jmp EX1_ISR		;adresse med mere plads
+
 .org saved_pc
 
 .equ old_time_h = addr			;gamle timer v�rdi (high bite)
@@ -21,9 +23,9 @@ jmp EX1_ISR		;adresse med mere plads
 .set addr = addr + 1			;..
 
 ldi R16, 0						;nulstiller sidste timer v�rdi (high and low)
-sts old_time_h, R16			;..
-sts old_time_l, R16			;..
-sts dis_tik_h, R16			;nulstiller distance register
+sts old_time_h, R16				;..
+sts old_time_l, R16				;..
+sts dis_tik_h, R16				;nulstiller distance register
 sts dis_tik_l, R16
 
 cli
@@ -95,11 +97,11 @@ EX1_ISR:					;interrupt(motor tick)
 	sts old_time_l, R19		;..
 	sub R19, R17			;(low bite) Tr�kker "old timer" (R17) fra den nye "nye timer" (R19)
 	sbc R18, R16			;(High bite) Tr�kker "old timer" (R16) fra den nye "nye timer" (R18)
-	send_bt_byte [231]
-	send_bt_byte [R19]		;sender low bite til pc
-	send_bt_byte [R18]		;sender high bite til pc
 	sts dif_time_h, R18		;gemmer forskellen mellem "ny" og "old" timer
 	sts dif_time_l, R19		;..
+
+	;send_bt_byte [R18]
+	;send_bt_byte [R19]
 
 	lds R16, dis_tik_l		;kopier "dis_tek_l" til R16
 	inc R16					;R16++ (inkrimentere)

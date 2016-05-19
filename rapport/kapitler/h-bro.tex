@@ -1,0 +1,31 @@
+% !TEX root = ../rapport.tex
+
+\subsection{Bremsefunktion (H-bro)}
+
+Ligesom acceleration, er bremselængden en vigtig faktor for at opnå en god omgangstid.
+Når bilen nærmer sig et sving, handler det om at komme så tæt på svinget som muligt, før at bilen
+skal begynde at bremse. Dette kræver en effektiv bremse, så bremselængden minimeres og omgangstiden effektiviseres.
+For at bremse bilen så effektivt som muligt, benyttes princippet bag en H-bro. Dette princip er illustreret
+på figur \ref{fig:hbro}, nedenfor.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{kapitler/billeder/hbro.png}
+    \caption{Viser princippet bag en H-bro, og hvordan den benyttes i dette projekt.}
+    \label{fig:hbro}
+\end{figure}
+
+Som illustreret på figur \ref{fig:hbro}, kan man bruge en H-bro til at vende strømmen igennem motoren.
+Ved at vende strømmen igennem motoren i få millisekunder, vil motoren prøve at bakke,
+og bilen vil bremse meget effektivt. Figuren viser det to scenarier, hvor strømmen til højre er vendt
+og strømmen til venstre ikke er vendt.
+
+H-broen konstrueres med et dobbelt relæ, som vender de to kontakter når spolen inducere en strøm.
+Spolen kræver en høj aktiveres spænding for at trække den nødvendige strøm
+og kredsløbet bygges derfor op med en transistor.
+Transistoren kan aktiveres med en meget lille strøm og spænding, og kan derfor aktiveres
+af ATmega'ens I/O pins.
+
+Bilens motor kan derved bremses, ved at sætte en I/O pin høj, og derved vende strømmen igennem motoren.
+
+(Eventuelt beskrivelse af komponenterne vi har brugt + at nævne det kan skade gearingen.)

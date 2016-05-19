@@ -11,7 +11,7 @@
 
 ;error codes:
 .equ bl_rc_unknown_set_code = 100
-.equ bl_fist_page_empty = 101
+.equ bl_first_page_empty = 101
 
 .equ pf_tr_unknown_set_code = 102
 .equ pf_tr_buffer_overflow_error = 103
