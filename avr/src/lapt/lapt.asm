@@ -130,6 +130,7 @@ T1_OV_ISR_CLEAR:
 
 EX2_ISR:						;Interrupt(kommer over lap-stregen)
 	rcall lap_finished
+;	rcall 
 	reti
 
 lap_finished:

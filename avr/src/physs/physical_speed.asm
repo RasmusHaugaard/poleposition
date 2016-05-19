@@ -23,9 +23,9 @@ jmp EX1_ISR		;adresse med mere plads
 .set addr = addr + 1			;..
 
 ldi R16, 0						;nulstiller sidste timer v�rdi (high and low)
-sts old_time_h, R16			;..
-sts old_time_l, R16			;..
-sts dis_tik_h, R16			;nulstiller distance register
+sts old_time_h, R16				;..
+sts old_time_l, R16				;..
+sts dis_tik_h, R16				;nulstiller distance register
 sts dis_tik_l, R16
 
 cli
@@ -100,8 +100,8 @@ EX1_ISR:					;interrupt(motor tick)
 	sts dif_time_h, R18		;gemmer forskellen mellem "ny" og "old" timer
 	sts dif_time_l, R19		;..
 
-	send_bt_byte [R18]
-	send_bt_byte [R19]
+	;send_bt_byte [R18]
+	;send_bt_byte [R19]
 
 	lds R16, dis_tik_l		;kopier "dis_tek_l" til R16
 	inc R16					;R16++ (inkrimentere)
