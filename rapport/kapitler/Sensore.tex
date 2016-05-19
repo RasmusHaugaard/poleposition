@@ -4,37 +4,38 @@
 
 
 \subsubsection{Stregsensor}
-Formålet med stregsensoren er at detektere målstregen. Dette gøres optisk, da selve banen er sort, og målstregen er hvid. Da hvid reflektere lys meget bedre end sort får vi et signal der er let at ?komperere?.
+Formålet med stregsensoren er at detektere målstregen. Dette gøres optisk, da selve banen er sort, og målstregen er hvid. Da hvid reflektere lys meget bedre end sort får vi et signal der er let at komparere.
 
-Stregsensoren er bygget op som vist på ref diagram. Den fungere ved at dioden lyser ned på banen, det lys der bliver reflekteret modtager phototransistoren. Ved målstregen har den et output på 4.8 V og på resten af banen 2.5 V. Til at ?komperere? er der blevet brugt en smhitt trigger, således at der kommer en hysterese. Dette er valgt for at undgå at registrere målstregen fleregange i det vi pasere den. Reference spændingen ved det invaterende ben på smhitt triggeren er sat til 3,3 V og hysteresen som vist på figur nede under.
+Stregsensoren er bygget op som vist på ref diagram. Den fungere ved at dioden lyser ned på banen, det lys der bliver reflekteret modtager phototransistoren. Ved målstregen har den et output på 4.8 V og på resten af banen 2.5 V. Til at komparere er der blevet brugt en schmitt trigger, således at der kommer en hysterese. Dette er valgt for at undgå at registrere målstregen flere gange i det vi passere den. Reference spændingen ved det inverterende ben på schmitt-triggeren er sat til 3,3 V og hysteresen som vist på figur nedenunder.
 \\
 Indsæt hysterese kurv*
 \\
-Stregsensoren sender et signal, ved målstregen på 4.9 V som ?vores? microcontroller modtager som et logisk højt signal. Ved placering over den sorte del af banen sender stregsensoren et signal på 0.03V som microcontrolleren opfatter som et logisk lavt signal. 
+Stregsensoren sender et signal, ved målstregen på 4.9 V som  mikrocontrolleren modtager som et logisk højt signal. Ved placering over den sorte del af banen sender stregsensoren et signal på 0.03V som mikrocontrolleren opfatter som et logisk lavt signal. 
 
-Ved placering over metalskinderne på banen sender sensoren også et logisk højt signal, for at undgå at modtage den støj, er sensoren placeret bag venstreforhjul, det gør også at microcontrolleren modtager signalet om målstregen hurtigere end hvis den var placeret bagerst på bilen. 
+Ved placering over metalskinnerne på banen sender sensoren også et logisk højt signal, for at undgå at modtage den støj, er sensoren placeret bag venstre forhjul, det gør også at mikrocontrolleren modtager signalet om målstregen hurtigere end hvis den var placeret bagerst på bilen. 
 
-Da det er fordelagtig at havde så lidt vægt i bilen, og for at skabe så meget plads som muligt til blandt andet elektromagneten, er det blevet lavet med smd komponenter. 
+Da det er fordelagtig at havde så lidt vægt i bilen, og for at skabe så meget plads som muligt til blandt andet elektromagneten, er det blevet lavet med SMD-komponenter. 
 
 
 \subsubsection{Motor-Omdrejningstæller}
 
-For at måle distancer, så bilen ved hvor langt der er imellem sving på banen, er der blevet lavet en omdrejningstæller. Til dette kan samme kredsløb som stregsensoren anvendes, idet der er blevet fremstillet en ?rotations enkoder?, der er fastspændt på motorens akse. Dog er modstanden under transistoren ændret få at gøre sensoren mindre følsom.   
+For at måle distancer, så bilen ved hvor langt der er imellem sving på banen, er der blevet lavet en omdrejningstæller. Til dette kan samme kredsløb som stregsensoren anvendes, idet der er blevet fremstillet en rotations enkoder, der er fastspændt på motorens akse. Dog er modstanden under transistoren ændret få at gøre sensoren mindre følsom.   
 
 
-Billede af rotations enkoder
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.4\linewidth]{kapitler/billeder/dekoder.png}
+    \caption{3D-tegning af optisk dekoder}
+    \label{fig:dekoder}
+\end{figure}
 
 
-Det vil sige at omdrejningstælleren vil sende et logisk højt signal til microcontrolleren når den er ved et af hullerne i  rotationsenkoderns, og et logisk lavt signal resten af tiden.
-
-En puls fra Omdrejningstælleren vil svare til 1/6 af en motoromdrejning.
-
-
-Da denne sensor kommer til at blive brugt i flere frekvensområder alt efter motorens hastighed, er det vigtigt at komperatoren ikke er ?begrænset af dens slewrate eller bandwith. ? 
+Det vil sige at omdrejningstælleren vil sende et logisk højt signal til mikrocontrolleren når den er ved et af hullerne i  rotationsenkoderen, og et logisk lavt signal resten af tiden. En puls fra Omdrejningstælleren vil svare til 1/6 af en motoromdrejning.
+Da denne sensor kommer til at blive brugt i flere frekvensområder alt efter motorens hastighed, er det vigtigt at komparatoren ikke er ?begrænset af dens slewrate eller bandwith. ? 
 
 
 ??
-Den komperator der er blevet brugt i kredsløbet er en lm311 har ved normal opsætning en svar tid på 165 ns fra høj til lav og 115 ns fra lav til høj.
+Den komperator der er blevet brugt i kredsløbet er en LM311 har ved normal opsætning en respons tid på 165 ns fra høj til lav og 115 ns fra lav til høj.
 
 \begin{equation}
 \frac{1 V}{280 ns} = 3.571.429 \frac{v}{s}
