@@ -1,7 +1,7 @@
 % !TEX root = ../rapport.tex
 \subsection{Bootloader}
 Programmerstikket til mikroprocessoren er ikke nem at tilgå, når bilen er fuldt monteret. For at kunne iterere hurtigt og undgå at skulle skille bilen ad og samle bilen hele tiden, blev der udviklet en bootloader med en flasher, så mikrokontrolleren kunne flashes via bluetooth.
-Mikrokontrollerens flashhukommelse er opdelt i to sektioner. Applikations sektionen og bootloader sektionen. Mikrokontrolleren er blevet fuset således, reset interrupt vektoren er flyttet til starten af bootloadersektionen, så bootloaderen initialiseres, når mikrokontrolleren starter og restarter.
+Mikrokontrollerens flashhukommelse er opdelt i to sektioner. Applikations sektionen og bootloader sektionen. Mikrokontrolleren er blevet fuset således, reset interrupt vektoren er flyttet til starten af bootloadersektionen, så bootloaderen initialiseres, når mikrocontrolleren starter og genstarter.
 
 \subsubsection{Bluetooth}
 For at sikre, der kan skabes kontakt med bootloaderen, styrer bootloaderen bluetoothkommunikationen.
@@ -16,7 +16,7 @@ Se ``avr/src/bt/bt\_tr.asm''.
 Bufferen består af en byte liste med en fast længde allokeret i sram samt to pointers, en store (gem/tilføj) pointer og en send pointer, der også er allokeret i sram. Listen indeholder de bytes, der ønskes sendt, samt den frie plads i bufferen. Bytes i det frie område kan være bytes, der allerede er sendt, eller bytes, der endnu ikke er blevet skrevet over siden mikrocontrollerens sidste reset. Store pointeren peger på den byte i listen, der blev tilføjet sidst. Send pointeren peger på den byte i listen, der blev sendt sidst.
 I initialiseringen af bufferen sættes de to pointere til at pege på den samme byte i listen.
 Når der ønskes en byte sendt, inkrementeres store pointeren, og byten skrives til den adresse i listen, store pointeren repræsenterer. Interrupt enableren, for når UART data registeret er tomt (UDRIE), sættes højt, så bufferen bliver informeret via interrupt handleren, når der kan sendes en byte.
-Når interrupt routinen kaldes (der kan sendes en byte), og der er bytes i bufferen, der endnu ikke er sendt, inkrementeres send pointeren, og den byte, send pointeren peger på sendes. Hvis store pointeren og send pointeren har samme værdi, er buferen tom, send pointeren inkrementeres ikke, og UDRIE sættes lavt.
+Når interrupt routinen kaldes (der kan sendes en byte), og der er bytes i bufferen, der endnu ikke er sendt, inkrementeres send pointeren, og den byte, send pointeren peger på sendes. Hvis store pointeren og send pointeren har samme værdi, er bufferen tom, send pointeren inkrementeres ikke, og UDRIE sættes lavt.
 
 Hvis en af pointerne, efter at blive inkrementeret, peger på byten lige efter listens sidste byte, sættes pointeren til den første byte i listen.
 Hvis store pointeren, efter at blive inkrementeret og eventuelt rykket til den første byte i listen, peger på samme adresse som send pointeren, er der overflow i bufferen. Det håndteres på nuværende tidspunkt ikke.
@@ -70,7 +70,7 @@ Når en af nedestående bootloader kommandoer, samt tilhørende bytes, er modtag
 	Bemærk: Der gives ingen information til applikationen om længden af kommandoen. Applikationen skal ud fra indholdet af inputbufferen kunne afgøre, hvor meget, den skal bruge.
 \end{mdquote}
 \begin{mdquote}
-Bemærk: [85, X, X] og [86, 3, 85, X, X] er ekvivalente. [87] er ping kommandoen til bootloaderen. [86, 1, 87] er en kommando [87] til applikationen.
+Bemærk: [85, X, X] og [86, 3, 85, X, X] er ækvivalente. [87] er ping kommandoen til bootloaderen. [86, 1, 87] er en kommando [87] til applikationen.
 \end{mdquote}
 
 \subsubsection{Flasher}

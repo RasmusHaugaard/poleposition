@@ -23,10 +23,10 @@ Som der ses på figur \ref{fig:mapflow}, er pincippet bygget meget simpelt op, o
 \item Herefter køres et loop, som bruger gyroskopet til at tjekke om der drejes.
 \item Hvis vi drejer, gemmes omdrejningstæller og længden af det lige stykke regnes.
 \item Status for et lige stykke, samt længden af stykket gemmes i SRAM.
-\item Nyt loop tjekker om svinget er slut. Hvis sving er slut, gemmes omdrejnignstæller.
-\item Status for sving, samt længde af sving gemmes i SRAM, og koden starter forfra.
+\item Nyt loop tjekker om svinget er slut. Hvis sving er slut, gemmes omdrejningstæller.
+\item Status for sving, samt længde af sving gemmes i sram, og koden starter forfra.
 \item Ved næste hvid-streg interrupt stoppes kortlægningen.
 \end{itemize}
 
-Når koden er færdig, vil alle sving og lige stykker være defineret i SRAM og koden vil blive behandlet
-af et seperat program.
+Når koden er færdig, vil alle sving og lige stykker være defineret i sram og koden vil blive behandlet
+af et separat program.

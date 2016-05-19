@@ -11,7 +11,7 @@ Til at kommunikere med de digitale komponenter, herunder vores udleveret acceler
     \label{fig:i2cprincip}
 \end{figure}
 
-De to forbindelser der bruges til vores TWI kommunikation hedder SCL (”Serial Clock Line”) og SDA (”Serial Data Line”). SCL er en clock der sættes af master, for at både master og slaven snakker og lytter ved en fælles frekvens. SDA er den forbindelse, hvor alt data bliver overført både fra slaven til master, men også fra master til slaven. Denne form for kommunikation kaldes for Half-Duplex, og fungere ligesom en walkie talkie, hvor der kun er én der snakker af gangen, imens den anden lytter.
+De to forbindelser der bruges til vores TWI kommunikation hedder SCL (”Serial Clock Line”) og SDA (”Serial Data Line”). SCL er en clock der sættes af master, for at både master og slaven snakker og lytter ved en fælles frekvens. SDA er den forbindelse, hvor alt data bliver overført både fra slaven til master, men også fra master til slaven. Denne form for kommunikation kaldes for halv-duplex, og fungere ligesom en walkie talkie, hvor der kun er én der snakker af gangen, imens den anden lytter.
 
 \subsubsection{Kommunikationsprotokol}
 
@@ -30,7 +30,7 @@ Protokollen indeholder følgende instruktioner for at modtage én data byte:
 
 \begin{enumerate}
 \item ST (”Start Bit”): Master sender et start bit til alle slaverne, for at starte kommunikationen.
-\item SAD+W (”Slave Adress + Write”): Master sender en slave adresse på 7 bits, samt ét write bit. Adressen er specifik for hver komponent og fortæller hvilken slave, som resten af kommunikationen kommer til at foregå med. Det sidste bit indikere, at masteren vil skrive noget til slaven.
+\item SAD+W (”Slave Adress + Write”): Master sender en slave adresse på 7 bits, og det sidste bit beskriver om der skal læses eller skrives, i dette tilfælde skal der skrives. Adressen er specifik for hver komponent og fortæller hvilken slave, som resten af kommunikationen kommer til at foregå med. Det sidste bit indikere, at masteren vil skrive noget til slaven.
 \item SAK (”Slave Acknowledge”): Slaven med den valgte adresse sender er ACK bit tilbage, som fortæller at den har hørt hvad masteren sagde, og gør klar til at læse næste instruktions.
 \item SUB (”Sub adress”): Master sender herefter en underadresse. Denne underadresse er en 7 bit adresse, som fortæller hvilken register inde i den valgte komponent, der gerne vil adresseres.
 \item SAK (”Slave Acknowledge”): Slaven sender endnu et SAK bit, og gør klar til næste instruktion.

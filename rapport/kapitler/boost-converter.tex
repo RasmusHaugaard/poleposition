@@ -2,7 +2,7 @@
 \newpage
 \subsection{Boost converter}
 En boost converter er et analogt DC-DC kredsløb som har en højere udgangsspænding end indgangsspænding.
-Ideén med en boost converter er at øge effekten hen over motoren og derved få højere acceleration og tophastighed. Ved 15V trækker motoren kun 0,5A og derved bruger den kun 7.5 Watt. Da vi har en strømforsyning der kan levere 30 Watt kan vi udnytte det meget mere ved at øge spændingen. Dette vil dog gøre vi ikke helt kan trække 30 Watt da man aldrig kan lave en 100 procent effektiv boost converter.  Ideén er at have en udgansspænding på 30v, og hvis boost converteren kun er 85 procent effektiv giver det en strøm, I på:
+Idéen med en boost converter er at øge effekten hen over motoren og derved få højere acceleration og tophastighed. Ved 15V trækker motoren kun 0,5A og derved bruger den kun 7.5 Watt. Da vi har en strømforsyning der kan levere 30 Watt kan vi udnytte det meget mere ved at øge spændingen. Dette vil dog gøre vi ikke helt kan trække 30 Watt da man aldrig kan lave en 100 procent effektiv boost converter.  Ideén er at have en udgangsspænding på 30V, og hvis boost converteren kun er 85 procent effektiv giver det en strøm, I på:
 \begin{equation}
 15V \cdot 2A = 30 W
 \end{equation}
@@ -12,7 +12,7 @@ Ideén med en boost converter er at øge effekten hen over motoren og derved få
 \begin{equation}
 I = \frac{25,5 W}{30 V} = 0,85A
 \end{equation}
-Hvilket burde være mere end rigeligt til at drive motoren langt hurtigere end med 15v og 0,5A
+Hvilket burde være mere end rigeligt til at drive motoren langt hurtigere end med 15V og 0,5A
 
 \begin{figure}[ht]
     \centering
@@ -21,10 +21,10 @@ Hvilket burde være mere end rigeligt til at drive motoren langt hurtigere end m
     \label{fig:boostconvert}
 \end{figure}
 
-På figur \ref{fig:boostconvert} ses et forsimplet kredsløb af en boost converter. Ideén er at når switchen S, sluttes bliver der en magnetisk kraft opladet i spolen L. Når switchen bliver brudt vil kraften fra spolen oplade kondensatoren, men da strømmen i en spole ikke kan ændres momentant vil der også løbe strøm fra spændingskilden igennem spolen og derved vil der opnås en højere spænding over kondensatoren C.
+På figur \ref{fig:boostconvert} ses et forsimplet kredsløb af en boost converter. Idéen er at når switchen S, sluttes bliver der en magnetisk kraft opladet i spolen L. Når switchen bliver brudt vil kraften fra spolen oplade kondensatoren, men da strømmen i en spole ikke kan ændres momentant vil der også løbe strøm fra spændingskilden igennem spolen og derved vil der opnås en højere spænding over kondensatoren C.
 
-Da dette kredsløb gerne skulle være selvkørende bruges der ikke en switch, men en MOSFET som skal aktiveres af et højfrevent signal. Det er vigtig at frekvensen er så høj at spolen ikke når at gå i mætning, som vil sige at det ikke når det punkt hvor virker som en kortslutning, da kredsløbet så vile være en direkte kortslutning fra vores spændingskilde til ground.
+Da dette kredsløb gerne skulle være selvkørende bruges der ikke en switch, men en MOSFET som skal aktiveres af et højfrekvent signal. Det er vigtig at frekvensen er så høj at spolen ikke når at gå i mætning, som vil sige at det ikke når det punkt hvor virker som en kortslutning, da kredsløbet så ville være en direkte kortslutning fra vores spændingskilde til ground.
 
-Det er vigtigt at udvælge de rigtige komponenter til dette kredsløb da det er et højfrekvent kredsløb hvor der løber store strømme. En schottky-diode benyttes da den kan switche ved langt højere frekvenser end en almindelig diode og har et lavere spændingstab henover den og dermed får vi større effektivitet. Kondensator skal have så stor kapitans som mulig(selvfølglig inden for rimelighedens grænser) og kunne tåle høje spændinger hen over den. MOSFET'en som bliver brugt som switch skal kunne switche hurtigt og kunne klare at der løber stor strøm igennem den uden at blive alt for varm.
+Det er vigtigt at udvælge de rigtige komponenter til dette kredsløb da det er et højfrekvent kredsløb hvor der løber store strømme. En schottky-diode benyttes da den kan switche ved langt højere frekvenser end en almindelig diode og har et lavere spændingstab henover den og dermed får vi større effektivitet. Kondensator skal have så stor kapitans som mulig(selvfølgelig inden for rimelighedens grænser) og kunne tåle høje spændinger hen over den. MOSFET'en som bliver brugt som switch skal kunne switche hurtigt og kunne klare at der løber stor strøm igennem den uden at blive alt for varm.
 
-En af de problemer ved at bygge en boost converter som fast skal kunne levere 30V er an på motorens hastighed ændre motorens indre modstand sig, og derved ændrer spændingenen sig også. Det er derfor nødvendigt at have en form for feedback der fortæller frekvensgeneratoren om den skal øge eller sinke frekvensen for at outputtet bliver som forventet. Der findes IC-kredse der gør dette automatisk, men da gruppen ikke kan stå indefor hvordan de IC-kredse virker er der blevet valgt ikke at bruge dem i  bilen, og derved ville det blive for stor en udfordring at bygge boost converteren i forhold til den tid der var til projektet.
+En af de problemer ved at bygge en boost converter som fast skal kunne levere 30V er an på motorens hastighed ændre motorens indre modstand sig, og derved ændrer spændingen sig også. Det er derfor nødvendigt at have en form for feedback der fortæller frekvensgeneratoren om den skal øge eller sinke frekvensen for at outputtet bliver som forventet. Der findes IC-kredse der gør dette automatisk, men da gruppen ikke kan stå indenfor hvordan de IC-kredse virker er der blevet valgt ikke at bruge dem i  bilen, og derved ville det blive for stor en udfordring at bygge boost converteren i forhold til den tid der var til projektet.  
