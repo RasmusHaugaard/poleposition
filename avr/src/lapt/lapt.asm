@@ -4,7 +4,7 @@
 
 .set saved_pc = PC
 
-.org 0x06		;adresse for extern interrupt 2 (Port B, pin 2)
+.org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)	"streg måler"
 jmp EX2_ISR		;adresse med mere plads
 
 .org 0x12		;adresse for timer1 overflow (interrupt vektor table)

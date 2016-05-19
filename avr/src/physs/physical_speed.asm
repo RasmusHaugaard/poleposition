@@ -4,8 +4,9 @@
 
 .set saved_pc = PC
 
-.org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)
+.org 0x06		;adresse for extern interrupt 2 (Port B, pin 2) "motor encoder"
 jmp EX1_ISR		;adresse med mere plads
+
 .org saved_pc
 
 .equ old_time_h = addr			;gamle timer v�rdi (high bite)
