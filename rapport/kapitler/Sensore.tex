@@ -6,7 +6,7 @@
 \subsubsection{Stregsensor}
 Formålet med stregsensoren er at detektere målstregen. Dette gøres optisk, da selve banen er sort, og målstregen er hvid. Da hvid reflektere lys meget bedre end sort får vi et signal der er let at komparere.
 
-Stregsensoren er bygget op som vist på ref diagram. Den fungere ved at dioden lyser ned på banen, det lys der bliver reflekteret modtager phototransistoren. Ved målstregen har den et output på 4.8 V og på resten af banen 2.5 V. Til at komparere er der blevet brugt en schmitt trigger, således at der kommer en hysterese. Dette er valgt for at undgå at registrere målstregen flere gange i det vi passere den. Reference spændingen ved det inverterende ben på schmitt-triggeren er sat til 3,3 V og hysteresen som vist på figur nedenunder.
+Stregsensoren er bygget op som vist på ref diagram. Den fungere ved at dioden lyser ned på banen, det lys der bliver reflekteret modtager fototransistoren. Ved målstregen har den et output på 4.8 V og på resten af banen 2.5 V. Til at komparere er der blevet brugt en schmitt-trigger, således at der kommer en hysterese. Dette er valgt for at undgå at registrere målstregen flere gange i det vi passere den. Reference spændingen ved det inverterende ben på schmitt-triggeren er sat til 3.3 V og hysteresen som vist på figur nedenunder.
 \\
 Indsæt hysterese kurv*
 \\
@@ -38,7 +38,7 @@ Da denne sensor kommer til at blive brugt i flere frekvensområder alt efter mot
 Den komperator der er blevet brugt i kredsløbet er en LM311 har ved normal opsætning en respons tid på 165 ns fra høj til lav og 115 ns fra lav til høj.
 
 \begin{equation}
-\frac{1 V}{280 ns} = 3.571.429 \frac{v}{s}
+\frac{1 V}{280 ns} = 3.57\cdot 10^6 \frac{v}{s}
 \end{equation}
 
 Hvor signalet ved motor omdrejninger ved 2 kHz vil give 12 pulser, det giver et signal der går fra 5 til 0 og 0 til 5 volt med 12 kHz.

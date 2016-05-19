@@ -4,8 +4,8 @@
 \label{Elektromagnet}
 ?Fysisk analyse af bilen i sving, ide princip. Bilen drejer hvilke krafter påvirker denne. Kraften på mængden øverst i bilen større end kraften på ting tætte ved banen. Tegning af bil kraft moment osv. Enten præcis antal Newton eller så mange newton tilgængelig.?
 
-Elektromagneten er først og fremmest begrænset af bilens dimensioner. I vores tilfælde har vi lavet et fri rum på bredden 1.90cm x længden 1.73cm x højden 1.37cm = 4,50 cm3. 
-Det betyder at elektromagnetens kerne med spole max må bliver 1.2 cm høj, 1.5cm bred (1.5  bred banen 1.1 ) og 1.5 cm lang ( volumen 2.7 cm3). (Emagnet højde + ben = 1.4 cm)
+Elektromagneten er først og fremmest begrænset af bilens dimensioner. I vores tilfælde har vi lavet et fri rum på bredden 1.90cm x længden 1.73cm x højden 1.37cm = 4,50 $cm^3$. 
+Det betyder at elektromagnetens kerne med spole max må bliver 1.2 cm høj, 1.5cm bred (1.5  bred banen 1.1 ) og 1.5 cm lang (volumen 2.7 $cm^3$). (Emagnet højde + ben = 1.4 cm)
 
 Med en kerne med et volumen på 0.3 $cm^3$ (Indskrevne cirkel af en firkant på $0.3cm \cdot 0.3 cm$ ) giver det os resterne 2.4 $cm^3$ til spolen.
 Det giver os et estimat for hvor mange vindinger N, vi kan havde med en ledning med tværsnitsareal Aw, med en spole med gennemsnit radius på r som er 0.45 cm. (*Gennemsnit omkreds da omkredsen stiger linært i takt med der kommer viklinger. 0.3cm for kernen, spole slutter ved 0.6cm det giver gns på 0.45 cm….. *Givet at viklingerne ligger helt tæt. )
@@ -58,12 +58,12 @@ W_m = \frac{1}{2} \int B^2 \frac{dv}{\mu}  = \frac{1}{2} \Phi^2 \int \frac{1}{A^
 Det gælder for et magnetisk kredsløb at den resulterende flux $\Phi$ er givet ved:
 
 \begin{equation}
-\Phi=\mu H \cdot A  \semequ \frac{NI}{R_m} \semequ  \frac{NI}{\frac{1}{A\mu_0}}
+\Phi=\mu H \cdot A  \simeq \frac{NI}{R_m} \simeq  \frac{NI}{\frac{1}{A\mu_0}}
 \end{equation}
 
 $N \cdot I$ er ampere vindinger, Rm er reluktansen, $ \mu $ er permeabiliteten og l længden af kredsløbet. Det medføre at vi kan skrive energien som.
 \begin{equation}
-W_m = (NI)^2/(Rm)^2 Integrer (dl/(A \cdot \mu_0))
+W_m = (NI)^2/(Rm)^2 \int \frac{dl}{A \cdot \mu_0} 
 \end{equation}
 
 
@@ -78,14 +78,14 @@ F dx + dW_m = iv dt
 Givet at vi holder en konstant strøm i spolen vil den elektrisk energi skrive som.
 
 \begin{equation}
-iv=IN d\Phi /dt=(NI)^2  d(1/R_m )/dt
+iv=IN \frac{d\Phi}{dt} =(NI)^2  \frac{d\frac{1}{R_m}}{dt}
 \end{equation}
   
 
 Sammensat ligning x og y får vi
 
 \begin{equation}
-F dx+(NI)^2/2  d (1/R_m )  =(NI)^2  d(1/R_m )
+F dx+\frac{(NI)^2}{2d} \frac{1}{R_m} =(NI)^2  d \frac{1}{R_m}
 \end{equation}
 
 Sidste del tjekkes med jan
