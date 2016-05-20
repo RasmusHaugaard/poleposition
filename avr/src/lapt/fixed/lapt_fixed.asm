@@ -4,8 +4,8 @@
 
 .set saved_pc = PC
 
-.org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)	"streg måler"
-jmp EX1_ISR		;adresse med mere plads
+;.org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)	"streg måler"
+;jmp EX1_ISR		;adresse med mere plads
 
 .org 0x12		;adresse for timer1 overflow (interrupt vektor table)
 jmp T1_OV_ISR	;adresse med mere plads
@@ -26,13 +26,13 @@ out TCNT1L, R16	;nulstiller timer1 low bite
 sei					;tilader global interrupt
 
 
-cli
+;cli
 ;=== extern interrupt 1 ==
-ldi R16, 1<<INT1	;tilader interrupt ved externt trigger 1 (Port D, pin 3)
-out GICR, R16		;..
-ldi R16, (1<<ISC10) | (1<<ISC11)	;ops�tter til at trigge ved puls stigning
-out	MCUCR, R16		;..
-sei
+;ldi R16, 1<<INT1					;tilader interrupt ved externt trigger 1 (Port D, pin 3)
+;out GICR, R16						;..
+;ldi R16, (1<<ISC10) | (1<<ISC11)	;ops�tter til at trigge ved puls stigning
+;out	MCUCR, R16						;..
+;sei
 
 ;=== Timer1 overflow interrupt ===
 ldi R16, 1<<TOV1	;tilader interrupt ved timer1 overflow
@@ -131,13 +131,13 @@ T1_OV_ISR_CLEAR:
 	ret							;retunere
 
 
-EX1_ISR:						;Interrupt(kommer over lap-stregen)
-	rcall lap_finished
+;EX1_ISR:						;Interrupt(kommer over lap-stregen)
+;	rcall lap_finished
 ;	rcall reset_sek_adr			;resetter sekment adresse for mread
-	reti
+;	reti
 
 lap_finished:
-	push R16					;gemmer registres v�rdi
+	push R16					;gemmer registres værdi
 	push R17					;..
 	push R18					;..
 	in R16, SREG				;..
