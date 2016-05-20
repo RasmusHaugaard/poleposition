@@ -31,29 +31,20 @@ For at måle distancer, så bilen ved hvor langt der er imellem sving på banen,
 
 
 Det vil sige at omdrejningstælleren vil sende et logisk højt signal til mikrocontrolleren når den er ved et af hullerne i  rotationsenkoderen, og et logisk lavt signal resten af tiden. En puls fra Omdrejningstælleren vil svare til 1/6 af en motoromdrejning.
-Da denne sensor kommer til at blive brugt i flere frekvensområder alt efter motorens hastighed, er det vigtigt at komparatoren ikke er ?begrænset af dens slewrate eller bandwith. ? 
+Da denne sensor kommer til at blive brugt i flere frekvensområder alt efter motorens hastighed, er det vigtigt at komparatoren ikke har en for langsom slewrate. 
 
-
-??
-Den komperator der er blevet brugt i kredsløbet er en LM311 har ved normal opsætning en respons tid på 165 ns fra høj til lav og 115 ns fra lav til høj.
+Den komperator der er blevet brugt i kredsløbet er en LM311 har ved normal opsætning en respons tid på 165 ns.
 
 \begin{equation}
-\frac{1 V}{280 ns} = 3.57\cdot 10^6 \frac{v}{s}
+\frac{5 V}{168 ns} = 3 \cdot 10^7 \frac{v}{s}
 \end{equation}
 
-Hvor signalet ved motor omdrejninger ved 2 kHz vil give 12 pulser, det giver et signal der går fra 5 til 0 og 0 til 5 volt med 12 kHz.
+Signalet ved motor omdrejninger ved 2 kHz vil give 12 pulser, det giver et signal der skal går fra 5 til 0 volt med 12 kHz.
 \begin{equation}
-\frac{10 V}{(12 \cdot 10^-3)s} = 833 v/s
+\frac{5 V}{(12 \cdot 10^-3)s} = 416.7 v/s
 \end{equation}
 
-
-?? for vagt?? 
-
+Det kan derfor ses at selv hvis bilen akse drejer med 2 kHz burde sensoren kunne følge med.
 
 
 Kilde til datasheet: http://www.ti.com/lit/ds/symlink/lm311.pdf
-
-
-?Hastighed?
-
-inkoder som hver puls fra inkoderen svare til en 1/6 af en motor omdrejning. 
