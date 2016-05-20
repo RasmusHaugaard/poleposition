@@ -28,10 +28,10 @@
 
 
 ;Nogle værdier defineres i starten.
-.equ  left_turn_value_in = 15
-.equ  right_turn_value_in = -15
-.equ  left_turn_value_out = 5
-.equ  right_turn_value_out = -5
+.equ  left_turn_value_in = 10
+.equ  right_turn_value_in = -10
+.equ  left_turn_value_out = 4
+.equ  right_turn_value_out = -4
 
 .equ  gyr_addr_w = 0b11010000
 .equ  gyr_addr_r = 0b11010001
@@ -118,7 +118,7 @@ turn_detected:
 ;  store_byte_map_data [current_status];Vi loader første dage ind i SRAM for lige stykke
   push  current_status
   ldi   current_status, straigh_status
-  send_bt_byte [current_status]
+;  send_bt_byte [current_status]
   pop   current_status
 
   push  last_point_high
@@ -132,7 +132,7 @@ turn_detected:
 
 ;  store_byte_map_data [last_point_low]
 ;  store_byte_map_data [last_point_high]
-  send_bt_byte [last_point_low]
+;  send_bt_byte [last_point_low]
 
 check_for_turn_ended:
   cpi   current_status, status_rigth_turn
@@ -176,7 +176,7 @@ turn_ended:
   pop    first_point_high
 
 ;  store_byte_map_data [current_status]
-  send_bt_byte [current_status]
+;  send_bt_byte [current_status]
 ;  store_byte_map_data [last_point_low]
 ;  store_byte_map_data [last_point_high]
   send_bt_byte [last_point_low]
