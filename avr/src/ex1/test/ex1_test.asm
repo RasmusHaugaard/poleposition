@@ -9,8 +9,9 @@ rjmp init
 rjmp app_command_int_handler
 
 init:
-	.include "src/lapt/lapt_v2.asm"
-	.include "src/physs/physical_speed_v2.asm"
+	.include "src/ex1/ex1.asm"
+	.include "src/lapt/fixed/lapt_fixed.asm"
+	.include "src/physs/fixed/physical_speed_fixed.asm"
 	.include "src/motor/motor_pwm.asm"
 
 	sbi DDRA, PORTA1
@@ -31,9 +32,9 @@ init:
 main:
 	ldi R20, 000
 	send_bt_byte [R20]
-	lds R20, dis_tik_h
+	lds R20, dif_time_h
 	send_bt_byte [R20]
-	lds R20, dis_tik_l
+	lds R20, dif_time_l
 	send_bt_byte [R20]
 
 	delays [1]
