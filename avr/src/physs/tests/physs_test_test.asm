@@ -9,8 +9,8 @@ rjmp init
 rjmp app_command_int_handler
 
 init:
-	.include "src/lapt/lapt_v2.asm"
-	.include "src/physs/physical_speed_v2.asm"
+	.include "src/lapt/lapt_test.asm"
+	.include "src/physs/physical_speed_test.asm"
 	.include "src/motor/motor_pwm.asm"
 
 	sbi DDRA, PORTA1
