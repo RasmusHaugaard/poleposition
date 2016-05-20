@@ -2,7 +2,7 @@
 	.equ mapping_data_addr = addr
 	.set addr = addr + 200
 
-	.set mapping_data_addr =	mapping_data_addr	;<--------------------------------------- skal have start adresse
+	;.set mapping_data_addr =	mapping_data_addr	;<--------------------------------------- skal have start adresse
 
 						;1 lige sekment (fra start til sving)
 	ldi R1, 0b00000000		;status
@@ -27,7 +27,7 @@
 	ldi R1, 107				;distance_l
 	sts mapping_data_addr, R1			;..
 	.set mapping_data_addr = mapping_data_addr + 1	;..
-	
+
 
 
 					;1 lige sekment (side)
@@ -107,7 +107,7 @@
 	.set mapping_data_addr = mapping_data_addr + 1	;..
 
 
-					
+
 					;2 lige sekmenter (fra sving til start)
 	ldi R1, 0b00000000		;status
 	sts mapping_data_addr, R1			;..
