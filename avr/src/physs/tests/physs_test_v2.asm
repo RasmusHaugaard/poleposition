@@ -9,8 +9,8 @@ rjmp init
 rjmp app_command_int_handler
 
 init:
-	.include "src/lapt/lapt.asm"
-	.include "src/physs/physical_speed.asm"
+	.include "src/lapt/lapt_test.asm"
+	.include "src/physs/physical_speed_test.asm"
 	.include "src/motor/motor_pwm.asm"
 
 	sbi DDRA, PORTA1
@@ -29,7 +29,7 @@ init:
 	setspeed [0]
 
 main:
-	ldi R20, 255
+	ldi R20, 000
 	send_bt_byte [R20]
 	lds R20, dif_time_h
 	send_bt_byte [R20]
