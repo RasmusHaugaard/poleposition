@@ -31,10 +31,9 @@ init:
 main:
 	ldi R20, 000
 	send_bt_byte [R20]
-	lds R20, dif_time_h
+	lds R20, dis_tik_h
 	send_bt_byte [R20]
-	lds R20, dif_time_l
-
+	lds R20, dis_tik_l
 	send_bt_byte [R20]
 
 	delays [1]

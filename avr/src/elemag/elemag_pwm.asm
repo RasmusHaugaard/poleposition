@@ -15,6 +15,7 @@ out TCCR0, temp
 ldi temp, 0
 out OCR0, temp
 
+
 .macro setelemag
 ERROR: Skal kaldes med argument
 .endm
