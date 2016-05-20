@@ -3,8 +3,8 @@
 ;===================================
 .equ def_sek_adr =	mapping_data_addr			;første sekment adresse						<---------------------------------- find adresse til første sekment
 
-.equ sek_adr = addr				;nuværendene sekment adresse
-.set addr = addr + 1			;..
+;.equ sek_adr = addr				;nuværendene sekment adresse
+;.set addr = addr + 1			;..
 
 .equ dis_ref_h = addr			;distance referance (h-bite)
 .set addr = addr + 1			;..	
@@ -278,16 +278,16 @@ get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
 	ldi R16, 115				;sender s
 	send_bt_byte [R16]			;..
 
-	lds R28, sek_adr			;status
-	sts sek_status, R28			;..
-	.set sek_adr = sek_adr + 1	;..
-	lds R28, sek_adr			;distance h-bite
-	sts ss_dis_h, R28			;..
-	.set sek_adr = sek_adr + 1	;..
-	lds R28, sek_adr			;distance l-bite
-	sts ss_dis_l, R28			;..
-	.set sek_adr = sek_adr +1	;..
-	lds R28, sek_adr			;Tjekker om sekment efter er lige
+	lds R28, mapping_data_addr						;status
+	sts sek_status, R28								;..
+	.set mapping_data_addr = mapping_data_addr + 1	;..
+	lds R28, mapping_data_addr						;distance h-bite
+	sts ss_dis_h, R28								;..
+	.set mapping_data_addr = mapping_data_addr + 1	;..
+	lds R28, mapping_data_addr						;distance l-bite
+	sts ss_dis_l, R28								;..
+	.set mapping_data_addr = mapping_data_addr +1	;..
+	lds R28, mapping_data_addr						;Tjekker om sekment efter er lige
 	sbrs R28, 7					;..
 	rjmp n_sek_l				;hvis lige rjmp "n_sek_l"
 	lds R16, 0b11111111			;hvis sving
@@ -326,8 +326,7 @@ reset_sek_adr:
 	ldi R16, 115				;sender s
 	send_bt_byte [R16]			;..
 
-	lds R16, def_sek_adr		;Resitter sek_adr
-	sts sek_adr, R16			;..
+	.set mapping_data_addr = def_sek_adr		;Resitter sek_adr
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
