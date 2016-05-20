@@ -2,45 +2,50 @@
 
 \subsection{Elektromagnet}
 \label{Elektromagnet}
-?Fysisk analyse af bilen i sving, ide princip. Bilen drejer hvilke krafter påvirker denne. Kraften på mængden øverst i bilen større end kraften på ting tætte ved banen. Tegning af bil kraft moment osv. Enten præcis antal Newton eller så mange newton tilgængelig.?
 
-Elektromagneten er først og fremmest begrænset af bilens dimensioner. I vores tilfælde har vi lavet et fri rum på bredden 1.90cm x længden 1.73cm x højden 1.37cm = 4,50 $cm^3$. 
-Det betyder at elektromagnetens kerne med spole max må bliver 1.2 cm høj, 1.5cm bred (1.5  bred banen 1.1 ) og 1.5 cm lang (volumen 2.7 $cm^3$). (Emagnet højde + ben = 1.4 cm)
+"Har lavet flere kommentare i "" sån så alle i gruppen lige er opmæksomme på det, har gemt et indivuduelt tekst dokument så det kan genlæses, ellers slettes disse bare når i har læst dem "
 
-Med en kerne med et volumen på 0.3 $cm^3$ (Indskrevne cirkel af en firkant på $0.3cm \cdot 0.3 cm$ ) giver det os resterne 2.4 $cm^3$ til spolen.
-Det giver os et estimat for hvor mange vindinger N, vi kan havde med en ledning med tværsnitsareal Aw, med en spole med gennemsnit radius på r som er 0.45 cm. (*Gennemsnit omkreds da omkredsen stiger linært i takt med der kommer viklinger. 0.3cm for kernen, spole slutter ved 0.6cm det giver gns på 0.45 cm….. *Givet at viklingerne ligger helt tæt. )
+Elektromagnetens formål er at give bilen ekstra nedadrettet kraft i svingende, således at bilen kan køre hurtigere rundt i svinget, og i sidste ende køre en hurtigere omgangstid. Reference til Frederiks del med fysikken. Dette kan gøres da racerbanen der køres på har 2 stål skinner i midten af banen.
 
+Da det ikke er fordelagtig at havde ekstra downforce i løbet af længere lige strækninger, grundet den unødig ekstra friktion det vil skabe, skal magneten også kunne slås til og fra. Dette er blevet udført ved at styre elektromagneten med en mosfet der er koblet til mikrocontrolleren. Det bliver ud fra mikrocontrolleren sendt en puls med ca. 30 kHz til mosfett’en og da spolen vil modvirke momentane ændringer, vil den opfatte det som en DC strøm, der varigere alt efter hvilken duty cykle man forespørger. Dette gør at man kan undgå at spolen bliver for varm, men også at intensiteten af elektromagneten kan kontrolleres."Har snakket med Jan og der kommer kun kompleksemodstande ved en sinus signal, men vi sender det der hedder transient signal / firkantet signal, og spolen modvirker jo de her momentane ændringer. Slet når læst "
 
-\begin{equation}
-Vol_{max} =\pi \cdot r \cdot 2 \cdot A_w \cdot N 
-\end{equation}
-\begin{equation}
-N= \frac{Vol_{max}}{r \cdot pi \cdot 2 \cdot aw}
-\end{equation}
+Berigninger på at mosfetten ikke bliver for varm kan ses på ref til phillip.  
 
-Det er vigtigt at vælge en ledning med et $A_{w}$ der kan holde til at man sender den mængde ampere igennem den uden at lakeringen begynder at smelte, eller det omkring liggende PLA chassis bliver blødt (Bilens steel). 
-Hvis man kigger på anbefalingerne for hvad max strømmen i en kobber ledning og dens isolation er, kan man se for 1 A anbefaledes ledning med en diameter på 0.28 mm. Det er dog en anbefaling for længere vedvarende brug, hvor vi kun skal bruge vores i små korte perioder.
+\subsubsection{Størrelse}
 
-$http://www.powerstream.com/Wire_Size.htm $
+Dette medføre at elektromagneten først og fremmest begrænset af bilens dimensioner, da der så ønskes at lave den så kraftig som mulig. I det specielt lavet chasiss er et fri rum på bredden 1.5cm, højden 1.5 cm og længden 1.5 cm. Altså et total volume for hele elektromagneten på 3.375 $cm^3$ "Ved godt det ikke helt er det, men i stedet for at fylde rapporten ud med meget tid og plads fyldende beregninger på noget så kedligt som volume og for at holde fokus på det vigtige om elektromagneten er dette valgt. slettes når læst" 
 
-Vi fandt at vi kunne bruge en 0.20 mm kobbertråd, uden at lakering smeltede eller PLA chassis blev blødt. Hvor hvis vi gik ned i størrelse begyndte magneten at blive for varm til vi var trygge ved at havde den i bilen.
-Teoretisk skulle vi så kunne lave en magnet med følgende antal vindinger:
+Elektromagnetens kerne er af stål, og har en total volumen på 0.645 $cm^3$ giver det os resterne 2.73 cm3 til spolen. 
+"kernens 2 ben=2*1.5*1.5*0.1 cm + kernen del hvorpå spolen sidder 0.1*1.3*1.5.  slettes når læst " 
+
+Dette kan bruges til at estimere hvor mange vindinger N, vi kan havde med en ledning med tværsnitsareal $A_w$, med en spole med gennemsnit radius på r som er 0.45 cm.  Hvor $l_{spole}$ er længden af ledningen hvilket om spolen."Gennemsnit omkreds da omkredsen stiger linært i takt med der kommer viklinger. 0.3cm for kernen, spole slutter ved 0.6cm det giver gns på 0.45 cm….. *Givet at viklingerne ligger helt tæt.. slettes når læst "
 
 \begin{equation}
-N=\frac{Vol_{max}}{r \cdot pi \cdot 2 \cdot aw}  ?indsæt værdier?? = x
+Vol_{max} =l_{spole} \cdot A_w = 2\pi \cdot r \cdot N \cdot A_w  
+\end{equation}
+\begin{equation}
+N= \frac{Vol_{max}}{2\pi \cdot r \cdot A_w}
 \end{equation}
 
+Til elektromagneten i dette projekt blev der brugt en 0.2 mm kobberledning, da spolen let spindes på maskine uden at lakeringen blev skrabet af og kortslutninger fremkom. Dog et skridt der let kunne optimere elektromagnetens ydeevne da en tyndere ledning ville resultere i flere viklinger. Dog skal man være opmærksom på man ikke sender for meget strøm igennem ledningen end den kan holde til. "Slettes evt. hvis vi ikke ønsker at skulle snakke om resitivitet til eksamen mm. Har dog ikke nogle gode nok beregninger til at kunne tages med i rapporten."   
 
-Men da vi ikke kan ligge vindingerne helt tætte og ikke har en helt rund kerne har det i praksis kun været muligt for os at lave 600 vindinger.
-Vi brugte en ”spole maskine” – tjek hvad den hedder med Jan. For at lave vindingerne. Vi fandt dog ud af at alene på de 100 viklinger kunne man lave 1.5 gange flere viklinger ved at gøre det i hånden, dog tog det også væsentlig længere tid.
-Den kraft elektromagneten vil kunne trække bilen ned med kan estimeres ved først at kigge på den magnetiske energi der vil blive opladt i DeltaV matriale med  en ”konstant”?er stål  og evt jern dette?? permabiliteten my. 
+Teoretisk vil dette medføre i spole om kernen med følgende antal vindinger:
+
+\begin{equation}
+N=\frac{2.73*10^(-6) m^3}{0.0045m*π*2*(0.0002^(2)m*π)} = 769 vindinger
+\end{equation}
+I praksis blev der dog kun plads til 600 vindinger.
+
+\subsubsection{Kraft}
+
+Den kraft denne elektromagnet vil kunne trække bilen ned med kan estimeres ved først at kigge på den magnetiske energi $W_m$, der vil blive opladt i en mængde materiale $ΔV$ med en konstant permeabilitet $ \mu $.
 
 \begin{equation}
 W_m =\frac{B^2}{2 \mu} \Delta V
 \end{equation}
 
+vis man integrere energi densiteten over volumen af hele det magnetiske kredsløb og antager at B-feltet bliver holdt konstant igennem tværsnits arealet A på elektromagneten, medføre det at:
 
-Hvis vi integrere energi densiteten over volumen af hele det magnetiske kredsløb og antager at B-feltet bliver holdt konstant igennem tværsnits arealet A på elektromagneten, medføre det at:
 \begin{equation}
 \Phi=B*A
 \end{equation}
@@ -49,33 +54,50 @@ B=\frac{\Phi}{A}
 \end{equation}
 
 
-I praktisk vil dette ikke være helt sandt da der vil opstå nogle hvirvel strømme mm. TJEK OP!! Hvilke. Husk vi antager at $\mu_0$ konstant, og Phi konstant.  Men i vores tilfælde kan vi forstille os at fluxen løber igennem kredsløbet som vand ville i et rør.
+I praktisk vil dette ikke være helt sandt da der vil opstå nogle hvirvel strømme mm. TJEK OP!! Hvilke som vi dog ikke kigger på hvorfor??!!. Hvis ligning xxovenover skrives ind ligning yyovenover fås.
 
 \begin{equation}
 W_m = \frac{1}{2} \int B^2 \frac{dv}{\mu}  = \frac{1}{2} \Phi^2 \int \frac{1}{A^2 \cdot \mu} dV
 \end{equation}
 
-Det gælder for et magnetisk kredsløb at den resulterende flux $\Phi$ er givet ved:
+Det gælder for et magnetisk kredsløb at den resulterende flux Φ kan regnes som:
 
 \begin{equation}
-\Phi=\mu H \cdot A  \simeq \frac{NI}{R_m} \simeq  \frac{NI}{\frac{1}{A\mu_0}}
+\Phi \simeq \frac{NI}{R_m} \simeq  \frac{NI}{\frac{1}{A\mu_0}}
 \end{equation}
 
-$N \cdot I$ er ampere vindinger, Rm er reluktansen, $ \mu $ er permeabiliteten og l længden af kredsløbet. Det medføre at vi kan skrive energien som.
+$N \cdot I$ er ampere vindinger, R_m er kredsløbets totale reluktans, $ \mu $ er kredsløbets permeabilit og l er længden af kredsløbet. Det gælder for kredsløbet at:
+
 \begin{equation}
-W_m = (NI)^2/(Rm)^2 \int \frac{dl}{A \cdot \mu_0} 
+\Delta V =A \cdot dl 
 \end{equation}
 
+Det medføre at kredsløbets energi kan skrives som:
 
-Energi balancen i vores kredsløb er.
-$mekanisk arbejde+ magnetisk energi(Tjek opladt energi)=Elektrisk energi \cdot tid$
+\begin{equation}
+W_m = (NI)^2/(2(R_m)^2) \int \frac{dl}{A \cdot \mu} 
+\end{equation}
+
+Det gælder at den samlede reluktans er summen af alle reluktanserne, i kredsløbet.
+
+\begin{equation}
+R_m = \int \frac{dl}{A \cdot \mu} 
+\end{equation}
+
+Sammensættes lignin x over og y over fås:
+
+\begin{equation}
+W_m = \frac{dl}{A \cdot \mu} 
+\end{equation}
+
+Energi balancen i kredsløbet er.
+$mekanisk arbejde + magnetisk energi =Elektrisk energi \cdot tid$
 
 \begin{equation}
 F dx + dW_m = iv dt
 \end{equation}
 
-
-Givet at vi holder en konstant strøm i spolen vil den elektrisk energi skrive som.
+Givet at strømmen i spolen kan antages som konstant vil den elektrisk energi skrives som.
 
 \begin{equation}
 iv=IN \frac{d\Phi}{dt} =(NI)^2  \frac{d\frac{1}{R_m}}{dt}
@@ -88,10 +110,124 @@ Sammensat ligning x og y får vi
 F dx+\frac{(NI)^2}{2d} \frac{1}{R_m} =(NI)^2  d \frac{1}{R_m}
 \end{equation}
 
-Sidste del tjekkes med jan
+Ud fra dette kan det konstateres at halvdelen af den totale elektriske energi bliver omdannet til mekanisk arbejde.
 
-PWM for at holde konstant strøm uddybet 
+\begin{equation}
+F = \frac{dR_m}{dx} (-\frac{1}{2} (\frac{(NI)}{Rm} )^2 )
+\end{equation}
 
-Sammenligning magneter
+Hvor x er elektromagnetens længde fra skinnen ganget med 2, da vi har en hesteformet magnet.
 
-Sammenligninger kørsel med og uden magnet
+Den samlet reluktans er summen af alle kredsløbets reluktanser, I dette tilfælde vil der være reluktans fra selve elektromagneten R_k, fra luftgabet R_l og fra skinnerne i racerbanen R_s. 
+
+Som det kan ses på figur Tegnes Lørdag eller søndag beklager ventetiden.
+
+\begin{equation}
+R_m =R_k + R_s + R_l = \frac{l_{kerne}}{\mu_{r.stål} \cdot \mu_0 \cdot A_{kerne} } + \frac{l_{skinne}}{\mu_{r.stål} \cdot \mu_0 \cdot A_{skinne} }  + \frac{l_{kerne}}{\mu_0 \cdot A_{luftgab} } 
+\end{equation}
+
+Hvor l står for henholdsvis længden af kernen, skinnen og luftgabet. A for tværsnitsarealet,og $ \mu_{r.stål} $ for den relative permeabilitet til forhold luftens permeabilitet $\mu_0$.  For at forsimple udtrykket kan den totale reluktans sammenlignes med luftgabets reluktans en værdi  der fremover bliver kaldt z.
+
+\begin{equation}
+z = \frac{R_m}{R_l} = \frac{R_k}{R_l} +\frac{R_s}{R_l} + 1 = 
+
+\frac{	
+	\frac{l_{kerne}}{l_{luftgab}} }
+	{\mu_{r.stål} \cdot \frac{A_{kerne}}{A_{luftgab}} } 
++
+\frac{	
+	\frac{l_{skinne}}{l_{luftgab}} }
+{\mu_{r.stål} \cdot \frac{A_{skinne}}{A_{luftgab}} } 
++ 1
+\end{equation}
+"Motherfucker equation... i know, men den er meget væsentlig og burde ikke skrives kortere"
+
+Ved en lille fluxspredning vil det kunne antages at. 
+
+\begin{equation}
+A_{kerne} \simeq A_{luftgab}
+
+A_{skinne} \ll A_{luftgab}
+\end{equation}
+
+Det gælder at: "leder stadig efter en god kilde på permabiliteter... en der er bedre end wiki..."
+
+\begin{equation}
+\mu_{stål} \ll 1
+
+\frac{l_{kerne}}{l_{luftgab}}\ll \mu_{stål}
+
+\end{equation}
+
+Dette medføre at kernen reluktans kan negligere, da det kan redfærdigøres at omskrive ligning xx til følgende.
+
+\begin{equation}
+z = 
+\frac{	
+	\frac{l_{skinne}}{l_{luftgab}} }
+{\mu_{r.stål} \cdot \frac{A_{skinne}}{A_{luftgab}} } 
++ 1
+\end{equation}
+
+Hvis skinnens reluktans undersøges nærmere ses følgende. 
+
+" Rs Ganges og divideres med Lluftagab/Aluftab, da det en korrekt matematisk indgreb der ikke ændre værdien af Rs men gør vi kan sammenligne Rs og Rl… slettes når læst "
+
+\begin{equation}
+R_s =  \frac{l_{skinne}}{\mu_{r.stål} \cdot \mu_0 \cdot A_{skinne} } 
+=
+\frac{	
+	\frac{l_{skinne}}{l_{luftgab}} }
+{\mu_{r.stål} \cdot \frac{A_{skinne}}{A_{luftgab}} } 
+\cdot \frac{l_{luftgab}}{\mu_0 \cdot A_{luftgab}} 
+=
+\frac{	
+	\frac{l_{skinne}}{l_{luftgab}} }
+	{\mu_{r.stål} \cdot R_{luftgab}
+
+\end{equation}
+
+Da elektromagneten er sænket så meget som muligt holdes den ca. 0.5 mm over skinnen, og skinnens tværsnit fås til 2mm*4mm kan følgende observeres.
+
+\begin{equation}
+R_s =  
+\frac{	
+	\frac{15 mm}{1 mm} }
+{ 500 \cdot R_{luftgab} = 0.06*R_{Luftgab}
+	\end{equation}
+	
+Dette betyder at for dette kredsløbs funktion kan det med rimelighed antages at:
+
+\begin{equation}
+R_m \simeq R_l
+	\end{equation}
+	
+Dette medføre at ligning xx kan skrives til:
+
+\begin{equation}
+
+\mid F \mid = \frac{(NI)^(2) \cdot \mu_0 \cdot A_luftgab } {2 \dot x^2}
+
+\end{equation}
+
+Det kan derfor ses at for at optimere magneten vil de mest betydende led være amperevindinger om magneten og længden af luftgabet.
+
+For magneten der er anvendt til projektet vil den teoretiske kraft, magneten ville genere ved 1 A, placeret 0.5 mm over banen være: (OBS x=2*placering over banen… slet når læst)
+
+\begin{equation}
+
+\mid F \mid = \frac{(600 amperevindinger)^(2) \cdot \mu_0 \cdot 1.5 \cdot 10^(-5) m^2 } {2 \dot (0.001m)^2}
+
+\end{equation}
+
+I praksis kunne magneten ved 0.5 mm placering over skinnen dog kun trække ca. 1.7 N. Det tyder at Xxx og xx har større indflydelse end forventet.
+
+\subsubsection{Forsøg}
+Da permabiliteten for stål er relativ lav tilforhold fks. Elektrisk stål, er der blevet forsøg at tilsætte elektrisk stål til elektromagnetens kerne. Efter forsøg hvor magneten blev placeret på skinnen, kunne det konkluderes at tilføje Elektrisk stål til magnetens kerne kunne ændre den kraft.
+
+Indsæt billede af graf "Magnet i billede mappen"
+
+\subsubsection{konklusion}
+Da amperevindinger efter vores formel skulle havde stor betydning for elektromagnetens kraft er kernen på elektromagneten lavet af et tyndt stykke stål der kun er 1 mm tykt for at få plads til så mange vindinger som muligt.  Da vi er bevidste om at ståls permeabilitet ikke er lige så god som for eksempel jern eller elektriskståls, forsøgte vi os med at tilføje elektrisk stål til kernen, hvilket gav os gode resultater. 
+
+Udover amperevindinger havde magnetens placering fra skinnerne på racerbanen også stor betydning. Dette blev der taget højde for ved at placere elektromagneten så tæt på skinnen som muligt. Vi fandt ved test, en placering på 0,5 mm til at være et bedst, her blev der ikke skabt for meget bremsende friktion og med lidt tape på undersiden af magneten kortsluttede vi ikke banen ved ujævnheder i banen.
