@@ -30,12 +30,17 @@ init:
 	setspeed [0]
 
 main:
-	ldi R20, 000
+	;ldi R20, 000
+	;send_bt_byte [R20]
+	;lds R20, dif_time_h
+	;send_bt_byte [R20]
+	;lds R20, dif_time_l
+	;send_bt_byte [R20]
+
+	get_dis_hl [R20, R21]
 	send_bt_byte [R20]
-	lds R20, dif_time_h
-	send_bt_byte [R20]
-	lds R20, dif_time_l
-	send_bt_byte [R20]
+	send_bt_byte [R21]
+
 
 	delays [1]
 	rjmp main
