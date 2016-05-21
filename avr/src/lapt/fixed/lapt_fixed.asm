@@ -85,6 +85,7 @@ jmp lapt_file_end
 	push R16
 	in R16, SREG
 	push R16
+	cli
 	in @1, TCNT1L
 	in @0, TCNT1H
 	pop R16
@@ -100,6 +101,7 @@ jmp lapt_file_end
 	push R16
 	in R16, SREG
 	push R16
+	cli
 	lds @0, TCNT1HH
 	pop R16
 	out SREG, R16
