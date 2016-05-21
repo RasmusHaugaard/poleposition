@@ -10,16 +10,17 @@ Stregsensoren er bygget op som vist på ref diagram. Den fungere ved at dioden l
 \\
 Indsæt hysterese kurv*
 \\
-Stregsensoren sender et signal, ved målstregen på 4.9 V som  mikrocontrolleren modtager som et logisk højt signal. Ved placering over den sorte del af banen sender stregsensoren et signal på 0.03V som mikrocontrolleren opfatter som et logisk lavt signal. 
+Stregsensoren sender et signal, ved målstregen på 4.9 V som  mikrocontrolleren modtager som et logisk højt signal. Ved placering over den sorte del af banen sender stregsensoren et signal på 0.03V som mikrocontrolleren opfatter som et logisk lavt signal.
 
-Ved placering over metalskinnerne på banen sender sensoren også et logisk højt signal, for at undgå at modtage den støj, er sensoren placeret bag venstre forhjul, det gør også at mikrocontrolleren modtager signalet om målstregen hurtigere end hvis den var placeret bagerst på bilen. 
+Ved placering over metalskinnerne på banen sender sensoren også et logisk højt signal, for at undgå at modtage den støj, er sensoren placeret bag venstre forhjul, det gør også at mikrocontrolleren modtager signalet om målstregen hurtigere end hvis den var placeret bagerst på bilen.
 
-Da det er fordelagtig at havde så lidt vægt i bilen, og for at skabe så meget plads som muligt til blandt andet elektromagneten, er det blevet lavet med SMD-komponenter. 
+Da det er fordelagtig at havde så lidt vægt i bilen, og for at skabe så meget plads som muligt til blandt andet elektromagneten, er det blevet lavet med SMD-komponenter.
 
 
 \subsubsection{Motor-Omdrejningstæller}
+\label{motor-omdrej}
 
-For at måle distancer, så bilen ved hvor langt der er imellem sving på banen, er der blevet lavet en omdrejningstæller. Til dette kan samme kredsløb som stregsensoren anvendes, idet der er blevet fremstillet en rotations enkoder, der er fastspændt på motorens akse. Dog er modstanden under transistoren ændret få at gøre sensoren mindre følsom.   
+For at måle distancer, så bilen ved hvor langt der er imellem sving på banen, er der blevet lavet en omdrejningstæller. Til dette kan samme kredsløb som stregsensoren anvendes, idet der er blevet fremstillet en rotations enkoder, der er fastspændt på motorens akse. Dog er modstanden under transistoren ændret få at gøre sensoren mindre følsom.
 
 
 \begin{figure}[ht]
@@ -31,7 +32,7 @@ For at måle distancer, så bilen ved hvor langt der er imellem sving på banen,
 
 
 Det vil sige at omdrejningstælleren vil sende et logisk højt signal til mikrocontrolleren når den er ved et af hullerne i  rotationsenkoderen, og et logisk lavt signal resten af tiden. En puls fra Omdrejningstælleren vil svare til 1/6 af en motoromdrejning.
-Da denne sensor kommer til at blive brugt i flere frekvensområder alt efter motorens hastighed, er det vigtigt at komparatoren ikke har en for langsom slewrate. 
+Da denne sensor kommer til at blive brugt i flere frekvensområder alt efter motorens hastighed, er det vigtigt at komparatoren ikke har en for langsom slewrate.
 
 Den komperator der er blevet brugt i kredsløbet er en LM311 har ved normal opsætning en respons tid på 165 ns.
 
@@ -44,7 +45,7 @@ Signalet ved motor omdrejninger ved 2 kHz vil give 12 pulser, det giver et signa
 \frac{5 V}{(12 \cdot 10^-3)s} = 416.7 v/s
 \end{equation}
 
-Det kan derfor ses at selv hvis bilen akse drejer med 2 kHz burde sensoren kunne følge med.
+Det kan derfor ses at selv hvis bilen akse drejer med 2 kHz kun sensoren følge med.
 
 
 Kilde til datasheet: http://www.ti.com/lit/ds/symlink/lm311.pdf

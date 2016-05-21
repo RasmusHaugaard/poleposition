@@ -54,6 +54,7 @@ const quickAddToGraph = (name, x, y) => {
 }
 
 window.quickAddToGraph = quickAddToGraph
+window.clearGraph = () => {window.graph = {}}
 
 class Type {
 	constructor(name, byteCount, func){
@@ -63,9 +64,14 @@ class Type {
 	}
 }
 
+let zhi = 0
+
 const types = {
 	200: new Type("Start", 1, () => {
 		window.speak("Controller restarted.")
+	}),
+	10: new Type("GyrZH", 2, (buf) => {
+		quickAddToGraph("GyrZH", zhi++, toSigned(buf[0]))
 	})
 }
 

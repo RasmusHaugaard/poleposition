@@ -2,16 +2,17 @@
 
 .org 0x00
 	rjmp init
-.org 0x2a ;app_receive_command_interrupt_vector:
-	;Nu har vi modtaget en hel kommando. Find ud af, hvad der skal ske.
-	;Bemærk, at det kører inde i en interrupt fra et rcall i bt_rc.asm
-	rjmp app_receive_command_handler
-
-app_receive_command_handler:
-	send_bt_byte [empty_bootloader_command_received]
-	ret
+	
+.org 0x2a
+	;Der er modtaget en hel kommando til applikationen.
+	;cmd handlers bør skrives i de relevante mapper og samles i main-filen ved 0x2A.
+	rjmp cmd_handler
 
 init:
 
 main:
 	rjmp main
+
+cmd_handler:
+	send_bt_byte [empty_bootloader_command_received]
+	ret
