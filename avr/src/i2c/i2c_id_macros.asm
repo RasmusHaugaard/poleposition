@@ -111,10 +111,10 @@ ERROR skal bruges med argumenter
 ERROR skal bruges med argumenter
 .endm
 
-.macro I2C_ID_READ_i_i_i_8 ;@0 = SADR, @1 = SUB, @2 = register
+.macro I2C_ID_READ_i_i_8 ;@0 = SAD, @1 = SUB, @2 = register
 	I2C_ID_START
 	I2C_ID_WAIT_TWINT
-	I2C_EXPECT_TWSR [8, $10,ERROR] ;Start eller repeatet start sendt.
+	I2C_EXPECT_TWSR [8, $10, ERROR] ;Start eller repeatet start sendt.
 	I2C_ID_SEND [@0] ;SADW
 	I2C_ID_WAIT_TWINT
 	I2C_EXPECT_TWSR [$18, ERROR] ;SLA+W sendt og ACK motaget.
@@ -124,12 +124,17 @@ ERROR skal bruges med argumenter
 	I2C_ID_START 	;REPEATET START
 	I2C_ID_WAIT_TWINT
 	I2C_EXPECT_TWSR [$10, ERROR] ;Repeatet start sendt
-	I2C_ID_SEND [@2] ;SADR
+	I2C_ID_SEND [@0 + 1] ;SADR
 	I2C_ID_WAIT_TWINT
 	I2C_EXPECT_TWSR [$40, ERROR] ;SLR+R sendt og ACK modtaget
 	I2C_ID_NMAK 	;NACK sendes
 	I2C_ID_WAIT_TWINT
-	in @3, TWDR
+	in @2, TWDR
 	I2C_EXPECT_TWSR [$58, ERROR] ;Data motaget og NACK modtaget.
 	I2C_ID_STOP
 .endm
+
+rjmp AFTER_ERROR
+ERROR:
+	jmp ERROR
+AFTER_ERROR:

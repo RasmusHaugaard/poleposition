@@ -3,40 +3,16 @@
 ;===================================
 
 .set saved_pc = PC
-
-.org 0x04		;adresse for extern interrupt 1 (Port D, pin 3)	"streg måler"
-jmp EX2_ISR		;adresse med mere plads
-
 .org 0x12		;adresse for timer1 overflow (interrupt vektor table)
-jmp T1_OV_ISR	;adresse med mere plads
-
+	jmp T1_OV_ISR	;adresse med mere plads
 .org saved_pc
 
-;=====Timer1 (16-bit Lab_timer)=====
-;=TCCR1A(control)=
-ldi R16, 0x00	;ligger v�rdien 0 i R16
-out TCCR1A, R16	;sl�r funktioner fra i TCCR1A
-out TCCR1B, R16 ;stopper timer1
-;=TCNT1(counter)=
-ldi R16, 0x00	;ligger v�rdien 0, i R16
-out TCNT1H, R16	;nulstiller timer1 high bite
-out TCNT1L, R16	;nulstiller timer1 low bite
-
-;=====ISR Initalisering=====
-sei					;tilader global interrupt
-
-;=== extern interrupt 2 ==
-ldi R16, 1<<INT2	;tillader externt interrupt 2 (Port B, pin 2)
-out GICR, R16		;..
-ldi R16, 1<<ISC2	;Ops�ttes til at trigge ved puls stigning
-out MCUCSR, R16		;..
-
 ;=== Timer1 overflow interrupt ===
-ldi R16, 1<<TOV1	;tilader interrupt ved timer1 overflow
+in R16, TOV1
+andi R16, 1<<TOV1	;tilader interrupt ved timer1 overflow
 out TIMSK, R16		;..
 
 rcall reset_lap_timer
-
 jmp lapt_file_end
 
 ;=== define ===
@@ -75,7 +51,7 @@ jmp lapt_file_end
 .endm
 
 .macro get_time_hl
-	Error get_time_hl
+	Error "get_time_hl"
 .endm
 
 .macro get_time_hl_8_8			;macro som retunere TCNT1H og TCNT1L
@@ -90,7 +66,7 @@ jmp lapt_file_end
 .endm
 
 .macro get_time_hh
-	Error get_time_hh
+	Error "get_time_hh"
 .endm
 
 .macro get_time_hh_8			;macro som retunere TCNT1HH
@@ -127,12 +103,6 @@ T1_OV_ISR_CLEAR:
 	pop R16						;..
 	ret							;retunere
 
-
-EX2_ISR:						;Interrupt(kommer over lap-stregen)
-	rcall lap_finished
-;	rcall reset_sek_adr			;resetter sekment adresse for mread
-	reti
-
 lap_finished:
 	push R16					;gemmer registres v�rdi
 	push R17					;..
@@ -144,10 +114,10 @@ lap_finished:
 	in R18, TCNT1L				;ligger low bite fra timer i R18
 	in R17, TCNT1H				;ligger high bite fra timer i R17
 	lds R16, TCNT1HH			;ligger High High bite fra TCNT1HH i R16
-;	send_bt_byte [255]
-;	send_bt_byte [R16]			;send R16, R17, R18 til computer (24_bit register)
-;	send_bt_byte [R17]			;..
-;	send_bt_byte [R18]			;..
+	send_bt_byte [255]
+	send_bt_byte [R16]			;send R16, R17, R18 til computer (24_bit register)
+	send_bt_byte [R17]			;..
+	send_bt_byte [R18]			;..
 	rcall reset_lap_timer
 	pop R16						;reset registre til oprindelige v�rdi
 	out SREG, R16				;..
@@ -157,12 +127,17 @@ lap_finished:
 	ret							;retunere fra ISR
 
 reset_lap_timer:
+	push R16
+	ldi R16, 0x00	;ligger v�rdien 0 i R16
+	out TCCR1A, R16	;sl�r funktioner fra i TCCR1A
+	out TCCR1B, R16 ;stopper timer1
 	ldi R16, 0x00				;nulstiller 24_bit timer register
 	sts TCNT1HH, R16			;..
 	out TCNT1H, R16				;..
 	out TCNT1L, R16				;..
 	ldi R16, 0b00000100			;starter timer1 (Normal - prescaler 256)
 	out TCCR1B, R16				;..
+	pop R16
 	ret
 
 lapt_file_end:
