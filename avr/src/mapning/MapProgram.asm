@@ -9,7 +9,7 @@
 ;.set  addr = addr + 1
 ;  .equ  map_data_pointer_h = addr
 ;.set addr = addr + 1
-;  .equ  mapping_data_addr = addr
+;  .equ  mapping_data_start_addr = addr
 ;  .equ  mapping_data_lenght = 200
 ;.set addr = addr + mapping_data_lenght
 ;  .equ last_map_adress = addr - 1
