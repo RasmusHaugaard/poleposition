@@ -75,7 +75,7 @@ jmp lapt_file_end
 .endm
 
 .macro get_time_hl
-	Error "get_time_hl"
+	Error get_time_hl
 .endm
 
 .macro get_time_hl_8_8			;macro som retunere TCNT1H og TCNT1L
@@ -90,7 +90,7 @@ jmp lapt_file_end
 .endm
 
 .macro get_time_hh
-	Error "get_time_hh"
+	Error get_time_hh
 .endm
 
 .macro get_time_hh_8			;macro som retunere TCNT1HH
@@ -144,10 +144,10 @@ lap_finished:
 	in R18, TCNT1L				;ligger low bite fra timer i R18
 	in R17, TCNT1H				;ligger high bite fra timer i R17
 	lds R16, TCNT1HH			;ligger High High bite fra TCNT1HH i R16
-	send_bt_byte [255]
-	send_bt_byte [R16]			;send R16, R17, R18 til computer (24_bit register)
-	send_bt_byte [R17]			;..
-	send_bt_byte [R18]			;..
+;	send_bt_byte [255]
+;	send_bt_byte [R16]			;send R16, R17, R18 til computer (24_bit register)
+;	send_bt_byte [R17]			;..
+;	send_bt_byte [R18]			;..
 	rcall reset_lap_timer
 	pop R16						;reset registre til oprindelige v�rdi
 	out SREG, R16				;..

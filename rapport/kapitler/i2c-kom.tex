@@ -1,5 +1,6 @@
 % !TEX root = ../rapport.tex
 \newpage
+
 \subsection{I2C kommunikation}
 Til at kommunikere med de digitale komponenter, herunder vores udleveret accelerometer og gyroskop, anvendes den kommunikationsprotokol kaldet I2C eller TWI (”two-wire interface”). Navnet ”two-wire interface” kommer af, at hele kommunikationen foregår over kun 2 ledninger, men hvor der samtidig er mulighed for at kommunikere med mange komponenter.
 
@@ -11,11 +12,12 @@ Til at kommunikere med de digitale komponenter, herunder vores udleveret acceler
     \label{fig:i2cprincip}
 \end{figure}
 
+
 De to forbindelser der bruges til vores TWI kommunikation hedder SCL (”Serial Clock Line”) og SDA (”Serial Data Line”). SCL er en clock der sættes af master, for at både master og slaven snakker og lytter ved en fælles frekvens. SDA er den forbindelse, hvor alt data bliver overført både fra slaven til master, men også fra master til slaven. Denne form for kommunikation kaldes for halv-duplex, og fungere ligesom en walkie talkie, hvor der kun er én der snakker af gangen, imens den anden lytter.
 
 \subsubsection{Kommunikationsprotokol}
 
-Kommunikationen mellem master og slave, foregår ud fra en bestemt protokol, som er opgivet ved den enkelte slaves datablad. Denne protokol er den samme for accelerometeret og gyroskopet, og er illustreret på figur \ref{fig:i2conebyte}. 
+Kommunikationen mellem master og slave, foregår ud fra en bestemt protokol, som er opgivet ved den enkelte slaves datablad. Denne protokol er den samme for accelerometeret og gyroskopet, og er illustreret på figur \ref{fig:i2conebyte}.
 
 \begin{figure}[ht]
     \centering

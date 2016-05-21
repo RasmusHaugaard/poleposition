@@ -1,7 +1,0 @@
-Vibrationerne fra motoren giver en del støj på den målte acceleration.
-Det digitale accelerometer tilbyder ikke nogen mulighed for lavpas filtrering.
-
-Man kunne bruge det digitale accelerometer og lave en digital lav-pas filtrering i microcontrolleren.
-
-Da vi måske kun skal bruge den éne akse, y-aksen, kunne også bruge det analoge 1-aksede accelerometer og lave en analog lav-pas filtrering.
-Så skal man tage støjen på signalet, der skal tilbage til controlleren for en ad konvertering, i betragtning.
