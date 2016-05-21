@@ -10,18 +10,18 @@
 rjmp init
 .org 0x02
 rjmp EXT_INT0
-.org 0x04
-rjmp EXT_INT1
 .org 0x2A
 rjmp app_command_int_handler
 
 init:
 	.include "src/lapt/lapt.asm"
-	.include "src/physs/physical_speed.asm"
+	.include "src/lapt/enable_ext_int1.asm"
+	;.include "src/physs/physical_speed.asm"
 	.include "src/motor/motor_pwm.asm"
 	.include "src/elemag/elemag_pwm.asm"
 	.include "src/i2c/i2c_setup.asm"
 	.include "src/i2c/i2c_setup_gyr.asm"
+	.include "src/i2c/enable_ext_int0.asm"
 
 	in temp1, GICR
 	andi temp1, 1<<INT0
@@ -62,4 +62,8 @@ EXT_INT0:
 ext_int0_end:
 	pop temp2
 	pop temp1
+	reti
+
+EXT_INT1:
+
 	reti

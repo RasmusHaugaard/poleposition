@@ -1,1 +1,1 @@
-.include "src/i2c/tests/gyr_graph.asm"
+.include "src/mread/test/mread_test.asm"

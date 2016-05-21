@@ -1,7 +1,7 @@
 ;===================================
 ;========== Initalisering ==========
 ;===================================
-.equ def_sek_adr =	mapping_data_addr			;f�rste sekment adresse						<---------------------------------- find adresse til f�rste sekment
+;.a def_sek_adr =	mapping_data_addr			;f�rste sekment adresse						<---------------------------------- find adresse til f�rste sekment
 
 ;.equ sek_adr = addr				;nuv�rendene sekment adresse
 ;.set addr = addr + 1			;..
@@ -36,6 +36,17 @@
 .equ mts = addr					;max hastighed i sving
 .set addr = addr + 1			;..
 
+.equ map_data_addr_h = addr
+.set addr = addr + 1
+.equ map_data_addr_l = addr
+.set addr = addr + 1
+
+lds R16, HIGH(mapping_data_start_addr)
+sts map_data_addr_h, R16
+
+lds R16, LOW(mapping_data_start_addr)
+sts map_data_addr_l, R16
+
 in R16, DDRA					;Port A pin 1 siddes som output og tager h�jde for at nuv�rendene v�rdier ikke overskrives
 sbr R16, 0b00000010				;..
 out DDRA, R16					;..
@@ -48,10 +59,10 @@ out PORTA, R16					;..
 ;========== Die Feinabstimmung =========
 ;=======================================
 
-ldi R16, 20						;hvor langt fra starten p� et sving, bremsningen skal p�begyndes (40 tiks = 19,33cm)
-sts brake_tik, R16		;..
+ldi R16, 40						;hvor langt fra starten p� et sving, bremsningen skal p�begyndes (40 tiks = 19,33cm)
+sts brake_tik, R16				;..
 
-ldi R16, 55						;max turn speed (pwm duty cycle)
+ldi R16, 80						;max turn speed (pwm duty cycle)
 sts mts, R16					;..
 
 ;==========================
@@ -76,10 +87,6 @@ goto_lige:
 ;========== Calls ==========
 ;===========================
 
-
-
-
-
 ;=====Drive straight=====
 drive_straight:
 
@@ -98,7 +105,7 @@ drive_straight:
 	in R16, PORTA				;slukker elektromagnet (Pin 1 i port A)
 	cbr R16, 0b00000010			;..
 	out PORTA, R16				;..
-	setspeed [88]				;set speed 100%
+	setspeed [100]				;set speed 100%
 	lds R16, is_ns_turn			;Tjekker om n�ste sekment er sving eller lige
 	sbrs R16, 7					;skipper hvis sving
 	rjmp no_turn
@@ -113,7 +120,7 @@ scan_b_time:
 	get_dis_hl [R20, R21]		;henter distance k�rt
 	sub R19, R21				;b_dis_l - get_dis_l
 	sbc R18, R20				;b_dis_h - get_dis-h
-	brbs 1, b_dis_pass			;branch hvis z=1 (get_dis == b_dis)
+	brbs 1, b_dis_passed			;branch hvis z=1 (get_dis == b_dis)
 	brbc 2, scan_b_time			;g�r videre hvis N=1 "brancher ikke" (get_dis > b_dis)  <----- pr�v evt med C flag istedet for N flag.
 b_dis_passed:
 
@@ -124,9 +131,9 @@ b_dis_passed:
 	;nop							;..
 	;sbi PORTA, PORTA1			;..
 
-	;in R16, PORTA				;t�nder elektromagnet (Pin 1 i port A)
-	;sbr R16, 0b00000010			;..
-	;out PORTA, R16				;..
+	in R16, PORTA				;t�nder elektromagnet (Pin 1 i port A)
+	sbr R16, 0b00000010			;..
+	out PORTA, R16				;..
 
 	;- - - - - - - - - - - - - - N�ste par linjer tjekker hvorn�r (get_dis >= ss_dis) "hvorn�r sekment slutter".
 	lds R18, ss_dis_h			;loader ss_dis_h
@@ -137,7 +144,7 @@ scan_lss1:
 	sbc R18, R20				;ss_dis_h - get_dis-h
 	brbs 1, ns_dis_pass1		;branch hvis z=1 (get_dis == ss_dis)
 	brbc 2, scan_lss1			;g�r videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- pr�v evt med C flag istedet for N flag.
-ns_dis_pass1
+ns_dis_pass1:
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -163,7 +170,7 @@ scan_lss2:
 	sbc R18, R20				;ss_dis_h - get_dis-h
 	brbs 1, ns_dis_pass2		;branch hvis z=1 (get_dis == ss_dis)
 	brbc 2, scan_lss2			;g�r videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- pr�v evt med C flag istedet for N flag.
-ns_dis_pass2
+ns_dis_pass2:
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -205,7 +212,7 @@ scan_lss3:
 	sbc R18, R20				;ss_dis_h - get_dis-h
 	brbs 1, ns_dis_pass3		;branch hvis z=1 (get_dis == ss_dis)
 	brbc 2, scan_lss3			;g�r videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- pr�v evt med C flag istedet for N flag.
-ns_dis_pass3
+ns_dis_pass3:
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -278,25 +285,22 @@ get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
 	ldi R16, 115				;sender s
 	send_bt_byte [R16]			;..
 
-	lds R28, mapping_data_addr						;status
-	sts sek_status, R28								;..
-	.set mapping_data_addr = mapping_data_addr + 1	;..
-	lds R28, mapping_data_addr						;distance h-bite
-	sts ss_dis_h, R28								;..
-	.set mapping_data_addr = mapping_data_addr + 1	;..
-	lds R28, mapping_data_addr						;distance l-bite
-	sts ss_dis_l, R28								;..
-	.set mapping_data_addr = mapping_data_addr +1	;..
-	lds R28, mapping_data_addr						;Tjekker om sekment efter er lige
-	sbrs R28, 7					;..
-	rjmp n_sek_l				;hvis lige rjmp "n_sek_l"
-	lds R16, 0b11111111			;hvis sving
-	sts	is_ns_turn, R16			;..
-	rjmp ns_skip				;skipper kode for lige stykke
-n_sek_l:
-	lds R16, 0b00000000			;hvis lige
-	sts	is_ns_turn, R16			;..
-ns_skip:
+	lds XH, map_data_addr_h						;load status og inkrimentere
+	lds XL, map_data_addr_l
+	ld R28, x+
+	sts sek_status, R28
+	ld R28, x+
+	sts ss_dis_h, R28
+	ld R28, x+
+	sts ss_dis_l, R28
+	sts map_data_addr_h, XH
+	sts map_data_addr_l, XL
+
+	ld R28, x
+	ldi R16, 0xFF	;hvis sving
+	sbrs R28, 7	;Tjekker om sekment efter er lige
+	ldi R16, 0x00
+	sts	is_ns_turn, R16
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -310,11 +314,6 @@ ns_skip:
 	ret							;retunere
 
 
-
-
-;==========================
-;=====Reset sek addres=====
-;==========================
 reset_sek_adr:
 
 	ldi R16, 36					;sender $
@@ -326,7 +325,7 @@ reset_sek_adr:
 	ldi R16, 115				;sender s
 	send_bt_byte [R16]			;..
 
-	.set mapping_data_addr = def_sek_adr		;Resitter sek_adr
+	.set mapping_data_addr = mapping_data_start_addr		;Resitter sek_adr
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -338,10 +337,6 @@ reset_sek_adr:
 	send_bt_byte [R16]			;..
 
 	ret							;return
-
-
-
-
 
 ;==========================
 ;=====Find start punkt=====
@@ -359,9 +354,10 @@ find_sp:
 
 	ldi R16, 0<<TOV1			;forbyder interrupt ved timer1 overflow
 	out TIMSK, R16				;..
-	setspeed [55]				;s�tter langsom hastighed
+	setspeed [150]				;s�tter langsom hastighed
 line_scan:
-	sbis TIFR, TOV1				;skib hvis externt interrupt flag er sat			<------------------------------------- skal tjekke om denne linje bliver brugt rigtigt
+	in R16, TIFR
+	sbrs R16, TOV1				;skib hvis externt interrupt flag er sat			<------------------------------------- skal tjekke om denne linje bliver brugt rigtigt
 	rjmp line_scan				;scanner igen
 	setspeed [0]				;stopper ved m�lstreg
 	;evt brems					;t�nder elektromagneten
@@ -380,10 +376,6 @@ line_scan:
 
 	ret							;retunere
 
-
-
-
-
 ;=================
 ;=====Kontrol=====
 ;=================
@@ -395,14 +387,6 @@ k:
 	ldi R16, 80 				;sender P
 	send_bt_byte [R16]			;..
 ret								;retunere
-
-
-
-
-
-;=========================
-;========== ISR ==========
-;=========================
 
 
 ;==================================
