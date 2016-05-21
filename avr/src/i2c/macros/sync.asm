@@ -114,7 +114,7 @@ ERROR skal bruges med argumenter
 .macro I2C_ID_READ_i_i_8 ;@0 = SAD, @1 = SUB, @2 = register
 	I2C_ID_START
 	I2C_ID_WAIT_TWINT
-	I2C_EXPECT_TWSR [8, $10, ERROR] ;Start eller repeatet start sendt.
+	I2C_EXPECT_TWSR [$8, $10, ERROR] ;Start eller repeatet start sendt.
 	I2C_ID_SEND [@0] ;SADW
 	I2C_ID_WAIT_TWINT
 	I2C_EXPECT_TWSR [$18, ERROR] ;SLA+W sendt og ACK motaget.

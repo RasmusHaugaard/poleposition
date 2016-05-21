@@ -8,6 +8,6 @@ init:
 
 
 main:
-  send_bt_byte [200]
-  delays [2]
-  rjmp main
+	send_bt_byte [200]
+	delays [2]
+	rjmp main

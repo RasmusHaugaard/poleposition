@@ -15,3 +15,8 @@ out GICR, temp
 in temp, TIMSK
 andi temp, low(~(1<<TOV1))
 out TIMSK, temp
+
+;twi interrupt
+in temp, TWCR
+andi temp, low(~(1<<TWIE))
+out TWCR, temp

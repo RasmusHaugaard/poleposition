@@ -30,7 +30,6 @@ rjmp init
 .org 0x2A
 
 init:
-delays [1]
   .include "src/lapt/lapt_test.asm"
   .include "src/physs/physical_speed_test.asm"
   .include "src/i2c/i2c_id_macros.asm"

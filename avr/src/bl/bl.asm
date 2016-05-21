@@ -18,5 +18,5 @@ boot_init:
 	.include "src/bl/program_interrupts.asm"
 	.include "src/bl/flasher/flasher.asm"
 	force_send_bt_byte [avr_was_reset]
-	delays [2] ; delay application to make sure, capacitor is not draining i2c circuits.
+	delays [1] ; delay application to make sure, capacitor is not draining i2c circuits.
 	jmp 0x00

@@ -1,14 +1,13 @@
 .filedef temp = R16
 .filedef temp1 = R17
 
+	jmp_cmd_ne [set_code, set_elemag_code, elemag_cmd_end]
+		I2C_IE_MAK
+	mak_end:
+	push temp
+	in temp, SREG
 	push temp
 	push temp1
-	lds temp, bt_rc_buf_start
-	cpi temp, set_code
-	brne elemag_cmd_pop
-	lds temp, bt_rc_buf_start + 1
-	cpi temp, set_elemag_code
-	brne elemag_cmd_pop
 
 	lds temp, bt_rc_buf_start + 2 ; værdien (val), hentes fra inputbufferen.
 	cpi temp, 100
@@ -24,10 +23,11 @@
 
 	setelemag [temp]
 	rjmp elemag_cmd_pop
-
 full_elemag:
 	setelemag [255]
-
 elemag_cmd_pop:
 	pop temp1
 	pop temp
+	out SREG, temp
+	pop temp
+elemag_cmd_end:

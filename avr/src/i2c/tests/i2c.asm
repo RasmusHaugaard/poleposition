@@ -42,12 +42,7 @@
 
 .equ ACCGYR = 7
 
-.equ I2CSR_P_START = 0
-.equ I2CSR_P_SADW = 1
-.equ I2CSR_P_SUBR = 2
-.equ I2CSR_P_RESTART = 3
-.equ I2CSR_P_SADR = 4
-.equ I2CSR_P_DATA = 5
+
 
 i2c_start:
 	ldi temp1, 12 ;sæt i2c clk til 400 kHz
