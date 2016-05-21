@@ -46,8 +46,13 @@ rjmp physs_file_end
 .endm
 
 .macro phys_speed_8_8		;Retunere tid mellem motor tiks
+	push R16
+	in R16, SREG
+	cli
 	lds @0, dif_time_h		;retunere high byte
 	lds @1, dif_time_l		;retunere low byte
+	out SREG, R16
+	pop R16
 .endm
 
 .macro	get_dis_hl
@@ -55,18 +60,13 @@ rjmp physs_file_end
 .endm
 
 .macro get_dis_hl_8_8
-;	push R16
-;	in R16, SREG
-;	push R16
-;	ldi R16, 0<<INT1		;Disabler interrupt ved externt trigger 1 (Port D, pin 3)
-;	out GICR, R16			;..
+	push R16
+	in R16, SREG
+	cli
 	lds @0, dis_tik_h		;retunere high byte
 	lds @1, dis_tik_l		;retunere low byte
-;	ldi R16, 1<<INT1		;tilader interrupt ved externt trigger 1 (Port D, pin 3)
-;	out GICR, R16			;..
-;	pop R16
-;	out SREG, R16
-;	pop R16
+	out SREG, R16
+	pop R16
 .endm
 
 ;=========================
