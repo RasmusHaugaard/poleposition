@@ -9,11 +9,6 @@ rjmp init
 rjmp app_command_int_handler
 
 init:
-	.include "src/ex1/ex1.asm"
-	.include "src/lapt/fixed/lapt_fixed.asm"
-	.include "src/physs/fixed/physical_speed_fixed.asm"
-	.include "src/motor/motor_pwm.asm"
-
 	sbi DDRA, PORTA1
 	nop
 	sbi DDRA, PORTA0
@@ -26,24 +21,22 @@ init:
 	nop
 	cbi DDRB, PORTB3
 
+	.include "src/ex1/ex1.asm"
+	.include "src/lapt/fixed/lapt_fixed.asm"
+	.include "src/physs/fixed/physical_speed_fixed.asm"
+	.include "src/motor/motor_pwm.asm"
+	.include "src/mread/test/map_v2.asm"
 
-	setspeed [0]
+;==============
+;=====Main=====
+;==============
 
-main:
-	;ldi R20, 000
-	;send_bt_byte [R20]
-	;lds R20, dif_time_h
-	;send_bt_byte [R20]
-	;lds R20, dif_time_l
-	;send_bt_byte [R20]
-
-	get_dis_hl [R20, R21]
-	send_bt_byte [R20]
-	send_bt_byte [R21]
+	.include "src/mread/map_reading.asm"
 
 
-	delays [1]
-	rjmp main
+;=====================
+;=====Sub rutiner=====
+;=====================
 
 app_command_int_handler:
 	lds temp, bt_rc_buf_start

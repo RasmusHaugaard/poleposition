@@ -1,42 +1,42 @@
 ;===================================
 ;========== Initalisering ==========
 ;===================================
-.equ def_sek_adr =	mapping_data_addr			;første sekment adresse						<---------------------------------- find adresse til første sekment
+.equ def_sek_adr =	mapping_data_addr			;fï¿½rste sekment adresse						<---------------------------------- find adresse til fï¿½rste sekment
 
-.equ sek_adr = addr				;nuværendene sekment adresse
-.set addr = addr + 1			;..
+;.equ sek_adr = addr				;nuvï¿½rendene sekment adresse
+;.set addr = addr + 1			;..
 
 .equ dis_ref_h = addr			;distance referance (h-bite)
-.set addr = addr + 1			;..	
-			
+.set addr = addr + 1			;..
+
 .equ dis_ref_l = addr			;distance referance (l-bite)
 .set addr = addr + 1			;..
 
-.equ b_dis_h = addr				;bremse længde (h-bite) "der skal bremses når fet_dis når denne værdi"
+.equ b_dis_h = addr				;bremse lï¿½ngde (h-bite) "der skal bremses nï¿½r fet_dis nï¿½r denne vï¿½rdi"
 .set addr = addr + 1			;..
 
-.equ b_dis_l = addr				;bremse længde (l-bite) "der skal bremses når fet_dis når denne værdi"
+.equ b_dis_l = addr				;bremse lï¿½ngde (l-bite) "der skal bremses nï¿½r fet_dis nï¿½r denne vï¿½rdi"
 .set addr = addr + 1			;..
 
-.equ ss_dis_h = addr			;distance til sekment stopper "længde af sekment" (h-bite)
+.equ ss_dis_h = addr			;distance til sekment stopper "lï¿½ngde af sekment" (h-bite)
 .set addr = addr + 1			;..
 
-.equ ss_dis_l = addr			;distance til sekment stopper "længde af sekment" (l-bite)
+.equ ss_dis_l = addr			;distance til sekment stopper "lï¿½ngde af sekment" (l-bite)
 .set addr = addr + 1			;..
 
 .equ sek_status = addr			;status register for sekment
 .set addr = addr + 1			;..
 
-.equ is_ns_turn = addr			;næste sek (svign = 11111111, lige = 00000000)
+.equ is_ns_turn = addr			;nï¿½ste sek (svign = 11111111, lige = 00000000)
 .set addr = addr + 1			;..
 
-.equ brake_tik = addr			;hvor langt fra et sving, bremsningen skal påbegyndes. [tiks]
+.equ brake_tik = addr			;hvor langt fra et sving, bremsningen skal pï¿½begyndes. [tiks]
 .set addr = addr + 1			;..
 
 .equ mts = addr					;max hastighed i sving
 .set addr = addr + 1			;..
 
-in R16, DDRA					;Port A pin 1 siddes som output og tager højde for at nuværendene værdier ikke overskrives
+in R16, DDRA					;Port A pin 1 siddes som output og tager hï¿½jde for at nuvï¿½rendene vï¿½rdier ikke overskrives
 sbr R16, 0b00000010				;..
 out DDRA, R16					;..
 
@@ -48,10 +48,10 @@ out PORTA, R16					;..
 ;========== Die Feinabstimmung =========
 ;=======================================
 
-ldi R16, 40						;hvor langt fra starten på et sving, bremsningen skal påbegyndes (40 tiks = 19,33cm)
-sts brake_tik, R16				;..
+ldi R16, 20						;hvor langt fra starten pï¿½ et sving, bremsningen skal pï¿½begyndes (40 tiks = 19,33cm)
+sts brake_tik, R16		;..
 
-ldi R16, 80						;max turn speed (pwm duty cycle)
+ldi R16, 55						;max turn speed (pwm duty cycle)
 sts mts, R16					;..
 
 ;==========================
@@ -59,18 +59,18 @@ sts mts, R16					;..
 ;==========================
 
 	call find_sp				;finder start punkt
-load_next_sek:					
-	call get_next_sek			;loader næste sekment
+load_next_sek:
+	call get_next_sek			;loader nï¿½ste sekment
 	lds R16, sek_status			;Hvis lige, jmp "goto_lige"
 	sbrs R16, 7					;..
 	rjmp goto_lige				;..
-	call drive_turn				;køre igennem sving
-	rjmp load_next_sek			;køre rutine igen
+	call drive_turn				;kï¿½re igennem sving
+	rjmp load_next_sek			;kï¿½re rutine igen
 goto_lige:
-	call drive_straight			;Køre lige stykke
-	rjmp load_next_sek			;køre rutine igen
-	
-	;KØR! MuKØR!!
+	call drive_straight			;Kï¿½re lige stykke
+	rjmp load_next_sek			;kï¿½re rutine igen
+
+	;Kï¿½R! MuKï¿½R!!
 
 ;===========================
 ;========== Calls ==========
@@ -98,45 +98,45 @@ drive_straight:
 	in R16, PORTA				;slukker elektromagnet (Pin 1 i port A)
 	cbr R16, 0b00000010			;..
 	out PORTA, R16				;..
-	setspeed [100]				;set speed 100%
-	lds R16, is_ns_turn			;Tjekker om næste sekment er sving eller lige
+	setspeed [88]				;set speed 100%
+	lds R16, is_ns_turn			;Tjekker om nï¿½ste sekment er sving eller lige
 	sbrs R16, 7					;skipper hvis sving
 	rjmp no_turn
 
 	;==neste sekment sving==
 
-	call b_dis					;udregner bremse længde (retunere: b_dis_h og b_dis_l)					
-								;Næste par linjer tjekker hvornår (get_dis >= b_dis) "hvornår der skal bremses".
+	call b_dis					;udregner bremse lï¿½ngde (retunere: b_dis_h og b_dis_l)
+								;Nï¿½ste par linjer tjekker hvornï¿½r (get_dis >= b_dis) "hvornï¿½r der skal bremses".
 	lds R18, b_dis_h			;loader b_dis_h
 	lds R19, b_dis_l			;loafer b_dis_l
 scan_b_time:
-	get_dis_hl [R20, R21]		;henter distance kørt
+	get_dis_hl [R20, R21]		;henter distance kï¿½rt
 	sub R19, R21				;b_dis_l - get_dis_l
 	sbc R18, R20				;b_dis_h - get_dis-h
 	brbs 1, b_dis_pass			;branch hvis z=1 (get_dis == b_dis)
-	brbc 2, scan_b_time			;går videre hvis N=1 "brancher ikke" (get_dis > b_dis)  <----- prøv evt med C flag istedet for N flag.
+	brbc 2, scan_b_time			;gï¿½r videre hvis N=1 "brancher ikke" (get_dis > b_dis)  <----- prï¿½v evt med C flag istedet for N flag.
 b_dis_passed:
-	
+
 	;==Bremser==
 	setspeed [0]				;stopper motor
 
-	;sbi DDRA, PORTA1			;tænder elektromagnet (Pin 1 i port A)  <--------------------------------------------------------tjek om virker
+	;sbi DDRA, PORTA1			;tï¿½nder elektromagnet (Pin 1 i port A)  <--------------------------------------------------------tjek om virker
 	;nop							;..
 	;sbi PORTA, PORTA1			;..
 
-	in R16, PORTA				;tænder elektromagnet (Pin 1 i port A)
-	sbr R16, 0b00000010			;..
-	out PORTA, R16				;..
+	;in R16, PORTA				;tï¿½nder elektromagnet (Pin 1 i port A)
+	;sbr R16, 0b00000010			;..
+	;out PORTA, R16				;..
 
-	;- - - - - - - - - - - - - - Næste par linjer tjekker hvornår (get_dis >= ss_dis) "hvornår sekment slutter".
+	;- - - - - - - - - - - - - - Nï¿½ste par linjer tjekker hvornï¿½r (get_dis >= ss_dis) "hvornï¿½r sekment slutter".
 	lds R18, ss_dis_h			;loader ss_dis_h
 	lds R19, ss_dis_l			;loafer ss_dis_l
 scan_lss1:
-	get_dis_hl [R20, R21]		;henter distance kørt
+	get_dis_hl [R20, R21]		;henter distance kï¿½rt
 	sub R19, R21				;ss_dis_l - get_dis_l
 	sbc R18, R20				;ss_dis_h - get_dis-h
 	brbs 1, ns_dis_pass1		;branch hvis z=1 (get_dis == ss_dis)
-	brbc 2, scan_lss1			;går videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prøv evt med C flag istedet for N flag.
+	brbc 2, scan_lss1			;gï¿½r videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prï¿½v evt med C flag istedet for N flag.
 ns_dis_pass1
 
 	ldi R16, 36					;sender $
@@ -153,16 +153,16 @@ ns_dis_pass1
 
 	;==neste sekment lige==
 no_turn:
-	
-;- - - - - - - - - - - - - - - - Næste par linjer tjekker hvornår (get_dis >= ss_dis) "hvornår sekment slutter".
+
+;- - - - - - - - - - - - - - - - Nï¿½ste par linjer tjekker hvornï¿½r (get_dis >= ss_dis) "hvornï¿½r sekment slutter".
 	lds R18, ss_dis_h			;loader ss_dis_h
 	lds R19, ss_dis_l			;loafer ss_dis_l
 scan_lss2:
-	get_dis_hl [R20, R21]		;henter distance kørt
+	get_dis_hl [R20, R21]		;henter distance kï¿½rt
 	sub R19, R21				;ss_dis_l - get_dis_l
 	sbc R18, R20				;ss_dis_h - get_dis-h
 	brbs 1, ns_dis_pass2		;branch hvis z=1 (get_dis == ss_dis)
-	brbc 2, scan_lss2			;går videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prøv evt med C flag istedet for N flag.
+	brbc 2, scan_lss2			;gï¿½r videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prï¿½v evt med C flag istedet for N flag.
 ns_dis_pass2
 
 	ldi R16, 36					;sender $
@@ -194,17 +194,17 @@ drive_turn:
 	get_dis_hl [R16, R17]		;gemmer ref dis
 	sts dis_ref_h, R16			;..
 	sts dis_ref_l, R17			;..
-	lds R16, mts				;sætter hastighed til max for sving
-	setspeed [R16]				
-	;- - - - - - - - - - - - - - - - Næste par linjer tjekker hvornår (get_dis >= ss_dis) "hvornår sekment slutter".
+	lds R16, mts				;sï¿½tter hastighed til max for sving
+	setspeed [R16]
+	;- - - - - - - - - - - - - - - - Nï¿½ste par linjer tjekker hvornï¿½r (get_dis >= ss_dis) "hvornï¿½r sekment slutter".
 	lds R18, ss_dis_h			;loader ss_dis_h
 	lds R19, ss_dis_l			;loafer ss_dis_l
 scan_lss3:
-	get_dis_hl [R20, R21]		;henter distance kørt
+	get_dis_hl [R20, R21]		;henter distance kï¿½rt
 	sub R19, R21				;ss_dis_l - get_dis_l
 	sbc R18, R20				;ss_dis_h - get_dis-h
 	brbs 1, ns_dis_pass3		;branch hvis z=1 (get_dis == ss_dis)
-	brbc 2, scan_lss3			;går videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prøv evt med C flag istedet for N flag.
+	brbc 2, scan_lss3			;gï¿½r videre hvis N=1 "brancher ikke" (get_dis > ss_dis)  <----- prï¿½v evt med C flag istedet for N flag.
 ns_dis_pass3
 
 	ldi R16, 36					;sender $
@@ -235,18 +235,18 @@ b_dis:							; (retunere: b_dis_h og b_dis_l)
 	ldi R16, 100				;sender d
 	send_bt_byte [R16]			;..
 
-	lds R18, brake_tik			;henter bremselængde [i tiks]
-	lds R19, ss_dis_h			;distance til sekment stopper (sekment længde)
+	lds R18, brake_tik			;henter bremselï¿½ngde [i tiks]
+	lds R19, ss_dis_h			;distance til sekment stopper (sekment lï¿½ngde)
 	lds R20, ss_dis_l			;..
-	lds R21, dis_ref_h			;distance værdi, da sekmentede startede:
+	lds R21, dis_ref_h			;distance vï¿½rdi, da sekmentede startede:
 	lds R22, dis_ref_l			;..
 	ldi R23, 0					;bruges til subtraktion
 
-								;Udføre mattematisk operation "(dis_ref + ss_dis) - brake_tik"
+								;Udfï¿½re mattematisk operation "(dis_ref + ss_dis) - brake_tik"
 	add R22, R20				;dis_ref_l + ss_dis_l
 	adc	R21, R19				;dis_ref_h + ss_dis_h
-	sub R20, R18				;trækker brake_tik fra (dis_ref_l + ss_dis_l)
-	sbc R19, R23				;trækker 0 fra (dis_ref_l + ss_dis_l) "for at få cerry med"
+	sub R20, R18				;trï¿½kker brake_tik fra (dis_ref_l + ss_dis_l)
+	sbc R19, R23				;trï¿½kker 0 fra (dis_ref_l + ss_dis_l) "for at fï¿½ cerry med"
 	sts b_dis_h, R19			;gemmer resultat i b_dis_h
 	sts b_dis_l, R20			;gemmer resultat i b_dis_l
 
@@ -278,16 +278,16 @@ get_next_sek:					;R28 bruges (retunere: sek_status, sek_dis_h og sek_dis_l)
 	ldi R16, 115				;sender s
 	send_bt_byte [R16]			;..
 
-	lds R28, sek_adr			;status
-	sts sek_status, R28			;..
-	.set sek_adr = sek_adr + 1	;..
-	lds R28, sek_adr			;distance h-bite
-	sts ss_dis_h, R28			;..
-	.set sek_adr = sek_adr + 1	;..
-	lds R28, sek_adr			;distance l-bite
-	sts ss_dis_l, R28			;..
-	.set sek_adr = sek_adr +1	;..
-	lds R28, sek_adr			;Tjekker om sekment efter er lige
+	lds R28, mapping_data_addr						;status
+	sts sek_status, R28								;..
+	.set mapping_data_addr = mapping_data_addr + 1	;..
+	lds R28, mapping_data_addr						;distance h-bite
+	sts ss_dis_h, R28								;..
+	.set mapping_data_addr = mapping_data_addr + 1	;..
+	lds R28, mapping_data_addr						;distance l-bite
+	sts ss_dis_l, R28								;..
+	.set mapping_data_addr = mapping_data_addr +1	;..
+	lds R28, mapping_data_addr						;Tjekker om sekment efter er lige
 	sbrs R28, 7					;..
 	rjmp n_sek_l				;hvis lige rjmp "n_sek_l"
 	lds R16, 0b11111111			;hvis sving
@@ -307,7 +307,7 @@ ns_skip:
 	ldi R16, 115				;sender s
 	send_bt_byte [R16]			;..
 
-	ret							;retunere	
+	ret							;retunere
 
 
 
@@ -326,8 +326,7 @@ reset_sek_adr:
 	ldi R16, 115				;sender s
 	send_bt_byte [R16]			;..
 
-	lds R16, def_sek_adr		;Resitter sek_adr
-	sts sek_adr, R16			;..
+	.set mapping_data_addr = def_sek_adr		;Resitter sek_adr
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -360,15 +359,15 @@ find_sp:
 
 	ldi R16, 0<<TOV1			;forbyder interrupt ved timer1 overflow
 	out TIMSK, R16				;..
-	setspeed [10]				;sætter langsom hastighed
+	setspeed [55]				;sï¿½tter langsom hastighed
 line_scan:
 	sbis TIFR, TOV1				;skib hvis externt interrupt flag er sat			<------------------------------------- skal tjekke om denne linje bliver brugt rigtigt
 	rjmp line_scan				;scanner igen
-	setspeed [0]				;stopper ved målstreg
-	;evt brems					;tænder elektromagneten
+	setspeed [0]				;stopper ved mï¿½lstreg
+	;evt brems					;tï¿½nder elektromagneten
 	call T1_OV_ISR_CLEAR		;clear externt interrupt flag
 	ldi R16, 1<<TOV1			;tilader interrupt ved timer1 overflow
-	out TIMSK, R16				;.. 
+	out TIMSK, R16				;..
 
 	ldi R16, 36					;sender $
 	send_bt_byte [R16]			;..
@@ -393,7 +392,7 @@ k:
 	send_bt_byte [R16]			;..
 	ldi R16, 75					;sender K
 	send_bt_byte [R16]			;..
-	ldi R16, 80 				;sender P 
+	ldi R16, 80 				;sender P
 	send_bt_byte [R16]			;..
 ret								;retunere
 
@@ -412,7 +411,7 @@ ret								;retunere
 
 ;	ascii	betydning
 
-;	$		begyndelse på ny tilbagemælding
+;	$		begyndelse pï¿½ ny tilbagemï¿½lding
 
 ;	jds		jump to "Drive straight"
 ;	rds		return from "Drive straight"
