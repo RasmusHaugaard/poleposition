@@ -15,3 +15,8 @@
 
 .equ pf_tr_unknown_set_code = 102
 .equ pf_tr_buffer_overflow_error = 103
+
+;graph codes
+.equ graph_gyrzh_code = 10
+.equ graph_speed_code = 11
+.equ graph_dist_code = 12
