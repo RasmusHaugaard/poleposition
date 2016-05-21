@@ -1,20 +1,19 @@
 % !TEX root = ../rapport.tex
 \newpage
 
-\subsection{Map-read (Motorstyring)}
+\subsection{Motorstyring}
 
-Kodemodulet "Map read"  benytter et map over banen, til at køre efter. Generering af map kan der læses mere om i afsnit \textbf{Referance til maå creatin sektion}.\\
+Kodemodulet "Motorstyring"  benytter et kort over banen, til at køre efter. Generering af dette kort kan der læses mere om i afsnit \ref{sub:mapning}.
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.4\textwidth]{kapitler/billeder/mread/mread_ov.png}
-\caption{Overordnet flowchart over map read koden}
+\caption{Overordnet flowchart over koden til læsning af kortlægningen.}
 \label{fig:mread}
 \end{figure}
 
-Inden bilen kan køre efter mappet, er det vigtigt at bilen kender sin position på banen. Kodemodulet starter derfor med at finde målstregen, ved brug af streg sensoren. Dernæst indlæses det kommende bane segment. Hvert segment har et status register, som fortæller om det er et sving eller lige stykke. Ud over status registrer, er der også to 8- bit registre som indeholder længden af det pågældende segment. Programmet bruger informationen til at vælge imellem 2 rutiner, rutinen for sving eller rutinen for lige strækninger. En af de følgende rutiner er blevet udført og bilen har passeret bane segmentet, loades på ny et næste segment.\\
+Inden bilen kan køre efter kortet, er det vigtigt at bilen kender sin position på banen. Kodemodulet starter derfor med at finde målstregen, ved brug af streg sensoren. Dernæst indlæses det kommende bane segment. Hvert segment har et status register, som fortæller om det er et sving eller lige stykke. Ud over status registrer, er der også to 8- bit registre som indeholder længden af det pågældende segment. Programmet bruger informationen til at vælge imellem 2 rutiner, rutinen for sving eller rutinen for lige strækninger. En af de følgende rutiner er blevet udført og bilen har passeret bane segmentet, loades næste segment.\\
 \\
 Når rutinen for sving kaldes, tændes elektromagneten for at forbedre grebet. Bilens hastighed bliver sat til den maksimale hastighed for sving.\\
 \\
-Når rutinen for lige segment kalde, slukkes elektromagneten og hastighed for bilen siddes til max. Ud over det, tjekkes der om næste segment er lige eller et sving. Hvis næste segment er lige, bibeholdes den maksimale hastighed. Hvis næste segment derimod er et sving, beregnes der bremselængde, for at nå ned på den maksimale hastighed for sving.\\
-
+Når rutinen for lige segment kaldes, slukkes elektromagneten og hastighed for bilen sættes til 100 procent. Ud over det, tjekkes der om næste segment er lige eller et sving. Hvis næste segment er lige, bibeholdes den maksimale hastighed. Hvis næste segment derimod er et sving, beregnes der bremselængde, for at nå ned på den maksimale hastighed for sving. Til sidst starter koden forfra, og dette gentages til alle segmenter er behandlet.
