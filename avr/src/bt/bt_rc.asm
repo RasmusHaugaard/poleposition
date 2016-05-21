@@ -21,6 +21,8 @@
 	jmp bl_rxcie_handler
 .org saved_pc
 
+.include "src/bt/jmpne_app_cmd.asm"
+
 bt_rc_start:
 	ldi temp1, 0
 	sts bt_rc_status, temp1
@@ -107,7 +109,6 @@ expecting_data:
 	sts bt_rc_status, temp1
 	brne rxcie_end
 	rcall reset_bt_rc_pointer
-	call 0x2A
 	pop ZH
 	pop ZL
 	pop temp1

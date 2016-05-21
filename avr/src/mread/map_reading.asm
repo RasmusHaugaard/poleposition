@@ -388,7 +388,7 @@ find_sp:
 
 	ldi R16, 0<<TOV1			;forbyder interrupt ved timer1 overflow
 	out TIMSK, R16				;..
-	setspeed [10]				;sætter langsom hastighed
+	setspeed [150]				;sætter langsom hastighed
 line_scan:
 	sbis TIFR, TOV1				;skib hvis externt interrupt flag er sat			<------------------------------------- skal tjekke om denne linje bliver brugt rigtigt
 	rjmp line_scan				;scanner igen

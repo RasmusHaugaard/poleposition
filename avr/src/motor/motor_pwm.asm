@@ -26,10 +26,29 @@ ERROR: Skal kaldes med argument
 .endm
 
 .macro	setspeed_8	;tager adresse til gpr
+	cbi PORTA, PORTA0
 	out OCR2, @0	;og skriver gpr til OCR2
 .endm
 
 .macro	setspeed_i	;tager konstant
+	cbi PORTA, PORTA0
+	push temp
+	ldi temp, @0
+	out OCR2, temp
+	pop temp
+.endm
+
+.macro brake
+ERROR: Skal kaldes med argumenter
+.endm
+
+.macro brake_i
+	sbi PORTA, PORTA0
+	out OCR2, @0
+.endm
+
+.macro	setspeed_i	;tager konstant
+	sbi PORTA, PORTA0
 	push temp
 	ldi temp, @0
 	out OCR2, temp

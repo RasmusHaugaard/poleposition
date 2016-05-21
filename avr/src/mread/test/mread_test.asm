@@ -25,7 +25,7 @@ init:
 	.include "src/lapt/fixed/lapt_fixed.asm"
 	.include "src/physs/fixed/physical_speed_fixed.asm"
 	.include "src/motor/motor_pwm.asm"
-	.include "src/mread/test/map_v2.asm"
+	.include "src/mread/test/map.asm"
 
 ;==============
 ;=====Main=====
