@@ -10,6 +10,9 @@ in temp, SREG
 push temp
 
 cli
+cbi DDRB, PB2
+nop
+sbi PORTB, PB2
 in temp, GICR
 ori temp, 1<<INT2	;tilader interrupt ved externt trigger 2 (Port B, pin 2)
 out GICR, temp

@@ -11,60 +11,69 @@
 .equ dis_tik_h = addr	;Register som inkrimenters for hver motor tik (high bite)
 .set addr = addr + 1
 
-ldi R16, 0
-sts old_time_h, R16	;nulstiller sidste timer v�rdi (high and low)
-sts old_time_l, R16
-sts dis_tik_h, R16	;nulstiller distance register
-sts dis_tik_l, R16
-
-.include "enable_ext_int2.asm"
+rcall reset_physs
 
 rjmp physs_file_end
 
-
 .macro	phys_speed
-	Error "phys_speed"
+	.error "skal kaldes med argumenter"
 .endm
 
 .macro phys_speed_8_8		;Retunere tid mellem motor tiks
 	push R16
 	in R16, SREG
 	push R16
+
 	ldi R16, 0<<INT1	;Disabler interrupt ved externt trigger 1 (Port D, pin 3)
 	out GICR, R16
 	lds @0, dif_time_h	;retunere high byte
 	lds @1, dif_time_l	;retunere low byte
 	ldi R16, 1<<INT1	;tilader interrupt ved externt trigger 1 (Port D, pin 3)
 	out GICR, R16
+
 	pop R16
 	out SREG, R16
 	pop R16
 .endm
 
-.macro	get_dis_hl
-	Error "get_dis_hl"
+.macro	get_dis
+	.error "skal kaldes med argumenter"
 .endm
 
-.macro get_dis_hl_8_8
+.macro get_dis_8_8
 	push R16
 	in R16, SREG
 	push R16
-	ldi R16, 0<<INT1	;Disabler interrupt ved externt trigger 1 (Port D, pin 3)
-	out GICR, R16
-	ldi @0, dis_tik_h	;retunere high byte
+
+	cli
+	lds @0, dis_tik_h	;retunere high byte
 	lds @1, dis_tik_l	;retunere low byte
-	ldi R16, 1<<INT1	;tilader interrupt ved externt trigger 1 (Port D, pin 3)
-	out GICR, R16
+
 	pop R16
 	out SREG, R16
 	pop R16
 .endm
 
-;=========================
-;========== ISR ==========
-;=========================
+reset_physs:
+	rcall reset_physs_dis
+	rcall reset_physs_speed
+	ret
+reset_physs_dis:
+	push R16
+	ldi R16, 0
+	sts dis_tik_h, R16
+	sts dis_tik_l, R16
+	pop R16
+	ret
+reset_physs_speed:
+	push R16
+	ldi R16, 0
+	sts old_time_h, R16	;nulstiller sidste timer værdi (high and low)
+	sts old_time_l, R16
+	pop R16
+	ret
 
-EXT_INT2:	;interrupt(motor tick)
+increment_dis:
 	push R16
 	push R17
 	push R18
@@ -92,6 +101,6 @@ dis_no_overflow:
 	pop R18
 	pop R17
 	pop R16
-	reti
+	ret
 
 physs_file_end:

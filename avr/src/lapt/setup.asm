@@ -24,7 +24,7 @@ jmp lapt_file_end
 ;===========================
 
 .macro get_time_full
-	Error "get_time_full"
+	.error "skal kaldes med argumenter"
 .endm
 
 .macro get_time_full_8_8_8		;macro som retunere TCNT1HH, TCNT1H og TCNT1L.
@@ -39,6 +39,7 @@ jmp lapt_file_end
 	rjmp PC + 3
 	call T1_OV_ISR_CLEAR				;clear TOV1 og inkrimentere TCNT1HH
 ; PC + 3:
+TIME_GET_%:
 	lds R16, TCNT1HH
 	in @2, TCNT1L				;Henter TCNT1L og TCNT1H
 	in @1, TCNT1H				;..

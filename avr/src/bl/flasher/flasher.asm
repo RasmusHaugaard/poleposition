@@ -12,12 +12,13 @@ bl_reprogram:
 	sbi UCSRB, RXCIE
 	.include "src/bl/flasher/move_int_vector_table.asm"
 	sei
+send_permission:
 	force_send_bt_byte [pf_tr_grant_permission]
 pf_loop:
 	pf_load_from_buffer [temp1]
 
 	cpi temp1, reprogram_code ; tillader der sendes ønsket om at reprogramme flere gange, uden microkontrolleren resettes
-	breq pf_loop
+	breq send_permission
 
 	cpi temp1, pf_erase_page_code
 	breq pf_erase_page_handler

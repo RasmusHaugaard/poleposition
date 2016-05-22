@@ -25,7 +25,7 @@
 .org saved_pc
 
 .macro send_bt_byte
-	call store_bt_to_buf
+	.error "skal kaldes med argument"
 .endm
 
 .macro send_bt_byte_8
@@ -172,3 +172,92 @@ buffer_not_full:
 	ret
 
 bt_tr_end:
+
+.macro send_bt_bytes
+	.error "skal kaldes med argumenter"
+.endm
+
+.macro send_bt_bytes_i
+	send_bt_byte [@0]
+.endm
+
+.macro send_bt_bytes_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+.endm
+
+.macro send_bt_bytes_i_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+.endm
+
+.macro send_bt_bytes_i_i_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+.endm
+
+.macro send_bt_bytes_i_i_i_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+.endm
+
+.macro send_bt_bytes_i_i_i_i_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+	send_bt_byte [@5]
+.endm
+
+.macro send_bt_bytes_i_i_i_i_i_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+	send_bt_byte [@5]
+	send_bt_byte [@6]
+.endm
+
+.macro send_bt_bytes_i_i_i_i_i_i_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+	send_bt_byte [@5]
+	send_bt_byte [@6]
+	send_bt_byte [@7]
+.endm
+
+.macro send_bt_bytes_i_i_i_i_i_i_i_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+	send_bt_byte [@5]
+	send_bt_byte [@6]
+	send_bt_byte [@7]
+	send_bt_byte [@8]
+.endm
+
+.macro send_bt_bytes_i_i_i_i_i_i_i_i_i_i
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+	send_bt_byte [@5]
+	send_bt_byte [@6]
+	send_bt_byte [@7]
+	send_bt_byte [@8]
+	send_bt_byte [@9]
+.endm
