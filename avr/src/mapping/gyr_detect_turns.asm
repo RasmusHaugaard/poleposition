@@ -53,7 +53,10 @@ in_right_turn:
 straight_path_detected:
 	ldi temp, on_straight_path_code
 	sts track_status_addr, temp
-
+	lds temp, race_status_addr
+	cpi temp, rstat_mapping
+	brne PC + 2
+	rcall straight_path_det_store
 	rjmp gyr_detect_end
 on_straight_path:
 	subi valr, 0
@@ -65,7 +68,10 @@ on_straight_path:
 left_turn_detected:
 	ldi temp, in_left_turn_code
 	sts track_status_addr, temp
-	TODO:
+	lds temp, race_status_addr
+	cpi temp, rstat_mapping
+	brne PC + 2
+	rcall left_turn_det_store
 	rjmp gyr_detect_end
 negative_val: ;right
 	ldi temp, turn_in
@@ -75,7 +81,10 @@ negative_val: ;right
 right_turn_detected:
 	ldi temp, in_right_turn_code
 	sts track_status_addr, temp
-	TODO:
+	lds temp, race_status_addr
+	cpi temp, rstat_mapping
+	brne PC + 2
+	rcall right_turn_det_store
 	rjmp gyr_detect_end
 
 gyr_detect_file_end:

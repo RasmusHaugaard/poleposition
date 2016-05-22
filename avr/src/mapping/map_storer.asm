@@ -87,10 +87,13 @@ det_store:
 	sts last_segment_dis_l_addr, D2L
 	sts last_segment_dis_h_addr, D2H
 
-	lds XL, map_data_pointer_l
+	send_bt_byte [D1H]
+	send_bt_byte [D1L]
+
 	lds XH, map_data_pointer_h
-	st X+, D1L
+	lds XL, map_data_pointer_l
 	st X+, D1H
+	st X+, D1L
 	ret
 
 store_end:
