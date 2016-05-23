@@ -59,6 +59,7 @@ TIME_GET_%:
 	push R16
 	in R16, SREG
 	push R16
+	cli
 	in @1, TCNT1L
 	in @0, TCNT1H
 	pop R16
@@ -129,8 +130,8 @@ lap_finished:
 
 reset_lap_timer:
 	push R16
-	ldi R16, 0x00	;ligger v�rdien 0 i R16
-	out TCCR1A, R16	;sl�r funktioner fra i TCCR1A
+	ldi R16, 0x00	;ligger værdien 0 i R16
+	out TCCR1A, R16	;slår funktioner fra i TCCR1A
 	out TCCR1B, R16 ;stopper timer1
 	ldi R16, 0x00				;nulstiller 24_bit timer register
 	sts TCNT1HH, R16			;..
