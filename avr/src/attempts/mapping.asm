@@ -1,4 +1,5 @@
 .include "src/bl/bl.asm"
+.filedef temp = R16
 .filedef temp1 = R17
 .filedef temp2 = R18
 
@@ -32,7 +33,7 @@
 .equ map_round_addr = addr
 .set addr = addr + 1
 
-.equ map_round_set_count = 2 ; 2^X !! (4)
+.equ map_round_set_count = 0 ; 2^X !! (0 -> 1, 1 -> 2, 2 -> 4)
 .equ map_round_count = 1 << map_round_set_count
 
 .org 0x00
@@ -53,6 +54,7 @@ init:
 	.include "src/lapt/setup.asm"
 	.include "src/physs/setup.asm"
 	.include "src/mapping/gyr_detect_turns.asm"
+	.include "src/mapping/map_clearer.asm"
 	.include "src/mapping/map_storer.asm"
 	.include "src/mapping/send_map.asm"
 	.include "src/mapping/gyr_integrate.asm"
@@ -80,6 +82,9 @@ main:
 cmd_handler:
 	.include "src/motor/cmd_handler.asm"
 	.include "src/elemag/cmd_handler.asm"
+	jmp_cmd_ne [get_code, get_map_code, send_map_cmd_end]
+	rcall send_map
+	send_map_cmd_end:
 	reti
 
 encoder_handler:
@@ -87,37 +92,40 @@ encoder_handler:
 	reti
 
 linedetector_handler:
-	push temp1
-	lds temp1, race_status_addr
-	cpi temp1, rstat_warm_up
+	push temp
+	lds temp, race_status_addr
+	cpi temp, rstat_warm_up
 	breq start_mapping
-	cpi temp1, rstat_mapping
+	cpi temp, rstat_mapping
 	breq finished_map_round
-	cpi temp1, rstat_racing
+	cpi temp, rstat_racing
 	breq racing
 linedetector_end:
-	pop temp1
+	pop temp
 	reti
+
 start_mapping:
-	rcall map_clear_sram
-	ldi temp1, rstat_mapping
-	sts race_status_addr, temp1
+	rcall map_clearer
+	ldi temp, rstat_mapping
+	sts race_status_addr, temp
 continue_mapping:
 	rcall map_storer_init
 	rjmp linedetector_end
 finished_map_round:
-	lds temp1, map_round_addr
-	inc temp1
-	sts map_round_addr
 	rcall map_store_done
-	cpi temp1, map_round_count
-
+	lds temp, map_round_addr
+	inc temp
+	sts map_round_addr, temp
+	send_bt_byte [temp]
+	send_bt_byte [map_round_count]
+	cpi temp, map_round_count
 	brne continue_mapping
-
-	ldi temp1, rstat_racing
-	sts race_status_addr, temp1
+	ldi temp, rstat_racing
+	sts race_status_addr, temp
 	rjmp linedetector_end
 racing:
+	setspeed [0]
+	send_bt_bytes [1,1,1,1]
 	rjmp linedetector_end
 
 got_i2c_data:

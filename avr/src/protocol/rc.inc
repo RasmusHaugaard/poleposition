@@ -13,6 +13,7 @@
 
 ;get codes:
 .equ get_speed_code = 94 ;ni four speed
+.equ get_map_code = 95
 
 ;program_flash
 .equ pf_write_page_code = 89

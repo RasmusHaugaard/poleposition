@@ -25,39 +25,6 @@
 
 jmp map_storer_file_end
 
-map_clear_sram:
-	push temp
-	in temp, SREG
-	push temp
-	push temp1
-	push temp2
-	push XL
-	push XH
-
-	ldi temp2, 0
-	ldi XL, low(map_data_pointer_l)
-	ldi XH, high(map_data_pointer_h)
-	ldi temp, low(map_data_length)
-	ldi temp1, high(map_data_length)
-map_clear_loop:
-	st X+, temp2
-	dec temp
-	brne map_clear_loop
-	cpi temp1, 0
-	breq map_clear_end
-	dec temp1
-	brne map_clear_loop
-map_clear_end:
-
-	pop XH
-	pop XL
-	pop temp2
-	pop temp1
-	pop temp
-	out SREG, temp
-	pop temp
-	ret
-
 map_storer_init:
 	push XH
 	push XL
@@ -115,7 +82,6 @@ straight_path_det_store:
 
 det_store:
 	get_dis [H1, L1]
-
 	push H1
 	push L1
 	lds H2, last_segment_dis_h_addr
@@ -126,17 +92,25 @@ det_store:
 	pop H2
 	sts last_segment_dis_l_addr, L2
 	sts last_segment_dis_h_addr, H2
-
 	lds XH, map_data_pointer_h
 	lds XL, map_data_pointer_l
+	push temp
+	lds temp, track_status_addr
+	cpi temp, on_straight_path_code
+	brne was_a_turn
+	ldi temp, straight_segment
+	st X+, temp
+	rjmp det_store_end
+was_a_turn:
 	rcall gyr_integrate_store
-	ld X+, H2
-	ld X, L2
+det_store_end:
+	pop temp
+	ld H2, X+
+	ld L2, X
 	add L1, L2
 	adc H1, H2
 	dec XL
-	ldi temp, 0
-	sbc XH, temp
+	sbci XH, 0
 	st X+, H1
 	st X+, L1
 	ret
@@ -163,21 +137,19 @@ map_store_done:
 	push temp
 	push temp1
 
-	lds temp, map_round_addr
-	cpi temp, 1
-	lds temp, map_segment_count
-	breq first_mapping
-
-	lds temp1, first_map_segment_count
-	cpi temp1, temp
-	brne segment_length_error
-
-	rjmp after_map_segment_count
-first_mapping:
-	sts first_map_segment_count, temp
-after_map_segment_count:
 	rcall straight_path_det_store
 
+	lds temp, map_round_addr
+	cpi temp, 0
+	lds temp, map_segment_count
+	breq first_mapping
+	lds temp1, first_map_segment_count
+	cp temp1, temp
+	brne segment_length_error
+	rjmp map_store_done_end
+first_mapping:
+	sts first_map_segment_count, temp
+map_store_done_end:
 	pop temp1
 	pop temp
 	out SREG, temp
@@ -188,6 +160,11 @@ segment_length_error:
 	setspeed [0]
 	delays [2]
 	force_send_bt_byte [segment_count_error]
+	lds temp, map_segment_count
+	force_send_bt_byte [temp]
+	lds temp, first_map_segment_count
+	force_send_bt_byte [temp]
+	sei
 	rjmp segment_length_error
 
 map_storer_file_end:
