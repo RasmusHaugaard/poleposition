@@ -6,10 +6,15 @@
 \subsubsection{Stregsensor}
 Formålet med stregsensoren er at detektere målstregen. Dette gøres optisk, da selve banen er sort, og målstregen er hvid. Da hvid reflektere lys meget bedre end sort får vi et signal der er let at komparere.
 
-Stregsensoren er bygget op som vist på ref diagram. Den fungere ved at dioden lyser ned på banen, det lys der bliver reflekteret modtager fototransistoren. Ved målstregen har den et output på 4.8 V og på resten af banen 2.5 V. Til at komparere er der blevet brugt en schmitt-trigger, således at der kommer en hysterese. Dette er valgt for at undgå at registrere målstregen flere gange i det vi passere den. Reference spændingen ved det inverterende ben på schmitt-triggeren er sat til 3.3 V og hysteresen som vist på figur nedenunder.
-\\
-Indsæt hysterese kurv*
-\\
+Stregsensoren er bygget op som vist på ref diagram. Den fungere ved at dioden lyser ned på banen, det lys der bliver reflekteret modtager fototransistoren. Ved målstregen har den et output på 4.8 V og på resten af banen 2.5 V. Til at komparere er der blevet brugt en schmitt-trigger, således at der kommer en hysterese. Dette er valgt for at undgå at registrere målstregen flere gange i det vi passere den. Reference spændingen ved det inverterende ben på schmitt-triggeren er sat til 3.3 V og hysteresen som vist på figur \ref{fig:hys} nedenunder.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{kapitler/billeder/Hysterese.jpg}
+	\caption{Hysterese kurv}
+	\label{fig:hys}
+\end{figure}
+
 Stregsensoren sender et signal, ved målstregen på 4.9 V som  mikrocontrolleren modtager som et logisk højt signal. Ved placering over den sorte del af banen sender stregsensoren et signal på 0.03V som mikrocontrolleren opfatter som et logisk lavt signal.
 
 Ved placering over metalskinnerne på banen sender sensoren også et logisk højt signal, for at undgå at modtage den støj, er sensoren placeret bag venstre forhjul, det gør også at mikrocontrolleren modtager signalet om målstregen hurtigere end hvis den var placeret bagerst på bilen.

@@ -57,10 +57,6 @@ Hvis man integrere energi densiteten over volumen af hele det magnetiske kredsl�
 B=\frac{\Phi}{A}
 \end{equation}
 
-
-I praktisk vil dette ikke være helt sandt da der vil opstå nogle hvirvel strømme mm.
-%TJEK OP!! Hvilke som vi dog ikke kigger på hvorfor??!!. Hvis ligning xxovenover skrives ind ligning yyovenover fås.
-
 \begin{equation}
 W_m = \frac{1}{2} \int B^2 \frac{dv}{\mu}  = \frac{1}{2} \Phi^2 \int \frac{1}{A^2 \cdot \mu} dV
 \end{equation}
@@ -81,18 +77,21 @@ Det medføre at kredsløbets energi kan skrives som:
 
 \begin{equation}
 W_m = (NI)^2/(2(R_m)^2) \int \frac{dl}{A \cdot \mu}
+\label{fig:wm}
 \end{equation}
 
 Det gælder at den samlede reluktans er summen af alle reluktanserne, i kredsløbet.
 
 \begin{equation}
 R_m = \int \frac{dl}{A \cdot \mu}
+\label{fig:rm}
 \end{equation}
 
-Sammensættes lignin x over og y over fås:
+Sammensættes lignin \ref{fig:rm} og \ref{fig:wm} fås:
 
 \begin{equation}
-W_m = \frac{dl}{A \cdot \mu}
+W_m = \frac{(NI)^2}{2R_m}
+\label{wmdone}
 \end{equation}
 
 Energi balancen i kredsløbet er.
@@ -100,16 +99,18 @@ $mekanisk arbejde + magnetisk energi =Elektrisk energi \cdot tid$
 
 \begin{equation}
 F dx + dW_m = iv dt
+\label{Fdx}
 \end{equation}
 
 Givet at strømmen i spolen kan antages som konstant vil den elektrisk energi skrives som.
 
 \begin{equation}
 iv=IN \frac{d\Phi}{dt} =(NI)^2  \frac{d\frac{1}{R_m}}{dt}
+\label{iv}
 \end{equation}
 
 
-Sammensat ligning x og y får vi
+Sammensættes ligning \ref{wmdone}, \ref{iv} og \ref{Fdx} fås det:
 
 \begin{equation}
 F dx+\frac{(NI)^2}{2d} \frac{1}{R_m} =(NI)^2  d \frac{1}{R_m}
@@ -125,10 +126,19 @@ Hvor x er elektromagnetens længde fra skinnen ganget med 2, da vi har en hestef
 
 Den samlet reluktans er summen af alle kredsløbets reluktanser, I dette tilfælde vil der være reluktans fra selve elektromagneten $R_k$, fra luftgabet $R_l$ og fra skinnerne i racerbanen $R_s$.
 
-Som det kan ses på figur ???????
+Som det kan ses på figuren fornede. 
+
+\begin{figure}[ht]
+	\label{fig:Mkreds}
+	\centering
+	\includegraphics[width=1\textwidth]{kapitler/billeder/EMagnet.jpg}
+	\caption{Elektromagnetisk kredsløbs analogi}
+	\end{figure}
+
 %Tegnes Lørdag eller søndag beklager ventetiden.
 
 \begin{equation}
+\label{rm1}
 R_m =R_k + R_s + R_l = \frac{l_{kerne}}{\mu_{r.staal} \cdot \mu_0 \cdot A_{kerne} } + \frac{l_{skinne}}{\mu_{r.staal} \cdot \mu_0 \cdot A_{skinne} }  + \frac{l_{kerne}}{\mu_0 \cdot A_{luftgab} }
 \end{equation}
 
@@ -161,7 +171,7 @@ Det gælder at:
 \frac{l_{kerne}}{l_{luftgab}}\ll \mu_{staal}
 \end{equation}
 
-Dette medføre at kernen reluktans kan negligere, da det kan redfærdigøres at omskrive ligning xx til følgende.
+Dette medføre at kernen reluktans kan negligere, da det kan redfærdigøres at omskrive ligningen kan reduceres til følgende.
 
 \begin{equation}
 z =
@@ -204,7 +214,7 @@ Dette betyder at for dette kredsløbs funktion kan det med rimelighed antages at
 R_m \simeq R_l
 	\end{equation}
 
-Dette medføre at ligning xx kan skrives som:
+Dette medføre at ligning \ref{rm1} kan skrives som:
 
 \begin{equation}
 \mid F \mid = \frac{(NI)^(2) \cdot \mu_0 \cdot A_luftgab } {2 \dot x^2}
@@ -222,8 +232,14 @@ I praksis kunne magneten ved 0.5 mm placering over skinnen dog kun trække  1.69
 
 \subsubsection{Forsøg}
 Da permabiliteten for stål er relativ lav tilforhold fks. Elektrisk stål, er der blevet forsøg at tilsætte elektrisk stål til elektromagnetens kerne. Efter forsøg hvor magneten blev placeret på skinnen, kunne det konkluderes at tilføje Elektriskstål til magnetens kerne kunne forøge den kraft elektromagneten kunne trække sig mod skinnen med.
+Ved forsøget var magneterne placeret på skinnen. Se figur \ref{fig:Magnet}
 
-Indsæt billede af graf "Magnet i billede mappen"
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=1\textwidth]{kapitler/billeder/Magnet.png}
+	\caption{Gennemsnitsresultat fra forsøg}
+	\label{fig:Magnet}
+\end{figure}
 
 
 \subsubsection{Delkonklusion}
