@@ -2,8 +2,8 @@
 ;For hvert sving, læg de 2 absolutte afvigelser (hvis det var indre/ydre) til de 2 samlede afvigelser.
 ;til sidst bestem mapningen ved at sammenligne de to afvigelser
 
-.equ innerlength = 64
-.equ outerlength = 84
+.equ innerlength = 65
+.equ outerlength = 85
 
 .equ innnerouter_addr = addr
 .set addr = addr + 1
@@ -20,6 +20,7 @@
 .filedef h = R19
 .filedef cnt = R20
 
+rjmp inner_outer_file_end
 inner_outer:
 	push R1
 	push R0
@@ -43,17 +44,17 @@ inner_outer:
 	mov err_right_inner_l, temp
 
 	ldi XH, high(map_data_start_addr)
-	ldi XL, lwo(map_data_start_addr)
+	ldi XL, low(map_data_start_addr)
 
 nextsegment: ; (første segment er lige)
-	adiw X, 4
+	adiw XH:XL, 4
 sum_loop:
 	dec cnt ; (sidste segment er lige)
 	breq sum_done
 	ld temp, X ; segment type
 	cpi temp, straight_segment
 	breq nextsegment
-	adiw X, 1
+	adiw XH:XL, 1
 	ld temp1, X+ ; antal sving segmenter i svinget
 	ld h, X+
 	ld l, X+
@@ -84,12 +85,12 @@ is_left_segment:
 	adc err_right_inner_h, R1
 	rjmp sum_loop
 sum_done:
-	cpi err_right_inner_h, err_left_inner_h
+	cp err_right_inner_h, err_left_inner_h
 	breq comparelow
 	brlo is_right_inner
 	rjmp is_left_inner
 comparelow:
-	cpi err_right_inner_l, err_left_inner_l
+	cp err_right_inner_l, err_left_inner_l
 	brlo is_right_inner
 	rjmp is_left_inner
 is_right_inner:
@@ -131,3 +132,5 @@ error_is_abs:
 	pop l
 	pop h
 	ret
+
+inner_outer_file_end:

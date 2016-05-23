@@ -20,10 +20,10 @@ average_map:
 	lds segcnt, first_map_segment_count
 
 segment_loop:
-	adiw X, 2
-	lds h, X+
-	lds l, X
-	lds temp, map_round_set_count
+	adiw XH:XL, 2
+	ld h, X+
+	ld l, X
+	ldi temp, map_round_set_count
 rotate_loop:
 	cpi temp, 0
 	breq rotate_done
@@ -35,9 +35,8 @@ rotate_done:
 	dec XL
 	ldi temp, 0
 	sbc XH, temp
-	sts X+, h
-	sts X+, l
-
+	st X+, h
+	st X+, l
 	dec segcnt
 	brne segment_loop
 

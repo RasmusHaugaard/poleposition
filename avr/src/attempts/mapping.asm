@@ -33,7 +33,7 @@
 .equ map_round_addr = addr
 .set addr = addr + 1
 
-.equ map_round_set_count = 0 ; 2^X !! (0 -> 1, 1 -> 2, 2 -> 4)
+.equ map_round_set_count = 0 ; 2^X !! (0 -> 1, 1 -> 2, 2 -> 4, 3 -> 8)
 .equ map_round_count = 1 << map_round_set_count
 
 .org 0x00
@@ -56,6 +56,8 @@ init:
 	.include "src/mapping/gyr_detect_turns.asm"
 	.include "src/mapping/map_clearer.asm"
 	.include "src/mapping/map_storer.asm"
+	.include "src/mapping/map_avg.asm"
+	.include "src/mapping/inner_outer.asm"
 	.include "src/mapping/send_map.asm"
 	.include "src/mapping/gyr_integrate.asm"
 
@@ -116,16 +118,15 @@ finished_map_round:
 	lds temp, map_round_addr
 	inc temp
 	sts map_round_addr, temp
-	send_bt_byte [temp]
-	send_bt_byte [map_round_count]
 	cpi temp, map_round_count
 	brne continue_mapping
 	ldi temp, rstat_racing
 	sts race_status_addr, temp
+	setspeed [0]
+	rcall average_map
+	rcall	inner_outer
 	rjmp linedetector_end
 racing:
-	setspeed [0]
-	send_bt_bytes [1,1,1,1]
 	rjmp linedetector_end
 
 got_i2c_data:
