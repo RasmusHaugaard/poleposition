@@ -79,19 +79,20 @@ increment_dis:
 	push R18
 	in R16, SREG
 	push R16
+	cli
 	get_time_hl [R18, R19]	;kopier "nye timer" til R18 og R19
 	lds R16, old_time_h		;koper "old timer" fra adresse til R16 og R17
 	lds R17, old_time_l		;..
 	sts old_time_h, R18		;kopier "nye timer" ind i "old time" (som referance ved n�ste interrupt)
 	sts old_time_l, R19		;..
-	sub R19, R17			;(low bite) Tr�kker "old timer" (R17) fra den nye "nye timer" (R19)
-	sbc R18, R16			;(High bite) Tr�kker "old timer" (R16) fra den nye "nye timer" (R18)
+	sub R19, R17			;(low bite) Trækker "old timer" (R17) fra den nye "nye timer" (R19)
+	sbc R18, R16			;(High bite) Trækker "old timer" (R16) fra den nye "nye timer" (R18)
 	sts dif_time_h, R18		;gemmer forskellen mellem "ny" og "old" timer
 	sts dif_time_l, R19		;..
 	lds R16, dis_tik_l		;kopier "dis_tek_l" til R16
 	inc R16					;R16++ (inkrimentere)
 	sts dis_tik_l, R16
-	brvc dis_no_overflow	;hvis forige overflowed, skal "dis_tek_h" inkrimenteres (branch if overflow cleared	)
+	brne dis_no_overflow
 	lds R17, dis_tik_h		;kopier "dis_tek_h" til R17
 	inc R17					;R17++ (inkrimentere)
 	sts dis_tik_h, R17		;kopier R17 ind i "dis_tik_h"
