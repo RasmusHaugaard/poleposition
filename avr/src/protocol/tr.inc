@@ -15,6 +15,7 @@
 
 .equ pf_tr_unknown_set_code = 102
 .equ pf_tr_buffer_overflow_error = 103
+.equ segment_count_error = 104
 
 ;graph codes
 .equ graph_gyrzh_code = 10

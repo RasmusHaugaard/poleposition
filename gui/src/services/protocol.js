@@ -21,7 +21,8 @@ class ProtocolService {
 			this.type = types[byte]
 			if (typeof this.type === "undefined"){
 				this.type = null
-				throw("Type not known?", byte)
+				console.log("Type not know?", byte)
+				return
 			}
 		}else{
 			this.buffer.push(byte)
@@ -65,6 +66,7 @@ class Type {
 }
 
 let zhi = 0
+let disi = 0
 
 const types = {
 	200: new Type("Start", 1, () => {
@@ -72,6 +74,12 @@ const types = {
 	}),
 	10: new Type("GyrZH", 2, (buf) => {
 		quickAddToGraph("GyrZH", zhi++, toSigned(buf[0]))
+	}),
+	11: new Type("GyrZH", 2, (buf) => {
+		quickAddToGraph("GyrZH", zhi++, buf[0])
+	}),
+	30: new Type("dis", 3, (buf) => {
+		quickAddToGraph("dis", disi++, buf[0] * 256 + buf[1])
 	})
 }
 
