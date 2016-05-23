@@ -42,10 +42,12 @@ gyr_detect_end:
 	pop temp
 	ret
 in_left_turn:
+	rcall gyr_integrate
 	subi valr, turn_out
 	brmi straight_path_detected
 	rjmp gyr_detect_end
 in_right_turn:
+	rcall gyr_integrate
 	ldi temp, turn_out
 	add valr, temp
 	brpl straight_path_detected
@@ -55,7 +57,7 @@ straight_path_detected:
 	sts track_status_addr, temp
 	lds temp, race_status_addr
 	cpi temp, rstat_mapping
-	brne PC + 2
+	brne gyr_detect_end
 	rcall straight_path_det_store
 	rjmp gyr_detect_end
 on_straight_path:
@@ -70,8 +72,9 @@ left_turn_detected:
 	sts track_status_addr, temp
 	lds temp, race_status_addr
 	cpi temp, rstat_mapping
-	brne PC + 2
+	brne gyr_detect_end
 	rcall left_turn_det_store
+	rcall start_gyr_integration
 	rjmp gyr_detect_end
 negative_val: ;right
 	ldi temp, turn_in
@@ -83,8 +86,9 @@ right_turn_detected:
 	sts track_status_addr, temp
 	lds temp, race_status_addr
 	cpi temp, rstat_mapping
-	brne PC + 2
+	brne gyr_detect_end
 	rcall right_turn_det_store
+	rcall start_gyr_integration
 	rjmp gyr_detect_end
 
 gyr_detect_file_end:

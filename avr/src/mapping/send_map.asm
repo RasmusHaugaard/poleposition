@@ -7,9 +7,8 @@ send_map:
 	ldi XH, high(map_data_start_addr)
 	ldi XL, low(map_data_start_addr)
 	lds cnt, map_segment_count
-	mov temp, cnt
-	add cnt, temp
-	add cnt, temp
+	lsl cnt
+	lsl cnt
 send_map_loop:
 	ld val, X+
 	send_bt_byte [val]

@@ -6,7 +6,7 @@
 .set addr = addr + 1
 
 .equ map_data_start_addr = addr
-.equ map_data_length = 200
+.equ map_data_length = 500
 .set addr = addr + map_data_length
 
 .equ straight_segment = 255
@@ -23,7 +23,17 @@
 
 .equ rstat_warm_up = 0
 .equ rstat_mapping = 1
-.equ rstat_racing = 2
+.equ rstat_averaging = 2
+.equ rstat_racing = 3
+
+.equ gyr_rdy_addr = addr
+.set addr = addr + 1
+
+.equ map_round_addr = addr
+.set addr = addr + 1
+
+.equ map_round_set_count = 2 ; 2^X !! (4)
+.equ map_round_count = 1 << map_round_set_count
 
 .org 0x00
 rjmp init
@@ -45,12 +55,26 @@ init:
 	.include "src/mapping/gyr_detect_turns.asm"
 	.include "src/mapping/map_storer.asm"
 	.include "src/mapping/send_map.asm"
+	.include "src/mapping/gyr_integrate.asm"
 
 	I2C_ID_READ [gyr_addr, gyr_sub_zh, temp1]
 
 	ldi temp1, rstat_warm_up
 	sts race_status_addr, temp1
+	ldi temp1, 0
+	sts gyr_rdy_addr, temp1
+	sts map_round_addr, temp1
 main:
+	lds temp1, gyr_rdy_addr
+	cpi temp1, 1
+	brne main
+	push temp2
+	pop temp2
+	I2C_ID_READ [gyr_addr, gyr_sub_zh, temp1]
+	sts cur_gyr_val_addr, temp1
+	ldi temp1, 0
+	sts gyr_rdy_addr, temp1
+	rcall got_i2c_data
 	rjmp main
 
 cmd_handler:
@@ -63,29 +87,35 @@ encoder_handler:
 	reti
 
 linedetector_handler:
+	push temp1
 	lds temp1, race_status_addr
 	cpi temp1, rstat_warm_up
 	breq start_mapping
 	cpi temp1, rstat_mapping
-	breq stop_mapping
+	breq finished_map_round
 	cpi temp1, rstat_racing
 	breq racing
 linedetector_end:
-	rcall reset_map_data_pointer
-	rcall reset_lap_timer
-	rcall reset_physs_dis
+	pop temp1
 	reti
 start_mapping:
+	rcall map_clear_sram
 	ldi temp1, rstat_mapping
 	sts race_status_addr, temp1
+continue_mapping:
 	rcall map_storer_init
 	rjmp linedetector_end
-stop_mapping:
+finished_map_round:
+	lds temp1, map_round_addr
+	inc temp1
+	sts map_round_addr
 	rcall map_store_done
+	cpi temp1, map_round_count
+
+	brne continue_mapping
+
 	ldi temp1, rstat_racing
 	sts race_status_addr, temp1
-	setspeed [0]
-	rcall send_map
 	rjmp linedetector_end
 racing:
 	rjmp linedetector_end
@@ -95,9 +125,10 @@ got_i2c_data:
 	ret
 
 gyr_drdy_isr:
-	I2C_ID_READ [gyr_addr, gyr_sub_zh, temp2]
-	sts cur_gyr_val_addr, temp2
-	rcall got_i2c_data
+	push temp1
+	ldi temp1, 1
+	sts gyr_rdy_addr, temp1
+	pop temp1
 	reti
 
 reset_map_data_pointer:
