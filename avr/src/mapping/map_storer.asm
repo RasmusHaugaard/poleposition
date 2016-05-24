@@ -36,12 +36,6 @@
 .equ left_segment = 251
 .equ right_segment = 253
 
-.equ map_round_addr = addr
-.set addr = addr + 1
-
-.equ map_round_set_count = 1 ; 2^X !! (0 -> 1, 1 -> 2, 2 -> 4, 3 -> 8)
-.equ map_round_count = 1 << map_round_set_count
-
 jmp map_storer_file_end
 
 map_storer_init:
@@ -49,7 +43,6 @@ map_storer_init:
 	push XL
 	push temp
 
-	rcall reset_physs_dis
 	rcall reset_map_data_pointer
 	lds XH, map_data_pointer_h_addr
 	lds XL, map_data_pointer_l_addr

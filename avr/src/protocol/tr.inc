@@ -17,6 +17,7 @@
 .equ pf_tr_buffer_overflow_error = 103
 .equ segment_count_error = 104
 .equ seg_turn_val_error_code = 105
+.equ race_status_error_code = 106
 
 ;graph codes
 .equ graph_gyrzhDis_code = 10

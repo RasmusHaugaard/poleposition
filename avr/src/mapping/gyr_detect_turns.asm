@@ -69,7 +69,7 @@ in_right_turn:
 
 straight_path_detected:
 	lds temp, race_status_addr
-	cpi temp, rstat_mapping
+	cpi temp, race_status_mapping
 	brne straight_path_det_not_mapping
 	rcall straight_path_det_store
 straight_path_det_not_mapping:
@@ -79,7 +79,7 @@ straight_path_det_not_mapping:
 
 left_turn_detected:
 	lds temp, race_status_addr
-	cpi temp, rstat_mapping
+	cpi temp, race_status_mapping
 	brne left_turn_det_not_mapping
 	rcall left_turn_det_store
 	rcall start_gyr_integration
@@ -90,7 +90,7 @@ left_turn_det_not_mapping:
 
 right_turn_detected:
 	lds temp, race_status_addr
-	cpi temp, rstat_mapping
+	cpi temp, race_status_mapping
 	brne right_turn_det_not_mapping
 	rcall right_turn_det_store
 	rcall start_gyr_integration
