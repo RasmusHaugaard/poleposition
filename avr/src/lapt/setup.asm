@@ -4,7 +4,7 @@
 .org saved_pc
 
 in R16, TOV1
-ori R16, 1<<TOV1
+andi R16, 1<<TOV1
 out TIMSK, R16
 
 rcall reset_lap_timer

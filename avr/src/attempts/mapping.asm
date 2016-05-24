@@ -118,9 +118,6 @@ cmd_handler:
 	jmp_cmd_ne [get_code, get_map_code, send_map_cmd_end]
 	rcall send_map
 	send_map_cmd_end:
-	jmp_cmd_ne [set_code, set_ask_for_gyro, ask_for_gyro_cmd_end]
-	I2C_ID_READ [gyr_addr, gyr_sub_zh, temp1]
-	ask_for_gyro_cmd_end:
 	reti
 
 encoder_handler:
