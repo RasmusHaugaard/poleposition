@@ -7,8 +7,8 @@
 
 .equ innnerouter_addr = addr
 .set addr = addr + 1
-.equ left_inner = 0
-.equ right_inner = 1
+.equ left_inner = 10
+.equ right_inner = 20
 
 .filedef err_left_inner_h = R12
 .filedef err_left_inner_l = R13

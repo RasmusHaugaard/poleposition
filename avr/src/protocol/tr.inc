@@ -19,6 +19,7 @@
 .equ seg_turn_val_error_code = 105
 
 ;graph codes
-.equ graph_gyrzh_code = 10
-.equ graph_speed_code = 11
-.equ graph_dist_code = 12
+.equ graph_gyrzhDis_code = 10
+.equ graph_speedDis_code = 11
+.equ graph_full_time = 13
+.equ graph_next_lap_code = 14

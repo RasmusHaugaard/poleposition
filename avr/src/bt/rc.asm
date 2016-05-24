@@ -31,8 +31,7 @@ bt_rc_start:
 
 bl_error_rxcie:
 	force_send_bt_byte [bl_first_page_empty]
-bl_error_rxcie_loop:
-	rjmp bl_error_rxcie_loop
+	jmp bl_reprogram
 
 bl_rxcie_handler:
 	push input

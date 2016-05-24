@@ -261,3 +261,48 @@ bt_tr_end:
 	send_bt_byte [@8]
 	send_bt_byte [@9]
 .endm
+
+.macro send_bt_bytes_i_8
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+.endm
+
+.macro send_bt_bytes_i_8_8
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+.endm
+
+.macro send_bt_bytes_i_8_8_8
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+.endm
+
+.macro send_bt_bytes_i_8_8_8_8
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+.endm
+
+.macro send_bt_bytes_i_8_8_8_8_8
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+	send_bt_byte [@5]
+.endm
+
+.macro send_bt_bytes_i_8_8_8_8_8_8
+	send_bt_byte [@0]
+	send_bt_byte [@1]
+	send_bt_byte [@2]
+	send_bt_byte [@3]
+	send_bt_byte [@4]
+	send_bt_byte [@5]
+	send_bt_byte [@6]
+.endm

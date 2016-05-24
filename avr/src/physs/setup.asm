@@ -1,3 +1,5 @@
+.equ old_time_hh = addr
+.set addr = addr + 1
 .equ old_time_h = addr	;gamle timer v�rdi (high bite)
 .set addr = addr + 1
 .equ old_time_l = addr	;gamle timer v�rdi (low bite)
@@ -20,20 +22,15 @@ rjmp physs_file_end
 .endm
 
 .macro phys_speed_8_8		;Retunere tid mellem motor tiks
-	push R16
-	in R16, SREG
-	push R16
-
-	ldi R16, 0<<INT1	;Disabler interrupt ved externt trigger 1 (Port D, pin 3)
-	out GICR, R16
+	push R0
+	in R0, SREG
+	push R0
+	cli
 	lds @0, dif_time_h	;retunere high byte
 	lds @1, dif_time_l	;retunere low byte
-	ldi R16, 1<<INT1	;tilader interrupt ved externt trigger 1 (Port D, pin 3)
-	out GICR, R16
-
-	pop R16
-	out SREG, R16
-	pop R16
+	pop R0
+	out SREG, R0
+	pop R0
 .endm
 
 .macro	get_dis
@@ -41,17 +38,17 @@ rjmp physs_file_end
 .endm
 
 .macro get_dis_8_8
-	push R16
-	in R16, SREG
-	push R16
+	push R0
+	in R0, SREG
+	push R0
 
 	cli
 	lds @0, dis_tik_h	;retunere high byte
 	lds @1, dis_tik_l	;retunere low byte
 
-	pop R16
-	out SREG, R16
-	pop R16
+	pop R0
+	out SREG, R0
+	pop R0
 .endm
 
 reset_physs:
@@ -75,20 +72,35 @@ reset_physs_speed:
 
 increment_dis:
 	push R16
-	push R17
-	push R18
 	in R16, SREG
 	push R16
+	push R17
+	push R18
+	push R19
+	push R20
+	push R21
+	push R22
 	cli
-	get_time_hl [R18, R19]	;kopier "nye timer" til R18 og R19
-	lds R16, old_time_h		;koper "old timer" fra adresse til R16 og R17
-	lds R17, old_time_l		;..
-	sts old_time_h, R18		;kopier "nye timer" ind i "old time" (som referance ved n�ste interrupt)
+	lds R18, old_time_hh
+	lds R17, old_time_h
+	lds R16, old_time_l
+	get_time_full [R21, R20, R19]
+	sts old_time_hh, R21
+	sts old_time_h, R20		;kopier "nye timer" ind i "old time" (som referance ved n�ste interrupt)
 	sts old_time_l, R19		;..
-	sub R19, R17			;(low bite) Trækker "old timer" (R17) fra den nye "nye timer" (R19)
-	sbc R18, R16			;(High bite) Trækker "old timer" (R16) fra den nye "nye timer" (R18)
-	sts dif_time_h, R18		;gemmer forskellen mellem "ny" og "old" timer
-	sts dif_time_l, R19		;..
+	mov R22, R21
+	sub R22, R18
+	cpi R22, 2 ; to overflows på hh resulterer i dif_time overflow
+	brsh full_dif_time
+	sub R19, R16
+	sbc R20, R17
+	rjmp after_full_dif_time
+full_dif_time:
+	ldi R20, 0xFF
+	ldi R21, 0xFF
+after_full_dif_time:
+	sts dif_time_h, R20		;gemmer forskellen mellem "ny" og "old" timer
+	sts dif_time_l, R19
 	lds R16, dis_tik_l		;kopier "dis_tek_l" til R16
 	inc R16					;R16++ (inkrimentere)
 	sts dis_tik_l, R16
@@ -97,10 +109,14 @@ increment_dis:
 	inc R17					;R17++ (inkrimentere)
 	sts dis_tik_h, R17		;kopier R17 ind i "dis_tik_h"
 dis_no_overflow:
-	pop R16
-	out SREG, R16
+	pop R22
+	pop R21
+	pop R20
+	pop R19
 	pop R18
 	pop R17
+	pop R16
+	out SREG, R16
 	pop R16
 	ret
 

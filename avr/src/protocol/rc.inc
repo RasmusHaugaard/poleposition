@@ -10,6 +10,7 @@
 .equ set_stop_code = 0x11
 .equ set_reset_lapt_code = 0x12
 .equ set_elemag_code = 0x13
+.equ set_ask_for_gyro = 0x14
 
 ;get codes:
 .equ get_speed_code = 94 ;ni four speed

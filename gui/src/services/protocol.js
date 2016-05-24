@@ -54,33 +54,75 @@ const quickAddToGraph = (name, x, y) => {
 	if (!is(line.ymax) || y > line.ymax) line.ymax = y
 }
 
+
 window.quickAddToGraph = quickAddToGraph
 window.clearGraph = () => {window.graph = {}}
 
-class Type {
-	constructor(name, byteCount, func){
-		this.name = name
-		this.byteCount = byteCount
-		this.func = func
-	}
+const tps = (16 * Math.pow(10,6))/256
+const spt = 1/tps
+const cmptick = 0.307
+const speedscaler = 2
+
+const toRealTime = time => time * spt
+
+const tc = {
+	start:{name:"start", code:200},
+	gyrzhDis:{name:"gyrzh-dis", code:10},
+	speedDis:{name:"speed", code:11},
+	nextLapTimeDis:{code:14},
+	readyToProgram:{code:203}
 }
 
-let zhi = 0
-let disi = 0
-
-const types = {
-	200: new Type("Start", 1, () => {
+var types = {}
+types[tc.readyToProgram.code] = {
+	byteCount: 1,
+	func: () => {
+		window.speak("Ready to program.")
+		console.log("Ready to program")
+	}
+}
+types[tc.start.code] = {
+	byteCount: 1,
+	func: () => {
 		window.speak("Controller restarted.")
-	}),
-	10: new Type("GyrZH", 2, (buf) => {
-		quickAddToGraph("GyrZH", zhi++, toSigned(buf[0]))
-	}),
-	11: new Type("GyrZH", 2, (buf) => {
-		quickAddToGraph("GyrZH", zhi++, buf[0])
-	}),
-	30: new Type("dis", 3, (buf) => {
-		quickAddToGraph("dis", disi++, buf[0] * 256 + buf[1])
-	})
+		console.log("Controller restarted")
+	}
+}
+types[tc.nextLapTimeDis.code] = {
+	byteCount: 5,
+	func: buf => {
+		let lapTime = toRealTime(
+			buf[0] * Math.pow(2,16) + buf[1] * Math.pow(2,8)
+		)
+		let lapDistance = (buf[2] * Math.pow(2,8) + buf[3]) * cmptick
+		let avgSpeed = lapDistance / lapTime
+		console.log("New lap in:", lapTime.toFixed(3) + "s")
+		console.log("Lap distance:", lapDistance.toFixed(1) + "cm")
+		console.log("Avg speed:", avgSpeed.toFixed(1), "cm/s")
+	}
+}
+types[tc.gyrzhDis.code] = {
+	byteCount: 4,
+	func: buf => {
+		quickAddToGraph(
+			tc.gyrzhDis.name,
+			buf[0] * 256 + buf[1],
+			toSigned(buf[2])
+		)
+	}
+}
+types[tc.speedDis.code] = {
+	byteCount: 4,
+	func: buf => {
+		let distance = buf[0] * 256 + buf[1]
+		let dt = buf[2]
+		//quickAddToGraph("Speed (dtime)", speedtimei++, dt)
+		quickAddToGraph(
+			tc.speedDis.name,
+			distance,
+			(tps/speedscaler)/(dt/cmptick)
+		)
+	}
 }
 
 function save(graph){
