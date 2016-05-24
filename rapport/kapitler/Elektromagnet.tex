@@ -59,40 +59,40 @@ B=\frac{\Phi}{A}
 \begin{equation}
 W_m = \frac{1}{2} \int B^2 \frac{dv}{\mu}  = \frac{1}{2} \Phi^2 \int \frac{1}{A^2 \cdot \mu} dV
 \end{equation}
-
+\\
 Det gælder for et magnetisk kredsløb at den resulterende flux $\Phi$ kan regnes som:
 
 \begin{equation}
 \Phi \simeq \frac{NI}{R_m} \simeq  \frac{NI}{\frac{1}{A\mu_0}}
 \end{equation}
-
+\\
 $N \cdot I$ er ampere vindinger, $R_m$ er kredsløbets totale reluktans, $ \mu $ er kredsløbets permeabilit og l er længden af kredsløbet. Det gælder for kredsløbet at:
 
 \begin{equation}
 \Delta V =A \cdot dl
 \end{equation}
-
+\\
 Det medføre at kredsløbets energi kan skrives som:
 
 \begin{equation}
 W_m = (NI)^2/(2(R_m)^2) \int \frac{dl}{A \cdot \mu}
 \label{fig:wm}
 \end{equation}
-
+\\
 Det gælder at den samlede reluktans er summen af alle reluktanserne, i kredsløbet.
 
 \begin{equation}
 R_m = \int \frac{dl}{A \cdot \mu}
 \label{fig:rm}
 \end{equation}
-
+\\
 Sammensættes lignin \ref{fig:rm} og \ref{fig:wm} fås:
 
 \begin{equation}
 W_m = \frac{(NI)^2}{2R_m}
 \label{wmdone}
 \end{equation}
-
+\\
 Energi balancen i kredsløbet er.
 
 \begin{equation}
@@ -105,31 +105,30 @@ mekanisk arbejde + magnetisk energi =Elektrisk energi \cdot tid
 F dx + dW_m = iv dt
 \label{Fdx}
 \end{equation}
-
+\\
 Givet at strømmen i spolen kan antages som konstant vil den elektrisk energi skrives som.
 
 \begin{equation}
 iv=IN \frac{d\Phi}{dt} =(NI)^2  \frac{d\frac{1}{R_m}}{dt}
 \label{iv}
 \end{equation}
-
-
+\\
 Sammensættes ligning \ref{wmdone}, \ref{iv} og \ref{Fdx} fås det:
 
 \begin{equation}
 F dx+\frac{(NI)^2}{2d} \frac{1}{R_m} =(NI)^2  d \frac{1}{R_m}
 \end{equation}
-
+\\
 Ud fra dette kan det konstateres at halvdelen af den totale elektriske energi bliver omdannet til mekanisk arbejde.
 
 \begin{equation}
 F = \frac{dR_m}{dx} (-\frac{1}{2} (\frac{(NI)}{Rm} )^2 )
 \end{equation}
-
+\\
 Hvor x er elektromagnetens længde fra skinnen ganget med 2, da vi har en hesteformet magnet.
 
 Den samlet reluktans er summen af alle kredsløbets reluktanser, I dette tilfælde vil der være reluktans fra selve elektromagneten $R_k$, fra luftgabet $R_l$ og fra skinnerne i racerbanen $R_s$.
-
+\\
 Som det kan ses på figur \ref{fig:Mkreds} nedenfor.
 
 \begin{figure}[ht]
@@ -158,7 +157,7 @@ z = \frac{R_m}{R_l} = \frac{R_k}{R_l} +\frac{R_s}{R_l} + 1 = \frac{
 + 1
 \end{equation}
 %"Motherfucker equation... i know, men den er meget væsentlig og burde ikke skrives kortere"
-
+\\
 Ved en lille fluxspredning vil det kunne antages at.
 
 \begin{equation}
@@ -167,7 +166,7 @@ A_{kerne} \simeq A_{luftgab}
 \begin{equation}
 A_{skinne} \ll A_{luftgab}
 \end{equation}
-
+\\
 Og idet at der tilføjes elektrisk stål til elektromagnetens kerne og det gælder at:
 %"leder stadig efter en god kilde på permabiliteter... en der er bedre end wiki..."
 
@@ -190,7 +189,7 @@ z =
 {\mu_{r.staal} \cdot \frac{A_{skinne}}{A_{luftgab}} }
 + 1
 \end{equation}
-
+\\
 Hvis skinnens reluktans undersøges nærmere ses følgende.
 
 %" Rs Ganges og divideres med Lluftagab/Aluftab, da det en korrekt matematisk indgreb der ikke ændre værdien af Rs men gør vi kan sammenligne Rs og Rl… slettes når læst. "
@@ -212,13 +211,13 @@ R_s =
 \frac{\frac{15 mm}{1 mm} }
 { 500 \cdot R_{luftgab} }= 0.06\cdot R_{Luftgab}
 	\end{equation}
-
+\\
 Dette betyder at for dette kredsløbs funktion kan det med rimelighed antages at:
 
 \begin{equation}
 R_m \simeq R_l
 	\end{equation}
-
+\\
 Dette medføre at ligning \ref{rm1} kan skrives som:
 
 \begin{equation}
