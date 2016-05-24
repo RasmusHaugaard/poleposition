@@ -16,7 +16,7 @@ Stregsensoren er bygget op som vist på \ref{fig:DG}. Den fungere ved at dioden 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.5\textwidth]{kapitler/billeder/Hysterese.jpg}
-	\caption{Hysterese kurv}
+	\caption{Hysterese kurve}
 	\label{fig:hys}
 \end{figure}
 
@@ -44,7 +44,7 @@ For at måle distancer, så bilen ved hvor langt der er imellem sving på banen,
 Det vil sige at omdrejningstælleren vil sende et logisk højt signal til mikrocontrolleren når den er ved et af hullerne i  rotationsenkoderen, og et logisk lavt signal resten af tiden. En puls fra Omdrejningstælleren vil svare til 1/6 af en motoromdrejning.
 Da denne sensor kommer til at blive brugt i flere frekvensområder alt efter motorens hastighed, er det vigtigt at komparatoren ikke har en for langsom slewrate.
 
-Den komperator der er blevet brugt i kredsløbet er en LM311 har ved normal opsætning en respons tid på 165 ns.
+Den komperator der er blevet brugt i kredsløbet er en LM311 har ved normal opsætning en respons tid på 165 ns. \cite{LM311}
 
 \begin{equation}
 \frac{5 V}{168 ns} = 3 \cdot 10^7 \frac{v}{s}
@@ -56,6 +56,3 @@ Signalet ved motor omdrejninger ved 2 kHz vil give 12 pulser, det giver et signa
 \end{equation}
 
 Det kan derfor ses at selv hvis bilen akse drejer med 2 kHz kun sensoren følge med.
-
-
-Kilde til datasheet: http://www.ti.com/lit/ds/symlink/lm311.pdf
