@@ -5,8 +5,13 @@
 
 \subsubsection{Stregsensor}
 Formålet med stregsensoren er at detektere målstregen. Dette gøres optisk, da selve banen er sort, og målstregen er hvid. Da hvid reflektere lys meget bedre end sort får vi et signal der er let at komparere.
-
-Stregsensoren er bygget op som vist på ref diagram. Den fungere ved at dioden lyser ned på banen, det lys der bliver reflekteret modtager fototransistoren. Ved målstregen har den et output på 4.8 V og på resten af banen 2.5 V. Til at komparere er der blevet brugt en schmitt-trigger, således at der kommer en hysterese. Dette er valgt for at undgå at registrere målstregen flere gange i det vi passere den. Reference spændingen ved det inverterende ben på schmitt-triggeren er sat til 3.3 V og hysteresen som vist på figur \ref{fig:hys} nedenunder.
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=1\textwidth]{kapitler/billeder/DG.PNG}
+	\caption{Kredsløbs diagram}
+	\label{fig:DG}
+\end{figure}
+Stregsensoren er bygget op som vist på \ref{fig:DG}. Den fungere ved at dioden lyser ned på banen, det lys der bliver reflekteret modtager fototransistoren. Ved målstregen har den et output på 4.8 V og på resten af banen 2.5 V. Til at komparere er der blevet brugt en schmitt-trigger, således at der kommer en hysterese. Dette er valgt for at undgå at registrere målstregen flere gange i det vi passere den. Reference spændingen ved det inverterende ben på schmitt-triggeren er sat til 3.3 V og hysteresen som vist på figur \ref{fig:hys} nedenunder.
 
 \begin{figure}[ht]
 	\centering
