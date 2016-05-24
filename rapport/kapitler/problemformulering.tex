@@ -1,14 +1,16 @@
 % !TEX root = ../rapport.tex
 
 \section{Problemformulering}
-Dette projekt indebærer at udvikle en mikrocontroller-baseret styring til en racerbil med henblik på at opnå den hurtigste omgangstid på en ukendt bane.
-På langsiderne vil bilen kunne køre med max. hastighed, mens et sving kræver en nedsat hastighed.
-Der vil blive fokuseret på to hovedområder. Den fysiske del og programering. Den fysiske del består af optimering af tophastighed, acceleration, bremselængde og hastighed i sving.
-Programmerings delen består i at lære den ukendte bane så bilen selv ved hvornår den skal bremse og accelerere.
+
+Projektet har til formål at udvikle en mikrocontroller-baseret styring til en racerbil med henblik på at opnå den hurtigste omgangstid på en ukendt bane.
+Der vil blive fokuseret på to hovedområder; Den fysiske del samt softwaren. Den fysiske del består af optimering af tophastighed, acceleration, bremselængde og hastighed i sving.
+Softwaren skal kunne kortlægge den ukendte bane og styrer bilens motor derefter på baggrund af data fra sensorer.
+
 \begin{itemize}
-\item Fremstille en elektromagnet til at skabe downforce til optimering af svinghastighed og optimering af bremselængde.
-\item Udvikkel et optoelektronisk system der kan registrere en startlinje.
-\item Undersøg udvikling af kortlægning af banen vha. gyroskop og motoromdrejningstæller.
-\item Udvikle et motorstyringsprogram som udnytter kortlægningen.
-\item Undersøg effekten af fysiske ændringer på bilen f.eks. fastsættelse af affjedring i fht. til optimering af banetider.
+	\item Design en elektromagnet til at skabe downforce til optimering af svinghastighed og optimering af bremselængde.
+	\item Undersøg effekten af fysiske ændringer på bilen f.eks. fastsættelse af affjedring i fht. til optimering af banetider.
+	\item Design et optoelektronisk system, der kan registrere en startlinje.
+	\item Design en optoelektronisk system, der kan registrere motoromdrejninger.
+	\item Udvikle et program, der kortlægger en ukendt bane på baggrund af data fra sensorer.
+	\item Udvikle et motorstyringsprogram, der optimerer omgangstiden på baggrund af kortlægningen samt data fra sensorer.
 \end{itemize}

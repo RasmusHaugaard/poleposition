@@ -1,21 +1,30 @@
 % !TEX root = ../rapport.tex
 
 \section{Fysiske modifikationer og hardware}
-Som tidligere nævnt skal bilen både optimeres fysisk og ved hjælp af software.
-I dette kapitel bliver der sat fokus på hvordan bilen er blevet optimeret fysisk, og hvilket hardware der er blevet udviklet til bilen.
-For at optimere bilens omgangstid mest muligt, er der også fortaget fysiske modifikationer på bilen.
-Som beskrevet i opgaveformulering var der krav til at der skulle bruges enten en elektromagnet som aktuator, eller en hall-sensor.
-Der er blevet foretrukket en elektromagnet til at skabe yderligere downforce.
-De ting der blandt andet er med til at give en optimeret omgangstid er:
-\begin{itemize}
-\item Minimering af vægt.
-\item Justerbar downforce.
-\item Lavere tyngdepunkt.
-\item Afstivning af chassis.
-\item Minimering af bremselængde.
-\item Maksimering af acceleration og tophastighed.
-\end{itemize}
 
+For at optimere bilens omgangstid, er der fortaget fysiske modifikationer på bilen.
+Som beskrevet i opgaveformulering, var der krav til, der skulle bruges enten en elektromagnet eller en hall-sensor.
+Ønsket om yderligere downforce i sving og ved bremsning har gjort, elektromagneten er blevet valgt.
+Resten af afsnittet tager afsæt i følgende mindstorm:
+\paragraph{Mindstorm} \\
+\begin{itemize}
+\item Forøgelse af acceleration og tophastighed
+	\begin{itemize}
+		\item Minimer vægt
+		\item Boostconverter
+	\end{itemize}
+\item Formindskelse af bremselængde
+	\begin{itemize}
+		\item Minimer vægt
+		\item Maximer downforce
+		\item Motor H-bro
+	\end{itemize}
+\item Optimering af hastighed igennem sving
+	\begin{itemize}
+		\item Sænk tyngdepunkt
+		\item Maximer downforce
+	\end{itemize}
+\end{itemize}
 
 \input{kapitler/fysiske-modifikationer.tex}
 \input{kapitler/Elektromagnet.tex}
@@ -23,7 +32,6 @@ De ting der blandt andet er med til at give en optimeret omgangstid er:
 \input{kapitler/boost-converter.tex}
 
 \input{kapitler/Sensore.tex}
-
 
 \subsection{Delkonklusion}
 De fysiske ændringer der er lavet på bilen optimere næsten alle krav der var stillet inden udviklingen af de enkelte ting blev påbegyndt.
