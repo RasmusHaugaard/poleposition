@@ -21,7 +21,12 @@ Når interrupt routinen kaldes (der kan sendes en byte), og der er bytes i buffe
 Hvis en af pointerne, efter at blive inkrementeret, peger på byten lige efter listens sidste byte, sættes pointeren til den første byte i listen.
 Hvis store pointeren, efter at blive inkrementeret og eventuelt rykket til den første byte i listen, peger på samme adresse som send pointeren, er der overflow i bufferen. Det håndteres på nuværende tidspunkt ikke.
 
-TODO: Der skal et billede ind her
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\linewidth]{kapitler/billeder/illustrationer_Buffer.png}
+    \caption{Output buffer}
+    \label{fig:buffer}
+\end{figure}
 
 \subsubsection{Protokol}
 Bootloaderen styrer bluetoothkommunikationen og indeholder en overordnet indkommende kommunikationsprotokol.
@@ -95,5 +100,5 @@ Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende f
 	\end{tabular}
 \end{table}
 \paragraph{Optimering af flash tid}
-At slette eller skrive en side kan tage flere millisekunder. Hvis interrupts er disablet, og der ventes millisekunder, før næste byte modtages, kan der gå data tabt. For at undgå dette, kunne man sende acknowledge bytes retur til pc'en. Responsetiden, tur retur, over bluetooth er på et par hundrede millisekunder. Hvis man ville ændre alle 256 pages, ville det give et betydeligt overhead (Hvad menes med overhead?).
-For at undgå dette, implementeres en inputbuffer, sammenlignelig med bluetooth output bufferen (TODO: reference). Se eventuelt \mbox{``avr/src/bl/bl\_pf\_bt\_rc\_buffer.asm''}. Interrupt vektor tabellen flyttes til bootloader sektionen og alle interrupts disables pånær UART receive complete interruptet, der håndteres af flasheren. Hvis flasherprogrammet på pc'en er bekendt med bootloaderens inputbuffers størrelse, kan det undgås, at bufferen overflower.
+At slette eller skrive en side kan tage flere millisekunder. Hvis interrupts er disablet, og der ventes millisekunder, før næste byte modtages, kan der gå data tabt. For at undgå dette, kunne programmet på pc'en vente på acknowledge bytes fra mikrocontrolleren. Responsetiden, tur retur, over bluetooth er på et par hundrede millisekunder. Hvis man ville skrive/slette alle 256 pages, ville det give et betydeligt delay.
+For at undgå dette, implementeres en inputbuffer, sammenlignelig med bluetooth output bufferen (TODO: reference). Se eventuelt \mbox{``avr/src/bl/bl\_pf\_bt\_rc\_buffer.asm''}. Interrupt vektor tabellen flyttes til bootloader sektionen og alle interrupts disables pånær UART receive complete interruptet, der håndteres af flasheren. Hvis flasherprogrammet på pc'en er bekendt med bootloaderens inputbuffers størrelse, kan det undgås, at buffer overflower. Desuden er det ikke nødvendigt at uploade
