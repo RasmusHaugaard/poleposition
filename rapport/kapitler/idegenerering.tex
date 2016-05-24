@@ -2,40 +2,29 @@
 
 \newpage
 \section{Idégenerering}
-For at opnå den hurtigste omgangstid skal der være en kombination af den rigtige fysiske opsætning af bilen og en mikrocontroller der fortæller bilen hvordan den skal køre på banen.
-Det første der blev undersøgt var de fysiske optimeringer der kunne laves på bilen.
-
-\subsection{Hardware}
-
-\begin{itemize}
-\item Forøgelse af acceleration og tophastighed
-\item Formindskelse af bremselængde
-\item Optimering hastighed igennem sving
-\end{itemize}
-For at optimere ovenstående er der flere ting der kan overvejes, se figur \ref{fig:mindmap1}.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=1\textwidth]{kapitler/billeder/Mindmap1.jpg}
-    \caption{Idégenerering til optimering af omgangstid}
-    \label{fig:mindmap1}
-\end{figure}
-
-
+For at opnå den hurtigste omgangstid, skal der være en kombination af den rigtige fysiske opsætning af bilen og en mikrocontroller, der fortæller bilen, hvordan den skal køre på banen.
 
 \subsection{Software}
-Udover de fysiske komponenter i bilen skal bilens omgangstid også optimeres ved hjælp af software.
+Idéen er, softwaren skal kunne kortlægge den ukendte bane med data fra et gyroskop og en omdrejningstæller ved først at køre én eller flere omgange på banen.
+Et andet program skulle kunne bruge kortlægningen til at optimere omgangshastigheden ved at accelerere, deaccelerere og aktivere elektromagneten ud fra kortlægningen.
 
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.8\textwidth]{kapitler/billeder/Mindmap2.jpg}
-    \caption{Idégenerering til opsætning af software}
-    \label{fig:mindmap2}
-\end{figure}
-
-
-Idéen er, at software skal kunne kortlægge den ukendte bane ved hjælp af sensorer, ved først at kører et par omgange.
-Når banen er blevet kortlagt og gemt i bilens hukommelse kan den sætte en hurtig omgangs tid.
-Mikrocontrolleren ved herefter, hvor og hvornår der er et sving, hvor der skal bremse og hvor hårdt den kan accelerere de forskellige steder på banen.
-Idéen er altså, at bilen skal optimeres til at køre en så hurtig omgangstid som muligt, ved både at optimere det fysiske på bilen, dens hardware og software.
+\subsection{Hardware}
+En række hardware-relaterede optimeringer er taget i betragtning:
+\begin{itemize}
+\item Forøgelse af acceleration og tophastighed
+	\begin{itemize}
+		\item Minimer vægt
+		\item Boostconverter
+	\end{itemize}
+\item Formindskelse af bremselængde
+	\begin{itemize}
+		\item Minimer vægt
+		\item Maximer downforce
+		\item Motor H-bro
+	\end{itemize}
+\item Optimering af hastighed igennem sving
+	\begin{itemize}
+		\item Sænk tyngdepunkt
+		\item Maximer downforce
+	\end{itemize}
+\end{itemize}
