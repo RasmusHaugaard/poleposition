@@ -42,7 +42,7 @@
 
 \section{Bilag}
 
-\subsection{Bilag 1(Elektromagnet mosfet beregninger)}
+\subsection{Bilag 1 (Elektromagnet mosfet beregninger)}
 \label{subsec:mosfet}
 
 Forbruget på elektromagnetne er blevet målt til 1.5A. Inden temperaturen på mosfit'en kan beregnes, findes følgeenden værdier i databpladet for kompunenten(STP40NF20):
@@ -82,6 +82,7 @@ For at kunne beregne hvor lang tid timeren kan være aktiv inden den overflower,
 $$cps = \frac{1}{\Delta t}$$
 $$cps = \frac{1}{\Delta t} = 62500$$\\
 
+\pagebreak
 Ved at dividere timer registrets max værdi med antal counts pr. sekund, fås hvor langtid timeren kan køre inden overflow:
 
 $$os = \frac{2^{24}}{cps}$$
@@ -93,7 +94,7 @@ $$os = \frac{2^{24}}{62500} = 268.44$$
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.3\textwidth]{kapitler/billeder/lapt/lapt-flow.png}
+\includegraphics[width=0.3\textwidth]{billeder/lapt/lapt-flow.png}
 \caption{Flowchart over første rutine i lap-timer}
 \label{fig:lapt-flow}
 \end{figure}
@@ -101,18 +102,20 @@ $$os = \frac{2^{24}}{62500} = 268.44$$
 
 \newpage
 \subsection{Bilag 4 (timer overflow flowchart)}
+
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5\textwidth]{kapitler/billeder/lapt/lap-overflow.png}
+\includegraphics[width=0.6\textwidth]{billeder/lapt/lap-overflow.png}
 \caption{Flowchart over overflow rutine i lap-timer}
 \label{fig:lap-overflow}
 \end{figure}
 
 \newpage
 \subsection{Bilag 5 (Encoder flowchart)}
-\begin{figure}[h]
+
+\begin{figure}[ht]
 \centering
-\includegraphics[width=0.5\textwidth]{kapitler/billeder/physs/physs.png}
+\includegraphics[width=0.5\textwidth]{billeder/physs/physs.png}
 \caption{Flowchart over motor hastighed's kode}
 \label{fig:physs}
 \end{figure}
