@@ -51,14 +51,10 @@ init_bt_tr_pointers:
 	ldi ZH, high(bt_tr_buf_start)
 	mov YL, ZL
 	mov YH, ZH
-.if tr_preserve_z = 1
 	sts bt_tr_store_pointer_L, ZL
 	sts bt_tr_store_pointer_H, ZH
-.endif
-.if tr_preserve_y = 1
 	sts bt_tr_send_pointer_L, YL
 	sts bt_tr_send_pointer_H, YH
-.endif
 	ret
 
 bl_udrei_handler:
@@ -70,18 +66,14 @@ check_send_bt_from_buf:
 	;Since it is called inside an interrupt, it is very important, that no gps, nor the SREG is affected
 	push temp1
 	in temp1, SREG
-.if tr_preserve_z = 1
 	push ZL
 	push ZH
 	lds ZL, bt_tr_store_pointer_L
 	lds ZH, bt_tr_store_pointer_H
-.endif
-.if tr_preserve_y = 1
 	push YL
 	push YH
 	lds YL, bt_tr_send_pointer_L
 	lds YH, bt_tr_send_pointer_H
-.endif
 	cp ZL, YL ; Hvis ikke vores send pointer peger det samme sted hen, som vores store pointer, vil der være data, der skal sendes.
 	brne send_bt_from_buf
 	cp ZH, YH
@@ -104,19 +96,13 @@ tr_transmit:
 	ld temp1, Y
 	out UDR, temp1
 	pop temp1
-.if tr_preserve_y = 1
 	sts bt_tr_send_pointer_L, YL
 	sts bt_tr_send_pointer_H, YH
-.endif
 restore_tr_pointer_registers:
-.if tr_preserve_y = 1
 	pop YH
 	pop YL
-.endif
-.if tr_preserve_z = 1
 	pop ZH
 	pop ZL
-.endif
 	out SREG, temp1
 	pop temp1
 	ret
@@ -125,18 +111,14 @@ store_bt_to_buf:
 	push temp1
 	in temp1, SREG
 	cli
-.if tr_preserve_z = 1
 	push ZL
 	push ZH
 	lds ZL, bt_tr_store_pointer_L
 	lds ZH, bt_tr_store_pointer_H
-.endif
-.if tr_preserve_y = 1
 	push YL
 	push YH
 	lds YL, bt_tr_send_pointer_L
 	lds YH, bt_tr_send_pointer_H
-.endif
 	adiw ZH:ZL, 1
 
 	cpi ZL, low(bt_tr_buf_end + 1)
@@ -147,10 +129,8 @@ store_bt_to_buf:
 	ldi ZL, low(bt_tr_buf_start)
 	ldi ZH, high(bt_tr_buf_start)
 update_store_pointer:
-.if tr_preserve_z = 1
 	sts bt_tr_store_pointer_L, ZL
 	sts bt_tr_store_pointer_H, ZH
-.endif
 	cp ZL, YL
 	brne buffer_not_full
 	cp ZH, YH
@@ -159,14 +139,10 @@ update_store_pointer:
 buffer_not_full:
 	st Z, store_byte
 	sbi UCSRB, UDRIE ; turn on interrupt for ready to send, if not on already. If UDR is ready, interrupt will be instantiated immidiately.
-.if tr_preserve_y = 1
 	pop YH
 	pop YL
-.endif
-.if tr_preserve_z = 1
 	pop ZH
 	pop ZL
-.endif
 	out SREG, temp1
 	pop temp1
 	ret
@@ -182,41 +158,69 @@ bt_tr_end:
 .endm
 
 .macro send_bt_bytes_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_i_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
 	send_bt_byte [@3]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_i_i_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
 	send_bt_byte [@3]
 	send_bt_byte [@4]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_i_i_i_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
 	send_bt_byte [@3]
 	send_bt_byte [@4]
 	send_bt_byte [@5]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_i_i_i_i_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
@@ -224,9 +228,14 @@ bt_tr_end:
 	send_bt_byte [@4]
 	send_bt_byte [@5]
 	send_bt_byte [@6]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_i_i_i_i_i_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
@@ -235,9 +244,14 @@ bt_tr_end:
 	send_bt_byte [@5]
 	send_bt_byte [@6]
 	send_bt_byte [@7]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_i_i_i_i_i_i_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
@@ -247,9 +261,14 @@ bt_tr_end:
 	send_bt_byte [@6]
 	send_bt_byte [@7]
 	send_bt_byte [@8]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_i_i_i_i_i_i_i_i_i
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
@@ -260,44 +279,74 @@ bt_tr_end:
 	send_bt_byte [@7]
 	send_bt_byte [@8]
 	send_bt_byte [@9]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_8
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_8_8
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_8_8_8
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
 	send_bt_byte [@3]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_8_8_8_8
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
 	send_bt_byte [@3]
 	send_bt_byte [@4]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_8_8_8_8_8
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
 	send_bt_byte [@3]
 	send_bt_byte [@4]
 	send_bt_byte [@5]
+	out SREG, temp1
+	pop temp1
 .endm
 
 .macro send_bt_bytes_i_8_8_8_8_8_8
+	push temp1
+	in temp1, SREG
+	cli
 	send_bt_byte [@0]
 	send_bt_byte [@1]
 	send_bt_byte [@2]
@@ -305,4 +354,6 @@ bt_tr_end:
 	send_bt_byte [@4]
 	send_bt_byte [@5]
 	send_bt_byte [@6]
+	out SREG, temp1
+	pop temp1
 .endm

@@ -21,13 +21,22 @@ rjmp physs_file_end
 	.error "skal kaldes med argumenter"
 .endm
 
-.macro phys_speed_8_8		;Retunere tid mellem motor tiks
+.macro phys_speed_8		;Retunere tid mellem motor tiks
 	push R0
 	in R0, SREG
 	push R0
 	cli
-	lds @0, dif_time_h	;retunere high byte
+	lds R0, dif_time_h	;retunere high byte
 	lds @1, dif_time_l	;retunere low byte
+	lsr R0
+	ror @1
+	cpi R0, 0
+	breq PC + 5
+	push R16
+	ldi R16, 0xFF
+	mov @0, R16
+	pop R16
+;PC + 5:
 	pop R0
 	out SREG, R0
 	pop R0

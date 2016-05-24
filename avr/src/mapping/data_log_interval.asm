@@ -9,7 +9,7 @@
 .set addr = addr + 1
 .equ last_time_data_logged_h_addr = addr
 .set addr = addr + 1
-.equ dataInterval = 625 ; 10 ms -> 100 Hz
+.equ dataInterval = 625 ; 10 ms -> 100 Hz. Giver en teoretisk max datastørrelse på 42 bytes.
 
 ldi R16, 0
 sts last_time_data_logged_l_addr, R16
@@ -53,10 +53,6 @@ log_data_interval_end:
 	pop lasth
 	pop curl
 	pop curh
-	ret
-
-do_log_data:
-	send_bt_byte [87]
 	ret
 
 data_logger_file_end:

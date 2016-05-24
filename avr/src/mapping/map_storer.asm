@@ -6,6 +6,15 @@
 .filedef temp1 = R21
 .filedef temp2 = R22
 
+.equ map_data_start_addr = addr
+.equ map_data_length = 500
+.set addr = addr + map_data_length
+
+.equ map_data_pointer_l_addr = addr
+.set addr = addr + 1
+.equ map_data_pointer_h_addr = addr
+.set addr = addr + 1
+
 .equ map_storer_status = addr
 .set addr = addr + 1
 
@@ -23,6 +32,16 @@
 .equ last_dis_l_addr = addr
 .set addr = addr + 1
 
+.equ straight_segment = 255
+.equ left_segment = 251
+.equ right_segment = 253
+
+.equ map_round_addr = addr
+.set addr = addr + 1
+
+.equ map_round_set_count = 1 ; 2^X !! (0 -> 1, 1 -> 2, 2 -> 4, 3 -> 8)
+.equ map_round_count = 1 << map_round_set_count
+
 jmp map_storer_file_end
 
 map_storer_init:
@@ -32,12 +51,12 @@ map_storer_init:
 
 	rcall reset_physs_dis
 	rcall reset_map_data_pointer
-	lds XH, map_data_pointer_h
-	lds XL, map_data_pointer_l
+	lds XH, map_data_pointer_h_addr
+	lds XL, map_data_pointer_l_addr
 	ldi temp, straight_segment
 	st X+, temp
-	sts map_data_pointer_h, XH
-	sts map_data_pointer_l, XL
+	sts map_data_pointer_h_addr, XH
+	sts map_data_pointer_l_addr, XL
 
 	ldi temp, 0
 	sts last_segment_dis_h_addr, temp
@@ -92,8 +111,8 @@ det_store:
 	pop H2
 	sts last_segment_dis_l_addr, L2
 	sts last_segment_dis_h_addr, H2
-	lds XH, map_data_pointer_h
-	lds XL, map_data_pointer_l
+	lds XH, map_data_pointer_h_addr
+	lds XL, map_data_pointer_l_addr
 	push temp
 	lds temp, track_status_addr
 	cpi temp, on_straight_path_code
@@ -116,8 +135,8 @@ det_store_end:
 	ret
 
 store_end:
-	sts map_data_pointer_h, XH
-	sts map_data_pointer_l, XL
+	sts map_data_pointer_h_addr, XH
+	sts map_data_pointer_l_addr, XL
 	lds temp, map_segment_count
 	inc temp
 	sts map_segment_count, temp
