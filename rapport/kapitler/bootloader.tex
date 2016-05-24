@@ -11,6 +11,7 @@ En enkelt byte med værdien, x, sendes til mikrocontrolleren, hvorefter mikrocon
 Se eventuelt \mbox{``avr/src/bt/tests/replykb.asm''}.
 Forskellige baudrates blev stresstestet ved 250 kB. Den højeste af disse, der ikke havde datatab, var 38 kbps. Disse tests blev udført uden parity bit, med én stop bit og med 8 databits. Det er også denne opsætning der antages fremadrettet. Se eventuelt \mbox{``avr/src/bt/bt\_setup.asm''}. Det vil sige 9 bits i alt per overført byte. Det giver en teoretisk overførselshastighed på $38 kbps / 9 bpB \simeq 4.2 kB/s$. Der kunne have været eksperimenteret med parity bits og flere stopbits ved højere baudrates, men der var ikke umiddelbart behov for hurtigere overførselshastigheder.
 \paragraph{Output Buffer}
+\label{sec:buffer}
 Med en clockfrekvens på 16 MHz går der $16*10^6 / 4.2*10^3 \simeq 3810$ cycles mellem, der kan sende bytes. Hvis man ønsker at sende $x$ bytes synkront, skal programmet i alt vente $(x-1)*3810$ cycles. For at udnytte disse cycles i stedet for at vente, implementeres en buffer i SRAM.
 Se eventuelt \mbox{``avr/src/bt/bt\_tr.asm''}.
 Bufferen består af en byte liste med en fast længde allokeret i SRAM samt to pointers, en store (gem/tilføj) pointer og en send pointer, der også er allokeret i SRAM. Listen indeholder de bytes, der ønskes sendt, samt den frie plads i bufferen. Bytes i det frie område kan være bytes, der allerede er sendt, eller bytes, der endnu ikke er blevet skrevet over siden mikrocontrollerens sidste reset. Store pointeren peger på den byte i listen, der blev tilføjet sidst. Send pointeren peger på den byte i listen, der blev sendt sidst.
@@ -45,7 +46,7 @@ To bootloader kommandoer er isoleret til bootloaderen. Resten af applikationen v
 		\hline
 		Ping & 87 & Værdien 87 tilføjes til bluetooth output bufferen. Bootloaderen forventer herefter en ny bootloader kommando.\\
 		\hline
-		Flash & 88 & Bootloaderen går i flash mode. Se (TODO: reference til flash afsnit) \\
+		Flash & 88 & Bootloaderen går i flash mode. Se \ref{sec:flasher}
 		\hline
 	\end{tabular}
 \end{table}
@@ -79,10 +80,11 @@ Bemærk: [85, X, X] og [86, 3, 85, X, X] er ækvivalente. [87] er ping kommandoe
 \end{mdquote}
 
 \subsubsection{Flasher}
+\label{sec:flasher}
 For at kunne uploade et program til mikrocontrollerens flashhukommelse, implementeres en flasher i bootloaderen.
 Se eventuelt \mbox{``avr/src/bl/program\_flash.asm''}
 Mikrocontrollerens flashhukommelse er opdelt i 256 pages af 64 words (128 bytes). Flashhukommelsen skal ændres en page af gangen.
-Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende flash kommandoer:
+Når bootloaderen er gået i flashmode (se \ref{sec:flasher}), gælder følgende flash kommandoer:
 \begin{table}[H]
 	\caption{bootloader flash kommandoer}
 	\label{tab:blflashcommands}
@@ -100,5 +102,5 @@ Når bootloaderen er gået i flashmode (se TODO: reference), gælder følgende f
 	\end{tabular}
 \end{table}
 \paragraph{Optimering af flash tid}
-At slette eller skrive en side kan tage flere millisekunder. Hvis interrupts er disablet, og der ventes millisekunder, før næste byte modtages, kan der gå data tabt. For at undgå dette, kunne programmet på pc'en vente på acknowledge bytes fra mikrocontrolleren. Responsetiden, tur retur, over bluetooth er på et par hundrede millisekunder. Hvis man ville skrive/slette alle 256 pages, ville det give et betydeligt delay.
-For at undgå dette, implementeres en inputbuffer, sammenlignelig med bluetooth output bufferen (TODO: reference). Se eventuelt \mbox{``avr/src/bl/bl\_pf\_bt\_rc\_buffer.asm''}. Interrupt vektor tabellen flyttes til bootloader sektionen og alle interrupts disables pånær UART receive complete interruptet, der håndteres af flasheren. Hvis flasherprogrammet på pc'en er bekendt med bootloaderens inputbuffers størrelse, kan det undgås, at buffer overflower. Desuden er det ikke nødvendigt at uploade
+At slette eller skrive en side kan tage flere millisekunder. Hvis interrupts er disablet, og der ventes millisekunder, før næste byte modtages, kan der gå data tabt. For at undgå dette, kunne programmet på pc'en vente på acknowledge bytes fra mikrocontrolleren. Responsetiden, tur retur, over bluetooth er på et par hundrede millisekunder. Hvis man ville skrive/slette alle 256 pages, ville det resultere i en betydelig forsinkelse.
+For at undgå dette, implementeres en inputbuffer, sammenlignelig med bluetooth output bufferen \ref{sec:buffer}. Se eventuelt \mbox{``avr/src/bl/bl\_pf\_bt\_rc\_buffer.asm''}. Interrupt vektor tabellen flyttes til bootloader sektionen og alle interrupts disables pånær UART receive complete interruptet, der håndteres af flasheren. Hvis flasherprogrammet på pc'en er bekendt med bootloaderens inputbuffers størrelse, kan det undgås, at buffer overflower. Desuden er det ikke nødvendigt at slette sider, der ikke indeholder data. Programmer der har været skrevet i forbindelse med projektet er blevet flashet på under ét sekund.

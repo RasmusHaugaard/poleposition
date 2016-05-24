@@ -60,6 +60,8 @@ class Flasher {
 		this.bytesInBuffer = 0
 		this.successCallback = successCallback
 		this.progressCallback = progressCallback
+		this.writtenPages = 0
+		this.erasedPages = 0
 		getHex((hex) => {
 			this.pages = parseIHex(hex, PAGESIZE)
 			this.start()
@@ -100,10 +102,12 @@ class Flasher {
 			if(ERASE_EMPTY_PAGES){
 				if(bytesLeftInBuffer < ERASE_PAGE_BYTE_COUNT) return
 				this.erasePage(this.pageIndex)
+				this.erasedPages++
 			}
 		}else{
 			if(bytesLeftInBuffer < WRITE_PAGE_BYTE_COUNT) return
 			this.writePage(this.pageIndex, page)
+			this.writtenPages++
 		}
 		this.pageIndex++
 		if(this.pageIndex === APP_PAGECOUNT){
