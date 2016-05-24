@@ -1,0 +1,72 @@
+\documentclass[11pt]{article}
+\usepackage[top=3cm, bottom=3cm, left=3.5cm, right=2.5cm]{geometry}
+\linespread{1.5}
+\usepackage[danish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{pbox}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+
+\usepackage{relsize}
+\usepackage[electronic]{ifsym}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor={black},citecolor={blue!50!black},urlcolor={blue!80!black},pdfusetitle=true]{hyperref}
+\usepackage{mathptmx}
+\usepackage{listings}
+\usepackage{mdframed}
+\bibliographystyle{plainurl}
+
+\newmdenv[
+  topline=false,
+  bottomline=false,
+	rightline=false,
+	linewidth=2pt,
+	linecolor=black!30!white,
+	fontcolor=black!50!white,
+  skipabove=\topsep,
+  skipbelow=\topsep
+]{mdquote}
+
+\begin{document}
+
+\input{kapitler/frontpage.tex}
+
+\input{kapitler/abstract.tex}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\input{kapitler/indledning.tex}
+
+\input{kapitler/problemformulering.tex}
+
+\input{kapitler/idegenerering.tex}
+
+\input{kapitler/Hardware.tex}
+\input{kapitler/Software.tex}
+\newpage
+
+\input{kapitler/Diskussion.tex}
+\newpage
+\input{kapitler/konklusion.tex}
+\newpage
+\input{kapitler/perspektivering.tex}
+\newpage
+
+\input{kapitler/bilag-phil.tex}
+
+\end{document}
