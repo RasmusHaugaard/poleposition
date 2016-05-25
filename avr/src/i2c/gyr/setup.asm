@@ -14,8 +14,8 @@
 .equ g_dr0 = 6 ;(Data Rate Selection) Se side 29-30 i databladet
 .equ g_dr1 = 7 ;
 .equ gyr_ctrl1_axes = (1<<g_zen)|(0<<g_yen)|(0<<g_xen)
-.equ gyr_ctrl1_bw = (0<<g_bw1)|(0<<g_bw0)
-.equ gyr_ctrl1_dr = (0<<g_dr1)|(0<<g_dr0)
+.equ gyr_ctrl1_bw = (0<<g_bw1)|(1<<g_bw0)
+.equ gyr_ctrl1_dr = (1<<g_dr1)|(0<<g_dr0)
 .equ gyr_ctrl1_val = (1<<g_pd)|gyr_ctrl1_dr|gyr_ctrl1_bw|gyr_ctrl1_axes
 I2C_ID_WRITE [gyr_addr_w, gyr_reg_ctrl1, gyr_ctrl1_val]
 

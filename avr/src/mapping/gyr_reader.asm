@@ -1,4 +1,5 @@
 .filedef temp = R16
+.filedef temp1 = R17
 
 .equ cur_gyr_val_addr = addr
 .set addr = addr + 1
@@ -16,6 +17,10 @@ I2C_ID_READ [gyr_addr, gyr_sub_zh, temp]
 
 rjmp gyr_reader_file_end
 
+got_i2c_data:
+	rcall gyr_detect_turns
+	ret
+
 gyr_reader:
 	push temp
 	in temp, SREG
@@ -29,6 +34,13 @@ do_read_i2c:
 	ldi temp, 0
 	sts gyr_rdy_addr, temp
 	I2C_ID_READ [gyr_addr, gyr_sub_zh, temp]
+	push temp1
+	ldi temp1, 2
+	add temp, temp1
+	brvc gyr_offset_no_overflow
+	ldi temp, 127
+gyr_offset_no_overflow:
+	pop temp1
 	sts cur_gyr_val_addr, temp
 	rcall got_i2c_data
 gyr_reader_end:
@@ -39,10 +51,10 @@ gyr_reader_end:
 	ret
 
 gyr_drdy_isr:
-	push temp1
-	ldi temp1, 1
-	sts gyr_rdy_addr, temp1
-	pop temp1
+	push temp
+	ldi temp, 1
+	sts gyr_rdy_addr, temp
+	pop temp
 	reti
 
 gyr_reader_file_end:

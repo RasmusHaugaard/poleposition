@@ -15,13 +15,19 @@ main_init:
 	ldi temp, 0
 	sts map_round_addr, temp
 
-	I2C_ID_READ [gyr_addr, gyr_sub_zh, temp]
-
 main:
-	rcall log_data_interval
+	rcall control_speed
 	rcall gyr_reader
 
-
+	lds temp, race_status_addr
+	cpi temp, race_status_mapping
+	brne not_mapping
+		rcall log_data_interval
+	not_mapping:
+	cpi temp, race_status_racing
+	brne not_racing
+		rcall race_main
+	not_racing:
 
 	rjmp main
 

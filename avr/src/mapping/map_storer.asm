@@ -38,6 +38,15 @@
 
 jmp map_storer_file_end
 
+reset_map_data_pointer:
+	push temp
+	ldi temp, low(map_data_start_addr)
+	sts map_data_pointer_l_addr, temp
+	ldi temp, high(map_data_start_addr)
+	sts map_data_pointer_h_addr, temp
+	pop temp
+	ret
+
 map_storer_init:
 	push XH
 	push XL
@@ -73,6 +82,10 @@ map_storer_init:
 
 right_turn_det_store:
 	push_store_detect
+
+	get_dis [h1, l1]
+	send_bt_bytes [graph_detected_right_turn_code, h1, l1]
+
 	rcall det_store
 	ldi temp, right_segment
 	st X+, temp
@@ -80,6 +93,10 @@ right_turn_det_store:
 
 left_turn_det_store:
 	push_store_detect
+
+	get_dis [h1, l1]
+	send_bt_bytes [graph_detected_left_turn_code, h1, l1]
+
 	rcall det_store
 	ldi temp, left_segment
 	st X+, temp
@@ -87,6 +104,10 @@ left_turn_det_store:
 
 straight_path_det_store:
 	push_store_detect
+
+	get_dis [h1, l1]
+	send_bt_bytes [graph_detected_straight_path_code, h1, l1]
+
 	rcall det_store
 	ldi temp, straight_segment
 	st X+, temp

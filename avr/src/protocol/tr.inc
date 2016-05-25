@@ -24,3 +24,6 @@
 .equ graph_speedDis_code = 11
 .equ graph_full_time = 13
 .equ graph_next_lap_code = 14
+.equ graph_detected_straight_path_code = 15
+.equ graph_detected_left_turn_code = 16
+.equ graph_detected_right_turn_code = 17

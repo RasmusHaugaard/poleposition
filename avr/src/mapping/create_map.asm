@@ -1,3 +1,5 @@
+.filedef temp = R16
+
 .include "src/mapping/map_clearer.asm"
 .include "src/mapping/map_storer.asm"
 .include "src/mapping/map_avg.asm"
@@ -8,9 +10,10 @@
 .equ map_round_addr = addr
 .set addr = addr + 1
 
-.equ map_round_set_count = 1 ; 2^X !! (0 -> 1, 1 -> 2, 2 -> 4, 3 -> 8)
+.equ map_round_set_count = 0 ; 2^X !! (0 -> 1, 1 -> 2, 2 -> 4, 3 -> 8)
+; 		Don't touch this ,
 .equ map_round_count = 1 << map_round_set_count
-
+; 		Don't touch this ^
 rjmp create_map_file_end
 
 start_create_map:
@@ -38,11 +41,13 @@ finished_map_round:
 all_map_rounds_done:
 	ldi temp, race_status_racing
 	sts race_status_addr, temp
-	setspeed [0]
 	rcall average_map
 	rcall	inner_outer
 	rcall turn_direction_to_inner_outer
 	rcall correct_turn_lengths
+	send_bt_byte [87]
+	disable_control_speed
+	brake [0]
 finished_map_round_end:
 	pop temp
 	out SREG, temp

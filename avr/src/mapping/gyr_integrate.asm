@@ -43,6 +43,9 @@ gyr_int_positiv:
 	inc temp1
 	sts gyr_integration_h_addr, temp1
 gyr_int_no_overflow:
+
+
+
 	pop temp1
 	pop temp
 	out SREG, temp
@@ -57,10 +60,6 @@ gyr_integrate_store:
 
 	lds temp, gyr_integration_l_addr
 	lds temp1, gyr_integration_h_addr
-	lsl temp
-	rol temp1
-	lsl temp
-	rol temp1
 	lsl temp
 	rol temp1
 

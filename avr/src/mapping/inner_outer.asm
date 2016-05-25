@@ -2,8 +2,8 @@
 ;For hvert sving, læg de 2 absolutte afvigelser (hvis det var indre/ydre) til de 2 samlede afvigelser.
 ;til sidst bestem mapningen ved at sammenligne de to afvigelser
 
-.equ innerlength = 65
-.equ outerlength = 85
+.equ innerlength = 66
+.equ outerlength = 86
 
 .equ innnerouter_addr = addr
 .set addr = addr + 1

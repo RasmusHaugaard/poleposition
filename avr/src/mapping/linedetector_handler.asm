@@ -23,7 +23,7 @@ was_not_warm_up:
 was_not_mapping:
 	cpi temp, race_status_racing
 	brne was_not_racing
-
+	rcall finished_race_lap
 	rjmp linedetector_end
 was_not_racing:
 race_status_error:

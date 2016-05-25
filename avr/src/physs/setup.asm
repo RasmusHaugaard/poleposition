@@ -27,10 +27,11 @@ rjmp physs_file_end
 	push R0
 	cli
 	lds R0, dif_time_h	;retunere high byte
-	lds @1, dif_time_l	;retunere low byte
-	lsr R0
-	ror @1
-	cpi R0, 0
+	lds @0, dif_time_l	;retunere low byte
+	push R16
+	ldi R16, 0
+	cp R0, R16
+	pop R16
 	breq PC + 5
 	push R16
 	ldi R16, 0xFF

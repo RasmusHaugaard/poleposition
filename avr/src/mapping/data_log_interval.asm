@@ -5,6 +5,8 @@
 .filedef cph = R20
 .filedef cpl = R21
 
+.include "src/mapping/do_data_log.asm"
+
 .equ last_time_data_logged_l_addr = addr
 .set addr = addr + 1
 .equ last_time_data_logged_h_addr = addr
@@ -42,7 +44,7 @@ log_data_interval:
 	brcc log_data_interval_end
 	sts last_time_data_logged_l_addr, lastl
 	sts last_time_data_logged_h_addr, lasth
-	rcall do_log_data
+	rcall do_data_log
 log_data_interval_end:
 
 	pop cpl

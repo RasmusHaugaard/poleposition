@@ -43,12 +43,12 @@ pop temp
  .error "Skal kaldes med argument"
 .endm
 
-.macro brake_i
+.macro brake_8
 	sbi PORTA, PORTA0
 	out OCR2, @0
 .endm
 
-.macro	setspeed_i
+.macro brake_i
 	sbi PORTA, PORTA0
 	push temp
 	ldi temp, @0
