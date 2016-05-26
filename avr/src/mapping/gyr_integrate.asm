@@ -6,13 +6,17 @@
 .equ gyr_integration_h_addr = addr
 .set addr = addr + 1
 
-.equ one_turn_max = 40
+.equ one_turn_max = 45
 .equ two_turns_max = 75
-.equ three_turns_max = 105
-.equ four_turns_max = 140
+.equ three_turns_max = 115
+.equ four_turns_max = 145
+
+
+rcall reset_gyr_integration
 
 rjmp gyr_integrate_file_end
 
+reset_gyr_integration:
 start_gyr_integration:
 	push temp
 	ldi temp, 0
@@ -78,6 +82,7 @@ gyr_integrate_store:
 	ldi temp, 5
 	gyr_store_end:
 	st X+, temp
+	rcall reset_gyr_integration
 
 	pop temp
 	pop temp1

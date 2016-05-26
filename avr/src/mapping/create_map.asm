@@ -22,6 +22,7 @@ start_create_map:
 	ldi temp, race_status_mapping
 	sts race_status_addr, temp
 	rcall map_storer_init
+	rcall reset_gyr_integration
 	pop temp
 	ret
 

@@ -15,6 +15,8 @@ do_data_log:
 
 	get_dis [dh, dl]
 	rcall send_bt_gyr_int
+	rcall send_bt_gyr
+	rcall send_bt_speed
 
 	pop temp
 	out SREG, temp
@@ -29,7 +31,7 @@ send_bt_gyr_int:
 	lds temp, gyr_integration_l_addr
 	lsl temp
 	rol temp1
-	send_bt_bytes [graph_gyrzhDis_code, dh, dl, temp1]
+	send_bt_bytes [graph_gyr_int_code, dh, dl, temp1]
 	ret
 
 send_bt_gyr:

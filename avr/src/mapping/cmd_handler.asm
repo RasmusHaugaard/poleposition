@@ -3,7 +3,7 @@
 
 .set saved_pc = PC
 .org 0x2A
-rjmp cmd_handler
+jmp cmd_handler
 .org saved_pc
 
 rjmp cmd_handler_file_end

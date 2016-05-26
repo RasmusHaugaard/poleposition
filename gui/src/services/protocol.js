@@ -81,7 +81,8 @@ const tc = {
 	readyToProgram:{code:203},
 	detectedStraightPath:{name:"Straight Path", code:15},
 	detectedLeftTurn:{name:"Left Turn", code:16},
-	detectedRightTurn:{name:"Right Turn", code:17}
+	detectedRightTurn:{name:"Right Turn", code:17},
+	gyrInt:{name:"Gyr Integration", code:18}
 }
 
 var types = {}
@@ -121,6 +122,18 @@ types[tc.gyrzhDis.code] = {
 			toSigned(buf[2]),
 			{xmin: 0, ymin: -128, ymax: 127},
 			"red"
+		)
+	}
+}
+types[tc.gyrInt.code] = {
+	byteCount: 4,
+	func: buf => {
+		quickAddToGraph(
+			tc.gyrInt.name,
+			buf[0] * 256 + buf[1],
+			buf[2],
+			{xmin: 0, ymin: 0, ymax: 170},
+			"purple"
 		)
 	}
 }

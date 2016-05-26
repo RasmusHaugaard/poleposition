@@ -1,22 +1,22 @@
 .filedef temp = R16
 .filedef desired = R17
 .filedef actual = R18
-.filedef th = R19
-.filedef tl = R20
-.filedef temp1 = R21
-.filedef last_th = R22
-.filedef last_tl = R23
 
-.equ control_speed_enabled_addr = addr
+.equ control_speed_status_addr = addr
 .set addr = addr + 1
+
+.equ speed_status_disabled = 0
+.equ speed_status_keeping_speed = 1
+.equ speed_status_accelerating = 2
+.equ speed_status_braking = 3
 
 .equ desired_speed_addr = addr
 .set addr = addr + 1
 
 .macro disable_control_speed
 	push temp
-	ldi temp, 0
-	sts control_speed_enabled_addr, temp
+	ldi temp, speed_status_disabled
+	sts control_speed_status_addr, temp
 	pop temp
 .endm
 
@@ -25,17 +25,8 @@
 .endm
 
 .macro set_control_speed_8
-	push tl
-	push th
-	push temp
-
 	sts desired_speed_addr, @0
-	ldi temp, 1
-	sts control_speed_enabled_addr, temp
-
-	pop temp
-	pop th
-	pop tl
+	rcall init_control_speed
 .endm
 
 .macro set_control_speed_i
@@ -48,46 +39,98 @@
 disable_control_speed
 jmp speed_controller_file_end
 
-control_speed:
-
-	push th
-	push tl
-	push last_th
-	push last_tl
-	push desired
+init_control_speed:
 	push actual
-	push temp1
+	push desired
 	push temp
 	in temp, SREG
 	push temp
 
-	lds temp, control_speed_enabled_addr
-	cpi temp, 1
-	brne control_speed_end
-do_control_speed:
-	lds desired, desired_speed_addr
 	phys_speed [actual]
-	sub desired, actual
-	brcc driving_faster_than_desired
-driving_slower_than_desired:
-	setspeed [200]
-	rjmp control_speed_end
-driving_faster_than_desired:
-	setspeed [130]
-control_speed_end:
+	lds desired, desired_speed_addr
+ 	sub actual, desired
+	brcc init_driving_faster_than_desired
+init_driving_slower_than_desired:
+	send_bt_byte [1]
+	ldi temp, speed_status_accelerating
+	setspeed [255]
+	rjmp init_control_speed_end
+init_driving_faster_than_desired:
+	send_bt_byte [0]
+	ldi temp, speed_status_braking
+	brake [20]
+init_control_speed_end:
+	sts control_speed_status_addr, temp
 
 	pop temp
 	out SREG, temp
 	pop temp
-	pop temp1
-	pop actual
 	pop desired
-	pop last_tl
-	pop last_th
-	pop tl
-	pop th
-
+	pop actual
 	ret
 
+control_speed:
+	push desired
+	push actual
+	push temp
+	in temp, SREG
+	push temp
+
+	cli
+
+	lds desired, desired_speed_addr
+	phys_speed [actual]
+
+	lds temp, control_speed_status_addr
+	cpi temp, speed_status_disabled
+	breq control_speed_end
+	cpi temp, speed_status_keeping_speed
+	breq control_keep_speed
+	cpi temp, speed_status_accelerating
+	breq control_accelerating
+	cpi temp, speed_status_braking
+	breq control_braking
+
+control_keep_speed:
+	sub actual, desired
+	brcs keep_speed_faster_than_desired
+keep_speed_slower_than_desired:
+	setspeed [250]
+	rjmp control_speed_end
+keep_speed_faster_than_desired:
+	setspeed [150]
+	rjmp control_speed_end
+
+control_accelerating:
+	sub actual, desired
+	brcs accelerating_faster_than_desired
+	rjmp control_speed_end
+accelerating_faster_than_desired:
+	ldi temp, speed_status_keeping_speed
+	sts control_speed_status_addr, temp
+	rjmp keep_speed_faster_than_desired
+
+control_braking:
+	cpi desired, 0xFF
+	breq control_full_stop
+	sub actual, desired
+	brcs control_speed_end
+	ldi temp, speed_status_keeping_speed
+	sts control_speed_status_addr, temp
+	rjmp keep_speed_slower_than_desired
+control_full_stop:
+	cp actual, desired
+	brne control_speed_end
+	brake [0]
+	disable_control_speed
+
+control_speed_end:
+	pop temp
+	out SREG, temp
+	pop temp
+	pop actual
+	pop desired
+
+	ret
 
 speed_controller_file_end:
