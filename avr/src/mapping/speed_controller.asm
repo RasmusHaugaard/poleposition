@@ -1,6 +1,7 @@
 .filedef temp = R16
 .filedef desired = R17
 .filedef actual = R18
+.filedef temp1 = R19
 
 .equ control_speed_status_addr = addr
 .set addr = addr + 1
@@ -11,6 +12,13 @@
 .equ speed_status_braking = 3
 
 .equ desired_speed_addr = addr
+.set addr = addr + 1
+
+.equ brake_met_count = 300
+
+.equ brake_met_count_l_addr = addr
+.set addr = addr + 1
+.equ brake_met_count_h_addr = addr
 .set addr = addr + 1
 
 .macro disable_control_speed
@@ -48,17 +56,18 @@ init_control_speed:
 
 	phys_speed [actual]
 	lds desired, desired_speed_addr
- 	sub actual, desired
+ 	sub desired, actual
 	brcc init_driving_faster_than_desired
 init_driving_slower_than_desired:
-	send_bt_byte [1]
-	ldi temp, speed_status_accelerating
 	setspeed [255]
+	ldi temp, speed_status_accelerating
 	rjmp init_control_speed_end
 init_driving_faster_than_desired:
-	send_bt_byte [0]
+	ldi temp, 0
+	sts brake_met_count_h_addr, temp
+	sts brake_met_count_l_addr, temp
+	brake [255]
 	ldi temp, speed_status_braking
-	brake [20]
 init_control_speed_end:
 	sts control_speed_status_addr, temp
 
@@ -75,6 +84,7 @@ control_speed:
 	push temp
 	in temp, SREG
 	push temp
+	push temp1
 
 	cli
 
@@ -82,8 +92,7 @@ control_speed:
 	phys_speed [actual]
 
 	lds temp, control_speed_status_addr
-	cpi temp, speed_status_disabled
-	breq control_speed_end
+	cpi_jmp_eq [temp, speed_status_disabled, control_speed_end]
 	cpi temp, speed_status_keeping_speed
 	breq control_keep_speed
 	cpi temp, speed_status_accelerating
@@ -98,7 +107,7 @@ keep_speed_slower_than_desired:
 	setspeed [250]
 	rjmp control_speed_end
 keep_speed_faster_than_desired:
-	setspeed [150]
+	setspeed [100]
 	rjmp control_speed_end
 
 control_accelerating:
@@ -111,20 +120,54 @@ accelerating_faster_than_desired:
 	rjmp keep_speed_faster_than_desired
 
 control_braking:
+	cp desired, actual
+	breq braking_speed_met
+	sub desired, actual
+	brcc braking_speed_not_met
+braking_speed_met:
+	setspeed [0]
+	lds temp, brake_met_count_l_addr
+	lds temp1, brake_met_count_h_addr
+	inc temp
+	sts brake_met_count_l_addr, temp
+	brne brake_met_count_l_no_overflow
+	inc temp1
+	sts brake_met_count_h_addr, temp1
+brake_met_count_l_no_overflow:
+	cpi temp, low(brake_met_count)
+	brlo met_count_not_reached
+	cpi temp1, high(brake_met_count)
+	brlo met_count_not_reached
+met_count_reached:
 	cpi desired, 0xFF
-	breq control_full_stop
-	sub actual, desired
-	brcs control_speed_end
+	brne not_full_stop
+met_full_stop:
+	disable_control_speed
+	setspeed [0]
+	rjmp control_speed_end
+not_full_stop:
 	ldi temp, speed_status_keeping_speed
 	sts control_speed_status_addr, temp
-	rjmp keep_speed_slower_than_desired
-control_full_stop:
-	cp actual, desired
-	brne control_speed_end
-	brake [0]
-	disable_control_speed
+	rjmp control_speed_end
+met_count_not_reached:
+	setspeed [0]
+	rjmp control_speed_end
+braking_speed_not_met:
+	brake [255]
+	lds temp, brake_met_count_l_addr
+	lds temp1, brake_met_count_h_addr
+	dec temp
+	brne store
+	dec temp1
+	breq dont_store
+store:
+	sts brake_met_count_h_addr, temp1
+	sts brake_met_count_l_addr, temp
+dont_store:
+	rjmp control_speed_end
 
 control_speed_end:
+	pop temp1
 	pop temp
 	out SREG, temp
 	pop temp

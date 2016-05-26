@@ -19,6 +19,7 @@ was_not_warm_up:
 	cpi temp, race_status_mapping
 	brne was_not_mapping
 	rcall finished_map_round
+	set_control_speed [255]
 	rjmp linedetector_end
 was_not_mapping:
 	cpi temp, race_status_racing

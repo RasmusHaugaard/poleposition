@@ -47,8 +47,6 @@ all_map_rounds_done:
 	rcall turn_direction_to_inner_outer
 	rcall correct_turn_lengths
 	send_bt_byte [87]
-	disable_control_speed
-	brake [0]
 finished_map_round_end:
 	pop temp
 	out SREG, temp
