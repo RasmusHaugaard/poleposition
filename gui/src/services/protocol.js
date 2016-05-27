@@ -157,6 +157,14 @@ types[tc.brakeDis.code] = {
 	byteCount: 5,
 	func: buf => {
 		let distance = buf[0] * 256 + buf[1]
+		let brakeDistance = buf[2] * 256 + buf[3]
+		quickAddToGraph(
+			tc.brakeDis.name,
+			distance,
+			brakeDistance,
+			null,
+			"blue"
+		)
 	}
 }
 

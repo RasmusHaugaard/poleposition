@@ -9,7 +9,7 @@
 .filedef next_straight_length_h = R23
 .filedef next_straight_length_l = R24
 
-.equ remove_length_from_all_turns = 30
+.equ remove_length_from_all_turns = 40
 
 rjmp correct_turn_lengths_file_end
 

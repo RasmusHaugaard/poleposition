@@ -14,7 +14,7 @@
 .equ desired_speed_addr = addr
 .set addr = addr + 1
 
-.equ brake_met_count = 200
+.equ brake_met_count = 300
 
 .equ brake_met_count_l_addr = addr
 .set addr = addr + 1
@@ -147,6 +147,8 @@ met_full_stop:
 	setspeed [0]
 	rjmp control_speed_end
 not_full_stop:
+	send_bt_byte [0]
+	setspeed [255]
 	ldi temp, speed_status_keeping_speed
 	sts control_speed_status_addr, temp
 	rjmp control_speed_end

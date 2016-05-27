@@ -18,8 +18,9 @@ main_init:
 main:
 	call control_speed
 	rcall gyr_reader
-	rcall log_data_interval
+	;rcall log_data_interval
 
+	lds temp, race_status_addr
 	cpi temp, race_status_racing
 	brne not_racing
 	rcall race_main

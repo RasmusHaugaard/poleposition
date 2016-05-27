@@ -26,9 +26,9 @@ log_not_mapping:
 	cpi temp, race_status_racing
 	brne log_not_racing
 log_racing:
-	rcall send_bt_gyr
-	rcall send_bt_speed
-	rcall send_bt_braking_distance
+	;rcall send_bt_gyr
+	;rcall send_bt_speed
+	;rcall send_bt_braking_distance
 log_not_racing:
 
 	pop temp
