@@ -18,12 +18,8 @@ main_init:
 main:
 	call control_speed
 	rcall gyr_reader
-
-	lds temp, race_status_addr
-	cpi temp, race_status_mapping
-	brne not_mapping
 	rcall log_data_interval
-not_mapping:
+
 	cpi temp, race_status_racing
 	brne not_racing
 	rcall race_main

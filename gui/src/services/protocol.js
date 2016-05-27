@@ -82,7 +82,8 @@ const tc = {
 	detectedStraightPath:{name:"Straight Path", code:15},
 	detectedLeftTurn:{name:"Left Turn", code:16},
 	detectedRightTurn:{name:"Right Turn", code:17},
-	gyrInt:{name:"Gyr Integration", code:18}
+	gyrInt:{name:"Gyr Integration", code:18},
+	brakeDis:{name:"Breaking Distance", code:19}
 }
 
 var types = {}
@@ -152,6 +153,12 @@ types[tc.speedDis.code] = {
 		)
 	}
 }
+types[tc.brakeDis.code] = {
+	byteCount: 5,
+	func: buf => {
+		let distance = buf[0] * 256 + buf[1]
+	}
+}
 
 const xGridLine = (buf, text) => {
 	let g = window.graph
@@ -182,6 +189,7 @@ types[tc.detectedRightTurn.code] = {
 		xGridLine(buf, tc.detectedRightTurn.name)
 	}
 }
+
 
 function save(graph){
 	//if (!graph.lines && !graph.xGridLines) return

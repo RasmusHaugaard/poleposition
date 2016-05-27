@@ -44,6 +44,7 @@ log_data_interval:
 	brcc log_data_interval_end
 	sts last_time_data_logged_l_addr, lastl
 	sts last_time_data_logged_h_addr, lasth
+	cli
 	rcall do_data_log
 log_data_interval_end:
 

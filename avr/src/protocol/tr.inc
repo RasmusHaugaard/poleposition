@@ -28,3 +28,4 @@
 .equ graph_detected_left_turn_code = 16
 .equ graph_detected_right_turn_code = 17
 .equ graph_gyr_int_code = 18
+.equ graph_breakingDis_code = 19

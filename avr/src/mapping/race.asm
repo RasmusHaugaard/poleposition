@@ -38,6 +38,11 @@
 
 .equ start_brake_length_constant = 40
 
+.equ breaking_distance_h_addr = addr
+.set addr = addr + 1
+.equ breaking_distance_l_addr = addr
+.set addr = addr + 1
+
 rjmp race_file_end
 
 turn_speed_table:
@@ -189,6 +194,8 @@ race_main_straight:
 	ror R0
 	lsr R1
 	ror R0 ; Bremsedistancen ligger nu i R1:R0
+	sts breaking_distance_l_addr, R0
+	sts breaking_distance_h_addr, R1
 	get_dis [temp1, temp]
 	lds dl, cur_segment_length_l_addr
 	lds dh, cur_segment_length_h_addr

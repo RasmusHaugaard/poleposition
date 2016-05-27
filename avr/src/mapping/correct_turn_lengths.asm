@@ -9,6 +9,8 @@
 .filedef next_straight_length_h = R23
 .filedef next_straight_length_l = R24
 
+.equ remove_length_from_all_turns = 30
+
 rjmp correct_turn_lengths_file_end
 
 correct_turn_lengths:
@@ -42,14 +44,17 @@ corr_turn_length_loop:
 	ldd meassured_length_l, Y+3
 	cpi innerouter, innerturn
 	brne corr_t_l_outer
+corr_t_l_inner:
 	ldi turnlength_l, innerlength
 	rjmp corr_t_l_got_length
-	corr_t_l_outer:
+corr_t_l_outer:
 	ldi turnlength_l, outerlength
 corr_t_l_got_length:
 	mul turnlength_l, turn_segments
 	mov turnlength_l, R0
 	mov turnlength_h, R1
+	subi turnlength_l, remove_length_from_all_turns
+	sbci turnlength_h, 0
 	std Y+2, turnlength_h
 	std Y+3, turnlength_l
 	sub meassured_length_l, turnlength_l

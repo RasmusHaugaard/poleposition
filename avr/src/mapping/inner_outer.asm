@@ -87,10 +87,6 @@ is_left_segment:
 	adc err_right_inner_h, R1
 	rjmp sum_loop
 sum_done:
-	send_bt_byte [err_right_inner_h]
-	send_bt_byte [err_right_inner_l]
-	send_bt_byte [err_left_inner_h]
-	send_bt_byte [err_left_inner_l]
 	cp err_right_inner_h, err_left_inner_h
 	breq comparelow
 	brlo is_right_inner
