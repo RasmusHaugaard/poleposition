@@ -5,6 +5,8 @@
 .equ innerlength = 66
 .equ outerlength = 86
 
+.equ add_to_each_exp_turn_length = 30
+
 .equ innnerouter_addr = addr
 .set addr = addr + 1
 .equ left_inner = 10
@@ -70,14 +72,14 @@ is_right_segment:
 	mul temp1, temp
 	rcall abs_error_hl_R1R0
 	add err_left_inner_l, R0
-	adc err_right_inner_h, R1
+	adc err_left_inner_h, R1
 	rjmp sum_loop
 is_left_segment:
 	ldi temp, innerlength
-	mul temp1, temp ; R1:R0 indeholder nu den teoretiske længde, hvis det er et indre sving
+	mul temp1, temp
 	rcall abs_error_hl_R1R0
 	add err_left_inner_l, R0
-	adc err_right_inner_h, R1
+	adc err_left_inner_h, R1
 	ldi temp, outerlength
 	mul temp1, temp
 	rcall abs_error_hl_R1R0
@@ -85,6 +87,10 @@ is_left_segment:
 	adc err_right_inner_h, R1
 	rjmp sum_loop
 sum_done:
+	send_bt_byte [err_right_inner_h]
+	send_bt_byte [err_right_inner_l]
+	send_bt_byte [err_left_inner_h]
+	send_bt_byte [err_left_inner_l]
 	cp err_right_inner_h, err_left_inner_h
 	breq comparelow
 	brlo is_right_inner
@@ -118,6 +124,11 @@ inner_outer_end:
 	ret
 
 abs_error_hl_R1R0:
+	ldi temp, add_to_each_exp_turn_length
+	add R0, temp
+	ldi temp, 0
+	adc R1, temp
+
 	push h
 	push l
 	sub l, R0

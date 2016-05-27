@@ -1,12 +1,11 @@
 .include "src/bl/bl.asm"
 
-.filedef temp = R16
-
 .org 0x00
 rjmp init
 
-.org 0x2D
+.org 0x2C
 init:
+	delays [2]
 	.include "src/util/macros/cpi_jmp.asm"
 	.include "src/motor/setup.asm"
 	.include "src/elemag/setup.asm"
@@ -17,6 +16,8 @@ init:
 	.include "src/lapt/setup.asm"
 	.include "src/physs/setup.asm"
 	.include "src/mapping/speed_controller.asm"
+
+	.include "src/mapping/kin_energy.asm"
 
 	.include "src/mapping/linedetector_handler.asm"
 	.include "src/mapping/encoder_handler.asm"

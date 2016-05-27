@@ -46,7 +46,8 @@ all_map_rounds_done:
 	rcall	inner_outer
 	rcall turn_direction_to_inner_outer
 	rcall correct_turn_lengths
-	send_bt_byte [87]
+	;rcall start_race_lap
+	set_control_speed [255]
 finished_map_round_end:
 	pop temp
 	out SREG, temp

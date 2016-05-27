@@ -14,7 +14,7 @@ do_data_log:
 	push temp
 
 	get_dis [dh, dl]
-	rcall send_bt_gyr_int
+	;rcall send_bt_gyr_int
 	rcall send_bt_gyr
 	rcall send_bt_speed
 
@@ -41,6 +41,7 @@ send_bt_gyr:
 
 send_bt_speed:
 	phys_speed [temp]
+	get_kin_energy [temp]
 	send_bt_bytes [graph_speedDis_code, dh, dl, temp]
 	ret
 

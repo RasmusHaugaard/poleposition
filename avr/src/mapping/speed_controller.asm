@@ -14,7 +14,7 @@
 .equ desired_speed_addr = addr
 .set addr = addr + 1
 
-.equ brake_met_count = 300
+.equ brake_met_count = 200
 
 .equ brake_met_count_l_addr = addr
 .set addr = addr + 1
@@ -34,7 +34,7 @@
 
 .macro set_control_speed_8
 	sts desired_speed_addr, @0
-	rcall init_control_speed
+	call init_control_speed
 .endm
 
 .macro set_control_speed_i
@@ -104,7 +104,7 @@ control_keep_speed:
 	sub actual, desired
 	brcs keep_speed_faster_than_desired
 keep_speed_slower_than_desired:
-	setspeed [250]
+	setspeed [255]
 	rjmp control_speed_end
 keep_speed_faster_than_desired:
 	setspeed [100]
@@ -135,10 +135,11 @@ braking_speed_met:
 	sts brake_met_count_h_addr, temp1
 brake_met_count_l_no_overflow:
 	cpi temp, low(brake_met_count)
-	brlo met_count_not_reached
+	brne met_count_not_reached
 	cpi temp1, high(brake_met_count)
-	brlo met_count_not_reached
+	brne met_count_not_reached
 met_count_reached:
+	lds desired, desired_speed_addr
 	cpi desired, 0xFF
 	brne not_full_stop
 met_full_stop:

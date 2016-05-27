@@ -14,8 +14,8 @@
 .equ in_right_turn_code = 2
 .equ on_straight_path_code = 3
 
-.equ turn_in = 20
-.equ turn_out = 5
+.equ turn_in = 30
+.equ turn_out = 10
 
 ldi temp, on_straight_path_code
 sts track_status_addr, temp
@@ -84,6 +84,10 @@ left_turn_detected:
 	rcall left_turn_det_store
 	rcall start_gyr_integration
 left_turn_det_not_mapping:
+	cpi temp, race_status_racing
+	brne left_turn_det_not_racing
+	rcall race_turn_detected
+left_turn_det_not_racing:
 	ldi temp, in_left_turn_code
 	sts track_status_addr, temp
 	rjmp gyr_detect_end
@@ -95,6 +99,10 @@ right_turn_detected:
 	rcall right_turn_det_store
 	rcall start_gyr_integration
 right_turn_det_not_mapping:
+	cpi temp, race_status_racing
+	brne right_turn_det_not_racing
+	rcall race_turn_detected
+right_turn_det_not_racing:
 	ldi temp, in_right_turn_code
 	sts track_status_addr, temp
 	rjmp gyr_detect_end

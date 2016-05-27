@@ -20,7 +20,7 @@ rjmp physs_file_end
 .endm
 
 .macro phys_speed_8		;Retunere tid mellem motor tiks
-	rcall check_phys_speed_overflow
+	call check_phys_speed_overflow
 	lds @0, dif_time
 .endm
 
@@ -94,6 +94,8 @@ reset_physs_speed:
 	ldi R16, 0
 	sts old_time_h, R16	;nulstiller sidste timer værdi (high and low)
 	sts old_time_l, R16
+	ldi R16, 0xFF
+	sts dif_time, R16
 	pop R16
 	ret
 
@@ -122,17 +124,21 @@ increment_dis:
 	brne full_dif_time
 	cpi R20, 0
 	brne full_dif_time
+	lds R16, dif_time
+	lsr R16
+	lsr R19
+	add R19, R16
 	rjmp after_full_dif_time
 full_dif_time:
 	ldi R19, 0xFF
 after_full_dif_time:
 	sts dif_time, R19
-	lds R16, dis_tik_l		;kopier "dis_tek_l" til R16
-	inc R16					;R16++ (inkrimentere)
+	lds R16, dis_tik_l	;kopier "dis_tek_l" til R16
+	inc R16	;R16++ (inkrimentere)
 	sts dis_tik_l, R16
 	brne dis_no_overflow
-	lds R17, dis_tik_h		;kopier "dis_tek_h" til R17
-	inc R17					;R17++ (inkrimentere)
+	lds R17, dis_tik_h	;kopier "dis_tek_h" til R17
+	inc R17	;R17++ (inkrimentere)
 	sts dis_tik_h, R17		;kopier R17 ind i "dis_tik_h"
 dis_no_overflow:
 	pop R21

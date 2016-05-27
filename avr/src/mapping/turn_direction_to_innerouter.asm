@@ -2,8 +2,8 @@
 .filedef inner = R17
 .filedef turncnt = R18
 
-.equ innerturn = 30
-.equ outerturn = 40
+.equ innerturn = 0
+.equ outerturn = 1
 
 rjmp turn_direction_to_inner_outer_file_end
 
