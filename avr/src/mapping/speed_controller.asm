@@ -14,7 +14,7 @@
 .equ desired_speed_addr = addr
 .set addr = addr + 1
 
-.equ brake_met_count = 300
+.equ brake_met_count = 1000
 
 .equ brake_met_count_l_addr = addr
 .set addr = addr + 1
@@ -104,10 +104,10 @@ control_keep_speed:
 	sub actual, desired
 	brcs keep_speed_faster_than_desired
 keep_speed_slower_than_desired:
-	setspeed [255]
+	setspeed [250]
 	rjmp control_speed_end
 keep_speed_faster_than_desired:
-	setspeed [100]
+	setspeed [150]
 	rjmp control_speed_end
 
 control_accelerating:

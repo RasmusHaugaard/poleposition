@@ -15,7 +15,7 @@
 .equ on_straight_path_code = 3
 
 .equ turn_in = 30
-.equ turn_out = 10
+.equ turn_out = 3
 
 ldi temp, on_straight_path_code
 sts track_status_addr, temp

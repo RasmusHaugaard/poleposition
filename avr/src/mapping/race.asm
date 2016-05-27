@@ -5,8 +5,18 @@
 .filedef dl = R20
 
 .equ straight_control_speed = 0
-.equ elemag_power = 100
-.equ start_brake_length_constant = 40
+.equ elemag_power = 70
+.equ start_brake_length_constant = 30
+
+rjmp race_file_end
+
+turn_speed_table:
+	;inner - outer
+	.db 70, 73 ; 1 segment
+	.db 80, 78 ; 2 segmenter
+	.db 85, 85 ; 3 segmenter
+	.db 85, 85 ; 4 segmenter
+	.db 85, 85 ; 5 segmenter
 
 .equ race_cur_segment_type_addr = addr
 .set addr = addr + 1
@@ -45,16 +55,6 @@
 .set addr = addr + 1
 .equ breaking_distance_l_addr = addr
 .set addr = addr + 1
-
-rjmp race_file_end
-
-turn_speed_table:
-	;inner - outer
-	.db 78, 120 ; 1 segment
-	.db 85, 70 ; 2 segmenter
-	.db 85, 72 ; 3 segmenter
-	.db 85, 75 ; 4 segmenter
-	.db 85, 75 ; 5 segmenter
 
 finished_race_lap:
 	rcall start_race_lap
@@ -139,7 +139,7 @@ not_last_segment:
 	ldd temp1, Y + 4 ; inner(0) / outer(1) turn
 	ldd temp, Y + 5 ; antal segmenter (1 til 5)
 	dec temp ; (0 til 4)
-	lsr temp ; (0 til 8)
+	lsl temp ; (0 til 8)
 	add temp1, temp
 	add ZL, temp1
 	ldi temp, 0
